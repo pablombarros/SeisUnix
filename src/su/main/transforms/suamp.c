@@ -332,7 +332,7 @@ main(int argc, char **argv)
 	   free1float(xout);
 	}
 	free1float(xr);
-	free1flaot(xi);
+	free1float(xi);
 
 	return(CWP_Exit());
 }
