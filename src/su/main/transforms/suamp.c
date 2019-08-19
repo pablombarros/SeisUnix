@@ -180,8 +180,8 @@ main(int argc, char **argv)
 	float *phase=NULL;
 	if(imode == OUPHASE || imode == SUPHASE) {
   	   /* allocate space for the phase */
-	   phase = alloc1float(nfby2);
-	   xout = alloc1float(nfby2);
+	   phase = ealloc1float(nfby2);
+	   xout = ealloc1float(nfby2);
 	}
 
 	/* Main loop over traces */
@@ -331,6 +331,8 @@ main(int argc, char **argv)
 	   free1float(phase);
 	   free1float(xout);
 	}
+	free1float(xr);
+	free1flaot(xi);
 
 	return(CWP_Exit());
 }
