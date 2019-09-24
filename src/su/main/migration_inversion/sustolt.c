@@ -34,7 +34,6 @@ char *sdoc[] = {
 "			prefix for storing temporary files; else if the	",
 "			the CWP_TMPDIR environment variable is set use	",
 "			its value for the path; else use tmpfile()	",
-"									",
 " Notes:								",
 " If unstacked traces are input, they should be NMO-corrected and sorted",
 " into common-offset  gathers.  One common-offset gather ends and another",
@@ -114,11 +113,11 @@ main(int argc, char **argv)
 	int done;		/* out of data				*/
 	int verbose;		/* verbose =1 chatty =0 silent		*/
 
-	float dt;
+	float dt;		/* time sampling interval 		*/
 	float ft;
 	float dx;
-	float *tmig=NULL;
-	float *vmig=NULL;
+	float *tmig=NULL;	/* times of RMS velocities		*/
+	float *vmig=NULL;	/* RMS velocities			*/
 	float vscale;
 	float vstolt;
 	float smig;
@@ -193,6 +192,7 @@ main(int argc, char **argv)
 	    !(tmpdir = getenv("CWP_TMPDIR"))) tmpdir="";
 	if (!STREQ(tmpdir, "") && access(tmpdir, WRITE_OK))
 		err("you can't write in %s (or it doesn't exist)", tmpdir);
+
 
         checkpars();
 
