@@ -10,9 +10,9 @@ ROOT=/usr/local/cwp
 SRC=$(ROOT)/src
 BIN=$(ROOT)/bin
 MKTARS=$(SRC)/Maketars
-SCRATCH=/scratch/john/Temp
+SCRATCH=/Users/john/scratch/john/Temp
 TARDIR=$(MKTARS)/Tarfiles
-RELEASE=44R17
+RELEASE=44R18
 TARNAME=Free/cwp_su_all_$(RELEASE).tgz
 
 # TMPDIR is the directory where we put the files in a single standalone tree

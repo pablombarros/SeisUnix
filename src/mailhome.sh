@@ -4,8 +4,8 @@
 #set -x
 
 # these items identify the date/release of the codes
-DATE="20 July 2019"
-RELEASE="44R14"
+DATE="29 Oct 2019"
+RELEASE="44R18"
 
 # home address
 ADDRESS="john.19071969@gmail.com"
