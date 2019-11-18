@@ -695,6 +695,7 @@ main (int argc, char **argv)
 	ybox *= 72.0;
 	width *= 72.0;
 	height *= 72.0;
+
 	if (legend) {
 	  lx *= 72.0; /* Schoenfelder */
 	  ly *= 72.0; /* Schoenfelder */
