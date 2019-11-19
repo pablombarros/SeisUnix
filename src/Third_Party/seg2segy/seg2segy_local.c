@@ -304,7 +304,7 @@ NULL};
 	char tmpfilename[L_tmpnam];
 	FILE *tmpfileptr;
 
-	tmpnam(tmpfilename);
+	mkstemp(tmpfilename);
 	tmpfileptr=fopen(tmpfilename, "w");
 	/*fwrite(defaults, sizeof(char), strlen(defaults), tmpfileptr); */
 
