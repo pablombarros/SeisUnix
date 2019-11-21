@@ -3,9 +3,9 @@
 
 B = .
 
-CC = /usr/local/bin/gcc-8
+#CC = /usr/local/bin/gcc-8
 # Uncomment the following line for 64 bit machines
-CFLAGS =  -m32
+#CFLAGS =  -m32
 
 LFLAGS = $(PRELFLAGS) -Bstatic   $(POSTLFLAGS)
 
