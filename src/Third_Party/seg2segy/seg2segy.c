@@ -34,7 +34,7 @@
 	-partial addition of structures to handle the keywords and headers.
 	but I eventually gave up.
 
-	$Id: seg2segy.c,v 1.2 2003/02/06 19:05:45 pm Exp $
+	$Id: seg2segy.c,v 1.4 2019/11/21 22:34:22 john Exp john $
 
 	Changes:
 	Feb 96.  Trace header was not being written out with swap on bytes above
@@ -63,6 +63,9 @@
 	file altogether!
 
 	$Log: seg2segy.c,v $
+	Revision 1.4  2019/11/21 22:34:22  john
+	changed long to int to allow compilation under 64 bit
+
 	Revision 1.2  2003/02/06 19:05:45  pm
 	fixed sawtooth on 20bit packed data conversion case 3
 	
@@ -85,6 +88,7 @@
 
 	Revision 1.5  1998/01/07 13:36:15  kay
 	added new changes and a Log for the future
+
 
  */
 
@@ -944,7 +948,7 @@ main (int argc, char *argv[])
 		}
 		if (!reversed) {
 	for (k = 0; k < numsamples; k++)
-		swapint ((int *)&outbuf[k]);
+		swapint ((intptr_t *)&outbuf[k]);
 	}
 	
 	if ((int) numsamples != (k = fwrite (outbuf, 4, (int) numsamples, f2))) {

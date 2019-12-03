@@ -23,7 +23,7 @@ trimodel xmin=0 zmin=0 xmax=1.0 zmax=1 \
 	kedge=1,2 \
 	>$datafile
 
-sxplot <$datafile -geom 650x650+0+0 \
+sxplot <$datafile \
         label1="Depth (km)" label2="Distance (km)" \
         title="First Model (constant V)"  &
 

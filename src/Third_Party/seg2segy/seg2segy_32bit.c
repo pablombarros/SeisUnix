@@ -1,43 +1,4 @@
-head	1.4;
-access;
-symbols;
-locks
-	john:1.4; strict;
-comment	@ * @;
-
-
-1.4
-date	2019.11.21.22.34.22;	author john;	state Exp;
-branches;
-next	1.3;
-
-1.3
-date	2003.02.06.20.47.01;	author john;	state Exp;
-branches;
-next	1.2;
-
-1.2
-date	2002.11.12.16.01.43;	author john;	state Exp;
-branches;
-next	1.1;
-
-1.1
-date	2001.04.12.17.55.11;	author john;	state Exp;
-branches;
-next	;
-
-
-desc
-@new seg2segy version
-@
-
-
-1.4
-log
-@changed long to int to allow compilation under 64 bit
-@
-text
-@/* Copyright (c) Colorado School of Mines, 2002.*/
+/* Copyright (c) Colorado School of Mines, 2002.*/
 /* All rights reserved.                       */
 
 /*
@@ -125,7 +86,6 @@ text
 	Revision 1.5  1998/01/07 13:36:15  kay
 	added new changes and a Log for the future
 
-
  */
 
 #include <stdio.h>
@@ -176,10 +136,10 @@ swapshort (short *si)
 }
 
 void
-swapint (int *li)
+swaplong (long *li)
 {
 	short sl, sh;
-	int temp, temp1;
+	long temp, temp1;
 	temp = *li;
 	sl = temp & 0x0000ffff;
 	sh = (temp >> (8 * sizeof (short))) & 0x0000ffff;
@@ -193,15 +153,15 @@ swapint (int *li)
 }
 
 void
-float_to_ibm(int from[], int to[], int n)
+float_to_ibm(long from[], long to[], long n)
 {
-	register int fconv, fmant, ii, t;
+	register long fconv, fmant, ii, t;
 
 	for (ii=0;ii<n;++ii) {
 	fconv = from[ii];
 	if (fconv) {
 	fmant = (0x007fffff & fconv) | 0x00800000;
-	t = (int) ((0x7f800000 & fconv) >> 23) - 126;
+	t = (long) ((0x7f800000 & fconv) >> 23) - 126;
 	while (t & 0x3) { ++t; fmant >>= 1; }
 	fconv = (0x80000000 & fconv) | (((t>>2) + 64) << 24) | fmant; 
 	} 
@@ -241,7 +201,7 @@ parseSegyKeys(FILE *keyfptr, SegyKeyTable *keywords)
 	while (fgets (input, STRINGWIDTH, keyfptr)) {
 	j = 0;
 	if ( strlen(input) > (size_t)STRINGWIDTH) {
-	fprintf (stderr, "String too int!\n (line:%d)\n", __LINE__);
+	fprintf (stderr, "String too long!\n (line:%d)\n", __LINE__);
 	exit (-12);
 	}
 	/*  
@@ -531,7 +491,7 @@ keycheck (SegyKeyTable *keywords)
 	/* this case calls for the input data to be inserted into the 
 	 * sepcified header location of parms 2-10. The normal 
 	 * 'header' location indicates the type of data, 0=int, 
-	 * 1=int int, 2=floating point. Parm 1 is the multiplier. */
+	 * 1=long int, 2=floating point. Parm 1 is the multiplier. */
 	token = strtok (string1, " ");
 	/* do the integer case first */
 	if (keywords[i].segyheader == 0) {
@@ -545,20 +505,20 @@ keycheck (SegyKeyTable *keywords)
 		token = strtok (NULL, " ");  /* token points next input char. */
 		}
 	}
-		/* do the int integer case next */
+		/* do the long integer case next */
 	else if (keywords[i].segyheader == 1) {
 		int paramcount = 1;
 		int headindex;
-		int *outpoint;
+		long *outpoint;
 		token = strtok (NULL, " ");    /* token points to input char. */
 		while (token != NULL && paramcount < 10) {
 		/* set outpoint to beginning of WORD of interest */
 		/* need to subtract 2 from the location value. */
 		headindex = keywords[i].segyparms[paramcount] - 2;
-		outpoint = (int *) &outhead[headindex];
+		outpoint = (long *) &outhead[headindex];
 		/* outpoint now points to the area of interest and is 
 		 * typed correctly. Compute the value, cast it and send it in. */
-		outpoint[0] = (int) (atof (token) * keywords[i].segyparms[0]);
+		outpoint[0] = (long) (atof (token) * keywords[i].segyparms[0]);
 		paramcount++;
 		token = strtok (NULL, " ");  /* token points next input char. */
 		}
@@ -648,22 +608,22 @@ main (int argc, char *argv[])
 	short int first = 1;
 	size_t l,ln;
 	unsigned short int blockleng;
-	int tracepointers[MAXTRACES];
-	int outbuf[MAXSAMP];
-	int *outheadl=NULL;
-	unsigned int numsamples, datalength;
+	long tracepointers[MAXTRACES];
+	long outbuf[MAXSAMP];
+	long *outheadl=NULL;
+	unsigned long numsamples, datalength;
 	FILE *f1=NULL, *f2=NULL;
 	SegyKeyTable keywords[MAXKEYWORDS];
 
 	double dinbuf[MAXSAMP];
 	float *finbuf = (float *)dinbuf;
-	int *linbuf = (int *)dinbuf;
+	long *linbuf = (long *)dinbuf;
 	short int *iinbuf = (short int *)dinbuf;
 	unsigned char *cinbuf = (unsigned char *)dinbuf;
 
 	float scale=1;
 
-	outheadl = (int *) &outhead[0];
+	outheadl = (long *) &outhead[0];
 	for (i = 0; i < 1800; i++) segyreelheader[i] = 0;
 
 	if (argc < 3 || argc > 4) { 
@@ -749,7 +709,7 @@ main (int argc, char *argv[])
 	fread (tracepointers, 4, numtrace, f1);
 	if (reversed) {
 	for (i = 0; i < numtrace; i++)
-	swapint (&tracepointers[i]);
+	swaplong (&tracepointers[i]);
 	}
 
 	/* now read file descriptor block.  */
@@ -785,10 +745,10 @@ main (int argc, char *argv[])
 	    swapshort ((short *) &blockleng);
 	  fread (&datalength, 4, 1, f1);
 	  if (reversed)
-	    swapint ((int *) &datalength);
+	    swaplong ((long *) &datalength);
 	  fread (&numsamples, 4, 1, f1);
 	  if (reversed)
-	   swapint ((int *) &numsamples);
+	   swaplong ((long *) &numsamples);
 	if (numsamples >= MAXSAMP){ 
 	fprintf(stderr, "Your data contains more samples than I can handle\n");
 	exit(-8);
@@ -828,16 +788,16 @@ main (int argc, char *argv[])
 		fread (linbuf, 4, (int) numsamples, f1);
 		if (reversed) {
 		for (i = 0; i < (int) numsamples; i++)
-		swapint (&linbuf[i]);
+		swaplong (&linbuf[i]);
 		}
 		for (k = 0; k < numsamples; k++)
 		  outbuf[k] = linbuf[k];
 		break;
 	case 3:
 	{
-		unsigned int totalbytes, subpointer;
+		unsigned long totalbytes, subpointer;
 		unsigned int expo;
-		int intdat;
+		long longdat;
 		short int sdata; /*modified version by PM */
 		totalbytes = (numsamples * 5) / 2;
 		fread (cinbuf, 1, (size_t) totalbytes, f1);
@@ -847,16 +807,16 @@ main (int argc, char *argv[])
 		expo = (unsigned) iinbuf[subpointer++];
 		for (i = 0; i < 4; i++) {
 		if (0x8000 & iinbuf[subpointer]) 
-		intdat = 0xffff8000;
+		longdat = 0xffff8000;
 		else 
-		intdat = 0;
-		intdat = intdat | ((int) iinbuf[subpointer++] << (0x000f & expo));
+		longdat = 0;
+		longdat = longdat | ((long) iinbuf[subpointer++] << (0x000f & expo));
 		expo >>= 4;
-		outbuf[k++] = intdat;
+		outbuf[k++] = longdat;
 		}
 		}
 		*/
-	/*modified version by P.Michaels <pm@@cgiss.boisestate.edu> */
+	/*modified version by P.Michaels <pm@cgiss.boisestate.edu> */
 	/*fixes sawtooth conversion error on large negative values */
 		for (k = 0; k < (numsamples);) {
 		subpointer = (k / 4) * 5;
@@ -865,23 +825,23 @@ main (int argc, char *argv[])
 	                sdata=iinbuf[subpointer++];
                      		 if (sdata>0) 
                          	  	{       
-                                	intdat=(int) sdata;
-                                	intdat=intdat << (0x000f & expo);
+                                	longdat=(long) sdata;
+                                	longdat=longdat << (0x000f & expo);
                         	   	}       
                 	        	else    
                          	{       
-                               	 	intdat=(int) -sdata; 
-                                	intdat=intdat <<  (0x000f & expo);
-                              	  	intdat = -intdat; 
+                               	 	longdat=(long) -sdata; 
+                                	longdat=longdat <<  (0x000f & expo);
+                              	  	longdat = -longdat; 
                          	 	} /* endif */ 
                 		expo >>= 4;
-		outbuf[k++] = intdat;
+		outbuf[k++] = longdat;
                 	} /* next i */
         	} /* next k */
 		/* end of modifications */
 		if (reversed) {
 		for (i = 0; i < numsamples; i++)
-		swapint (&outbuf[i]);
+		swaplong (&outbuf[i]);
 		}
 	}
 	break;
@@ -889,9 +849,9 @@ main (int argc, char *argv[])
 	fprintf(stderr,"Reading type 4/n");
 	fread (finbuf, 4, (int) numsamples, f1);
 		if (reversed) {
-		int *buf = (int *) dinbuf;
+		long *buf = (long *) dinbuf;
 		for (i = 0; i < numsamples; i++)
-		swapint (&buf[i]);
+		swaplong (&buf[i]);
 		}
 
 		/* scale values */
@@ -906,9 +866,9 @@ main (int argc, char *argv[])
 	case 5:
 	fread (dinbuf, 8, (int) numsamples, f1);
 		if (reversed) {
-		int *buf = (int *) dinbuf;
+		long *buf = (long *) dinbuf;
 		for (i = 0; i < numsamples * 2; i++)
-		swapint (&buf[i]);
+		swaplong (&buf[i]);
 		}
 		for (k = 0; k < numsamples; k++)
 		outbuf[k] = dinbuf[k];
@@ -924,7 +884,7 @@ main (int argc, char *argv[])
 			outbuf[i]*=gain/outhead[15];
 	*/
 		/* assign the original field record number as the current file number */
-		if (outheadl[2] == 0) outheadl[2] = (int) curf;
+		if (outheadl[2] == 0) outheadl[2] = (long) curf;
 		/* set trace type  as  sesmic data */
 		if (outhead[14] == 0) outhead[14] = 1;
 
@@ -936,10 +896,10 @@ main (int argc, char *argv[])
 
 		/* from rec-station-number and source-station-number (93 and 94) */
 		/* distance from source to receiver */
-		/* outheadl[9]=(int)(abs(outhead[93]-outhead[92])); */
+		/* outheadl[9]=(long)(abs(outhead[93]-outhead[92])); */
 		/* set group for trace one and roll switch position  */
 		outhead[85] = outhead[86] = 
-		(int) (1 + labs ((int) outhead[92] - outheadl[3]));
+		(int) (1 + labs ((long) outhead[92] - outheadl[3]));
 
 		/* special case, execute on first pass only... */
 		if (first == 1) {
@@ -954,7 +914,7 @@ main (int argc, char *argv[])
 		if (!reversed) /* swap only if we are on a little endian  machine */
 		{  
 			for (k = 1600; k < 1606; k += 2)
-			swapint ((int *)&segyreelheader[k]);
+			swaplong ((long *)&segyreelheader[k]);
 		  for (k = 1606; k < 1630; k++)
 		    swapshort((short *)&segyreelheader[k]);
 		}
@@ -962,13 +922,13 @@ main (int argc, char *argv[])
 		}
 
 		if (!reversed) { /* swap only if we are on a little endian  machine */
-		/* first swap ints */
+		/* first swap longs */
 		for (k = 0; k < 7; k++)
-			swapint((int *)&outheadl[k]);
+			swaplong((long *)&outheadl[k]);
 		for (k = 9; k < 17; k++)
-		  swapint((int *)&outheadl[k]);
+		  swaplong((long *)&outheadl[k]);
 		for (k = 18; k < 22; k++)
-		  swapint((int *)&outheadl[k]);
+		  swaplong((long *)&outheadl[k]);
 		/* now swap the shorts */ 
 		for (k = 14; k < 18; k++)
 		  swapshort((short *)&outhead[k]);
@@ -984,7 +944,7 @@ main (int argc, char *argv[])
 		}
 		if (!reversed) {
 	for (k = 0; k < numsamples; k++)
-		swapint ((intptr_t *)&outbuf[k]);
+		swaplong ((long *)&outbuf[k]);
 	}
 	
 	if ((int) numsamples != (k = fwrite (outbuf, 4, (int) numsamples, f2))) {
@@ -999,659 +959,3 @@ main (int argc, char *argv[])
 	fclose(f2);
 	return 0;
 }        /* end main */
-@
-
-
-1.3
-log
-@*** empty log message ***
-@
-text
-@d1 3
-d12 1
-a12 1
-					 to SEG-Y 32-BIT format.
-d35 1
-a35 1
-		but I eventually gave up.
-d37 1
-a37 1
-	$Id: seg2segy.c,v 1.2 2002/11/12 16:01:43 john Exp john $
-d44 1
-a44 1
-		version in CWP/SU package.
-d47 6
-a52 6
-		fixed malloc problem; not enough space was malloced to hold the 
-			string defpath. 
-		freed the malloced space when finished. 
-		closed the segykeyword file when finished.
-		changed curf and lastf to int from short; this should allow digits
-			in the file name prefix (but what will happen in DOS?).
-d55 6
-a60 6
-		Ok.  So no one can figure out the segykeyword file mechanism, 
-		so I've changed it.  Now, if the environment variable SEGKEYPATH
-		is set , then that file is used for the segykeywords. If that
-		isn't set then a system default is used /usr/local/lib/segykeyword
-		or "segykeyw.ord" in the local directory in DOS.  Finally, neither
-		of those exist, then the default values are built in.  
-d62 2
-a63 2
-		NOTE that this means that you can do away with the segykeyword
-		file altogether!
-d66 6
-d89 1
-d123 4
-a126 4
-		char segykeyword[STRINGWIDTH];
-		int segyfunction;
-		int segyheader;
-		double segyparms[MAXPARMS];
-d140 1
-a140 1
-swaplong (long *li)
-d143 1
-a143 1
-	long temp, temp1;
-d157 1
-a157 1
-float_to_ibm(long from[], long to[], long n)
-d159 1
-a159 1
-	register long fconv, fmant, ii, t;
-d163 7
-a169 7
-		if (fconv) {
-			fmant = (0x007fffff & fconv) | 0x00800000;
-			t = (long) ((0x7f800000 & fconv) >> 23) - 126;
-			while (t & 0x3) { ++t; fmant >>= 1; }
-			fconv = (0x80000000 & fconv) | (((t>>2) + 64) << 24) | fmant; 
-		} 
-		to[ii] = fconv; 
-d184 1
-a184 1
-		tmpstr[i] = s[len - 1 - i];
-d203 41
-a243 41
-		j = 0;
-		if ( strlen(input) > (size_t)STRINGWIDTH) {
-			fprintf (stderr, "String too long!\n (line:%d)\n", __LINE__);
-			exit (-12);
-		}
-		/*  
-		 * if left most character = "*" then 
-		 * this line is a comment and should be ignored. 
-		 */
-		if (input[0] == '*' || input[0] == '\n')  
-			continue;
-
-		strcpy (inputbuf, input);  /* make a working copy of input */
-		token = strtok (inputbuf, " ");  /* search out space. */
-
-		/* copy keyword into array */
-		strncpy (keywords[i].segykeyword, token, 1 + strlen (token));
-
-		/* get function value. */
-		token = strtok (NULL, " ");
-		keywords[i].segyfunction = atoi (token);  /* convert to value. */
-		token = strtok (NULL, " ");
-
-		/* get segy header pointer */
-		keywords[i].segyheader = atoi (token);
-
-		/* now start getting any parameters on the line. */
-		token = strtok (NULL, " ");
-		j = 0;
-		while (token != NULL) {
-			/* get next token and start putting them in their array location */
-			keywords[i].segyparms[j] = atof (token);
-			token = strtok (NULL, " ");
-			j++;
-			if (j > MAXPARMS) {
-				printf ("Too many parameters in %s keyword\n", keywords[i].segykeyword);
-				printf ("No more than %d allowed per function\n", j - 1);
-				exit (-13);
-			}
-		}      /* end parameter extraction while loop */
-		i++;      /* inc counter to keyword number */
-d326 1
-a326 1
-		and stores the results in global arrays
-d347 4
-a350 4
-		if((keyfile=fopen(envkeypath,"rb")) != (FILE *)NULL)
-			fprintf (stderr, "%s used for header word mapping.\n", envkeypath); 
-		parseSegyKeys(keyfile, keywords);
-		fclose (keyfile);
-d354 3
-a356 3
-		fprintf (stderr, "Using header word mappings in %s\n",defpath);
-		parseSegyKeys(keyfile, keywords);
-		fclose (keyfile);
-d360 2
-a361 2
-		fprintf (stderr, "Using default header word mappings. \n");
-		loadSegyKeyTableDefaults(keywords);
-d395 5
-a399 5
-		/* 
-		 * restore string1.  It will have been destroyed if an 
-		 * earlier match has occured. 
-		 */
-		strcpy (string1, string2);  
-d401 133
-a533 2
-		if (0 == strncmp (string1, keywords[i].segykeyword, 
-						strlen (keywords[i].segykeyword) ) )
-d535 49
-a583 180
-			/* have found a match! Set the matchfound flag */
-			matchfound = 1;
-			/* look up the function and implement it. */
-			switch (keywords[i].segyfunction)
-			{
-				case 0:
-					break;    /* null case nothing to do */
-				case 1:
-				{
-				/* function 1 keywords have a single parameter 
-				 * in the input;  assumed to be a number.  */
-				/* find the parameter. */
-				/* find first token which will be a keyword */
-				token = strtok (string1, " ");  
-				/* should be a number. */
-				token = strtok (NULL, " ");  		
-				/* parameter found. pointed to by token. */
-				/* function 1 calls for the value on the input line to be mulitplied */
-				/* by segykeyword parm 1. and then inserted into header. */
-				outhead[keywords[i].segyheader - 1] = 
-						atof (token) * keywords[i].segyparms[0];
-				break;
-				}
-				case 2:
-				{
-				/* function 2 is a special function.  It has to deal with the special 
-				 * case of trace sorting. In this case the parameter on the input 
-				 * line is not a number  but a char string.  
-				 * Notice that spaces in the keywords (i.e. AS ACQUIRED) cause 
-				 * the parsing to fail.  Words must be 'spaceless' */
-				token = strtok (string1, " ");  		/* pointing to keyword. */
-				token = strtok (NULL, " ");  				/* token points to input char. */
-				if (0 == strcmp ("AS_ACQUIRED", token))
-					segyreelheader[keywords[i].segyheader - 1] = 1;
-				else if (0 == strcmp ("CDP_GATHER", token))
-					segyreelheader[keywords[i].segyheader - 1] = 2;
-				else if (0 == strcmp ("CDP_STACK", token))
-					segyreelheader[keywords[i].segyheader - 1] = 4;
-				else if (0 == strcmp ("COMMON_OFFSET", token))
-					segyreelheader[keywords[i].segyheader - 1] = 3;
-				else if (0 == strcmp ("COMMON_RECEIVER", token))
-					segyreelheader[keywords[i].segyheader - 1] = 1;
-				else if (0 == strcmp ("COMMON_SOURCE", token))
-					segyreelheader[keywords[i].segyheader - 1] = 1;
-				else if (0 == strcmp ("METERS",token))
-					segyreelheader[keywords[i].segyheader -1] = 1;
-				else if (0 == strcmp ("FEET",token))
-					segyreelheader[keywords[i].segyheader -1] = 2;
-
-				break;
-				}      /* end case 2 */
-				case 3:
-				{
-				/* 
-				 * this case requires the text string found on the input
-				 * line to be copied to the SEGY-REEL header at the line
-				 * indicated in the segyheader index. to compute this
-				 * location it is (line#-1)*80
-				 */
-				strncpy ((char *) &segyreelheader[80 * (keywords[i].segyheader - 1)], 
-					string1, 80);
-				break;
-				}      /* end case 3 */
-				case 4:
-				{
-				/* this case, like 2, calls for special string parsing. */
-				/* for TRACE_TYPE, see code for allowable inputs. */
-				/* pointing to keyword. */
-				token = strtok (string1, " "); 
-				/* assume its seismic */
-				outhead[keywords[i].segyheader - 1] = 1;  
-				/* token points to input char. */
-				token = strtok (NULL, " "); 
-				if (0 == strcmp ("SEISMIC_DATA", token))
-					outhead[keywords[i].segyheader - 1] = 1;
-				else if (0 == strcmp ("DEAD", token))
-					outhead[keywords[i].segyheader - 1] = 2;
-				else if (0 == strcmp ("TEST_DATA", token))
-					outhead[keywords[i].segyheader - 1] = 3;
-				else if (0 == strcmp ("UPHOLE", token))
-					outhead[keywords[i].segyheader - 1] = 5;
-				/* RADAR_DATA not defined in SEG-Y assume it to be normal seismic */
-				else if (0 == strcmp ("RADAR_DATA", token))
-					outhead[keywords[i].segyheader - 1] = 1;
-				break;
-				}      /* end case 4 */
-				case 5:
-				{
-				/* this case calls for the input data to be inserted into the 
-				 * sepcified header location of parms 2-10. The normal 
-				 * 'header' location indicates the type of data, 0=int, 
-				 * 1=long int, 2=floating point. Parm 1 is the multiplier. */
-				token = strtok (string1, " ");
-				/* do the integer case first */
-				if (keywords[i].segyheader == 0) {
-					int paramcount = 1;
-					int headindex;
-					token = strtok (NULL, " ");    		/* token points to input char. */
-					while (token != NULL && paramcount < 10) {
-								headindex = keywords[i].segyparms[paramcount] - 1;
-								outhead[headindex] = atof (token) * keywords[i].segyparms[0];
-								paramcount++;
-								token = strtok (NULL, " ");  /* token points next input char. */
-					}
-				}
-					/* do the long integer case next */
-				else if (keywords[i].segyheader == 1) {
-					int paramcount = 1;
-					int headindex;
-					long *outpoint;
-					token = strtok (NULL, " ");    /* token points to input char. */
-					while (token != NULL && paramcount < 10) {
-								/* set outpoint to beginning of WORD of interest */
-								/* need to subtract 2 from the location value. */
-								headindex = keywords[i].segyparms[paramcount] - 2;
-								outpoint = (long *) &outhead[headindex];
-								/* outpoint now points to the area of interest and is 
-								 * typed correctly. Compute the value, cast it and send it in. */
-								outpoint[0] = (long) (atof (token) * keywords[i].segyparms[0]);
-								paramcount++;
-								token = strtok (NULL, " ");  /* token points next input char. */
-					}
-				}
-				/* finally do floating point case */
-				else if (keywords[i].segyheader == 2) {
-					int paramcount = 1;
-					int headindex;
-					float *outpoint;
-					token = strtok (NULL, " ");    /* token points to input char. */
-					while ((token != NULL) && (paramcount < 10))
-					{
-								/* set outpoint to point to beginning of WORD of interest */
-								/* need to subtract 2 from the location value. */
-								headindex = keywords[i].segyparms[paramcount] - 2;
-								outpoint = (float *) &outhead[headindex];
-								/* outpoint now points to the area of interest and is typed 
-								 * correctly. Compute the value, cast it and put it in 
-								 * outhead (using outpoint). */
-								outpoint[0] = (float) (atof (token) * keywords[i].segyparms[0]);
-								paramcount++;
-								/*   ieee2ibm(outpoint,0); *//* convert to ibm format if necessary */
-								token = strtok (NULL, " ");  /* token points next input char. */
-					}
-				}
-				break;
-			}      /* end case 5 */
-			case 6: 
-			{
-				short day, year;
-				token=strtok(string1," "); 
-				token=strtok(NULL,"/"); 
-				day=atoi(token);
-				token=strtok(NULL,"/");
-				if (0==strcmp("FEB",token) || 0==strcmp("02",token)) day+=31;
-				else if(0 == strcmp("MAR",token) || 0== strcmp("03",token)) day+=59;
-				else if(0 == strcmp("APR",token) || 0== strcmp("04",token)) day+=90;
-				else if(0 == strcmp("MAY",token) || 0== strcmp("05",token)) day+=120;
-				else if(0 == strcmp("JUN",token) || 0== strcmp("06",token)) day+=151;
-				else if(0 == strcmp("JUL",token) || 0== strcmp("07",token)) day+=181;
-				else if(0 == strcmp("AUG",token) || 0== strcmp("08",token)) day+=212;
-				else if(0 == strcmp("SEP",token) || 0== strcmp("09",token)) day+=243;
-				else if(0 == strcmp("OCT",token) || 0== strcmp("10",token)) day+=273;
-				else if(0 == strcmp("NOV",token) || 0== strcmp("11",token)) day+=304;
-				else if(0 == strcmp("DEC",token) || 0== strcmp("12",token)) day+=334;
-					token=strtok(NULL," ");/* token points to input char. */
-			year=atoi(token);
-			if(!year%4 && day>59) day+=1;  /* Yikes.  This may break! */
-				outhead[keywords[i].segyheader - 2] = year;
-				outhead[keywords[i].segyheader - 1] = day;
-				break; 
-			} 
-			default:    /* case where function not found.. should never happen */
-			{
-			printf ("Function %d not defined.\n", keywords[i].segyfunction);
-			break;
-			}
-			}            /* end switch */
-		break;        /* don't go through rest of for() loop, go to next string */
-		}              /* end if */
-					      	/* loop through and see if it can be found again */
-d598 1
-a598 1
-		segyfile[NFILECHAR], suffix[NFILECHAR], str[NFILECHAR];
-d612 5
-a616 4
-	long tracepointers[MAXTRACES], outbuf[MAXSAMP];
-	long *outheadl;
-	unsigned long numsamples, datalength;
-	FILE *f1, *f2;
-d621 1
-a621 1
-	long *linbuf = (long *)dinbuf;
-d625 3
-a627 1
-	outheadl = (long *) &outhead[0];
-d631 2
-a632 2
-		printf("Usage: seg2segy first-seg2file number-of-files [shot-number]\n");
-		exit(-1);
-d636 1
-a636 1
-		strcat(seg2file, ".dat");
-d643 3
-a645 3
-				|| strspn(segyfile+l,digits)!=strlen(segyfile+l)){ 
-		printf("file name seg2 %s invalid\n", seg2file);
-		exit(-2);
-d656 1
-a656 1
-		fprintf (stderr, "**OUTPUT FILE OPEN FAILURE**\n **ABORTING**\n");
-d664 14
-a677 14
-		strcpy(seg2file,prefix);
-		sprintf(str,"%d",curf);
-		l=strlen(str);
-		while(l<ln) { strcat(seg2file,"0"); l++; }
-		strcat(seg2file,str);
-		strcat(seg2file,suffix);
-		if ((f1=fopen(seg2file,"rb")) == (FILE *)NULL) {
-			fprintf (stderr, "\n***ERROR OPENING FILE %s***\n", seg2file);
-			fprintf (stderr, "Skipping to next file number.\n");
-			continue;    /* go to end of loop, try next file */
-		}
-		fread (&blockid, 2, 1, f1);
-		if (blockid == 0x553a) 
-			reversed = 1;
-d679 167
-a845 5
-		if (blockid != 0x3a55) {
-			if (!reversed) {
-				fprintf (stderr, "Not SEG-2 data can not continue\n");
-				exit (-4);
-			}
-d847 5
-a851 4
-
-		fread (&revnum, 2, 1, f1);
-		fread (&pointerbytecount, 2, 1, f1);
-		fread (&numtrace, 2, 1, f1);
-d853 3
-a855 19
-			swapshort (&revnum);
-			swapshort (&pointerbytecount);
-			swapshort (&numtrace);
-		}
-
-		printf ("File %s, Data Format Revision: %d, Number of traces: %d\n", seg2file, revnum, numtrace);
-		fread (&stringtermcount, 1, 1, f1);
-		fread (&stringterm1, 1, 1, f1);
-		fread (&stringterm2, 1, 1, f1);
-		fread (&linetermcount, 1, 1, f1);
-		fread (&lineterm1, 1, 1, f1);
-		fread (&lineterm2, 1, 1, f1);
-		fread (reserved, 1, 18, f1);  /* reserved block, not used */
-
-		if (numtrace > (pointerbytecount / 4)) {
-			fprintf (stderr, "Number of traces greater than number of trace pointers\n");
-			fprintf (stderr, "Number of pointers = %d\n", pointerbytecount / 4);
-			fprintf (stderr, "Due to this inconsistency processing must stop\n");
-			exit (-5);
-d857 12
-a868 1
-		fread (tracepointers, 4, numtrace, f1);
-d870 3
-a872 2
-			for (i = 0; i < numtrace; i++)
-				swaplong (&tracepointers[i]);
-d874 6
-a880 128
-		/* now read file descriptor block.  */
-		fread (&stringlength, 2, 1, f1);
-		if (reversed)
-			swapshort (&stringlength);
-
-		while (0 != stringlength) {
-		  fread (string1, 1, stringlength - 2, f1);
-		  keycheck (keywords);
-		  fread (&stringlength, 2, 1, f1);
-		  if (reversed) swapshort (&stringlength);
-		}
-		for (j = 0; j < numtrace; j++) {
-		  for (i = 0; i < 120; i++)
-		    outhead[i] = 0;
-		  printf ("trace-%d-\r", j + 1); fflush(stdout);
-		  fseek (f1, tracepointers[j], SEEK_SET);
-		  fread (&blockid, 2, 1, f1);
-		  if (reversed)
-		    swapshort (&blockid);
-		  if (blockid == 0x2244) {
-		    /* reversed=1; should already know this */
-		    fprintf (stderr, "Opps, I've blown it here.... (line:%d)\n", __LINE__);
-		    exit (-6);
-		  }
-		  if (blockid != 0x4422) {
-		    fprintf (stderr, "Not a SEG-2 trace header.  Can not process %x (line %d)\n", blockid, __LINE__);
-		    exit (-7);
-		  }
-		  fread (&blockleng, 2, 1, f1);
-		  if (reversed)
-		    swapshort ((short *) &blockleng);
-		  fread (&datalength, 4, 1, f1);
-		  if (reversed)
-		    swaplong ((long *) &datalength);
-		  fread (&numsamples, 4, 1, f1);
-		  if (reversed)
-			   swaplong ((long *) &numsamples);
-			if (numsamples >= MAXSAMP){ 
-				fprintf(stderr, "Your data contains more samples than I can handle\n");
-				exit(-8);
-			}
-		  fread (&datatype, 1, 1, f1);
-		  if (datatype > 5 || datatype < 1) {
-		    fprintf (stderr,"Data type %d not available/valid\n", (int) datatype);
-		    break;
-		  }
-		  outhead[57] = numsamples;
-		  fread (reserved, 1, 19, f1);
-		  fread (&stringlength, 2, 1, f1);
-		  if (reversed)
-		    swapshort (&stringlength);
-		  while (0 != stringlength) {
-		    fread (string1, 1, stringlength - 2, f1);
-		    keycheck (keywords);
-		    fread (&stringlength, 2, 1, f1);
-		    if (reversed)
-		      swapshort (&stringlength);
-		  }
-		
-		  fseek (f1, blockleng + tracepointers[j], SEEK_SET);
-		  switch ((int) datatype)
-		  {
-				case 1:
-					fread (iinbuf, 2, (int) numsamples, f1);
-					if (reversed) {
-						for (i = 0; i < (int) numsamples; i++)
-						swapshort (&iinbuf[i]);
-					}
-					for (k = 0; k < numsamples; k++)
-						outbuf[k] = iinbuf[k];
-					break;
-				case 2:
-					fread (linbuf, 4, (int) numsamples, f1);
-					if (reversed) {
-						for (i = 0; i < (int) numsamples; i++)
-							swaplong (&linbuf[i]);
-					}
-					for (k = 0; k < numsamples; k++)
-					  outbuf[k] = linbuf[k];
-					break;
-				case 3:
-				{
-					unsigned long totalbytes, subpointer;
-					unsigned int expo;
-					long longdat;
-					totalbytes = (numsamples * 5) / 2;
-					fread (cinbuf, 1, (size_t) totalbytes, f1);
-					for (k = 0; k < (numsamples);) {
-						subpointer = (k / 4) * 5;
-						expo = (unsigned) iinbuf[subpointer++];
-						for (i = 0; i < 4; i++) {
-							if (0x8000 & iinbuf[subpointer]) 
-								longdat = 0xffff8000;
-							else 
-								longdat = 0;
-							longdat = longdat | ((long) iinbuf[subpointer++] << (0x000f & expo));
-							expo >>= 4;
-							outbuf[k++] = longdat;
-						}
-					}
-					if (reversed) {
-						for (i = 0; i < numsamples; i++)
-							swaplong (&outbuf[i]);
-					}
-			}
-				break;
-			case 4:
-				fread (finbuf, 4, (int) numsamples, f1);
-					if (reversed) {
-						long *buf = (long *) dinbuf;
-						for (i = 0; i < numsamples; i++)
-							swaplong (&buf[i]);
-					}
-					for (k = 0; k < numsamples; k++)
-						outbuf[k] = finbuf[k];
-					break;
-			case 5:
-				fread (dinbuf, 8, (int) numsamples, f1);
-					if (reversed) {
-						long *buf = (long *) dinbuf;
-						for (i = 0; i < numsamples * 2; i++)
-							swaplong (&buf[i]);
-					}
-					for (k = 0; k < numsamples; k++)
-						outbuf[k] = dinbuf[k];
-					break;
-			}      /* end switch */
-		/* set vertical stack traces=1 */
-d882 77
-a958 75
-		if(outhead[15]==0) outhead[15]=1; 
-		if(outheadf[59]==0.0) gain=1.; else gain=outheadf[59];
-		for(i=0;i<numsamples;i++)outbuf[i]*=gain/outhead[15];
-*/
-			/* assign the original field record number as the current file number */
-			if (outheadl[2] == 0) outheadl[2] = (long) curf;
-			/* set trace type  as  sesmic data */
-			if (outhead[14] == 0) outhead[14] = 1;
-
-			/* set last trace flag (modified segy) */
-			if (j == numtrace - 1 && outhead[87] == 0) {
-				outhead[87] = 1;
-				ssn = ssn + 1;
-			}
-
-			/* from rec-station-number and source-station-number (93 and 94) */
-			/* distance from source to receiver */
-			/* outheadl[9]=(long)(abs(outhead[93]-outhead[92])); */
-			/* set group for trace one and roll switch position  */
-			outhead[85] = outhead[86] = 
-				(int) (1 + labs ((long) outhead[92] - outheadl[3]));
-
-			/* special case, execute on first pass only... */
-			if (first == 1) {
-				first = 0;
-				segyreelheader[1606] = numtrace;
-				segyreelheader[1608] = outhead[58];
-				segyreelheader[1609] = outhead[58];
-				segyreelheader[1610] = numsamples;
-				segyreelheader[1611] = numsamples;
-				segyreelheader[1612] = 2;
-
-				if (!reversed) /* swap only if we are on a little endian  machine */
-				{  
-					for (k = 1600; k < 1606; k += 2)
-						swaplong ((long *)&segyreelheader[k]);
-				  for (k = 1606; k < 1630; k++)
-				    swapshort((short *)&segyreelheader[k]);
-				}
-				fwrite (segyreelheader, 1, 3600, f2);  /*  create the segy headers */
-			}
-
-			if (!reversed) { /* swap only if we are on a little endian  machine */
-				/* first swap longs */
-				for (k = 0; k < 7; k++)
-					swaplong((long *)&outheadl[k]);
-				for (k = 9; k < 17; k++)
-				  swaplong((long *)&outheadl[k]);
-				for (k = 18; k < 22; k++)
-				  swaplong((long *)&outheadl[k]);
-				/* now swap the shorts */ 
-				for (k = 14; k < 18; k++)
-				  swapshort((short *)&outhead[k]);
-				for (k = 34; k < 36; k++)
-				  swapshort((short *)&outhead[k]);
-				/* for(k=44;k<90;k++)  *//* error: should have gone beyond 95 word */
-				for (k = 44; k < 95; k++)
-				  swapshort((short *)&outhead[k]);
-			}
-			if (120 != (k = fwrite (outhead, 2, 120, f2))) {      /* write header */
-				fprintf (stderr,"\nWrite failure during header write\n");
-				exit (-9);
-			}
-			if (!reversed) {
-				for (k = 0; k < numsamples; k++)
-					swaplong ((long *)&outbuf[k]);
-			}
-			if ((int) numsamples != (k = fwrite (outbuf, 4, (int) numsamples, f2))) {
-				fprintf (stderr,"Write failure during trace write\n");
-				exit (-10);
-			}
-
-		}      /* end trace loop */
-		fclose (f1);
-		outhead[87] = 0;    /* reset last trace flag. */
-@
-
-
-1.2
-log
-@type changed on i,j,k to in
-t
-@
-text
-@d34 1
-a34 1
-	$Id: seg2segy.c,v 1.1 2001/04/12 17:55:11 john Exp john $
-d63 4
-d692 1
-a692 1
-			fprintf (stderr, "Number of traces and number of trace pointers do not match\n");
-d797 1
-a797 1
-								longdat = 01;
-@
-
-
-1.1
-log
-@Initial revision
-@
-text
-@d34 1
-a34 1
-	$Id: seg2segy.c,v 1.7 1998/10/08 20:17:15 kay Exp kay $
-d63 3
-d590 2
-a591 1
-	short int i, j, k, ssn; 
-@

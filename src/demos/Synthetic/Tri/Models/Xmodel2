@@ -30,7 +30,7 @@ trimodel xmin=-1 zmin=0 xmax=5.0 zmax=2.0 \
 	>$datafile
 
 ##### Create X-Windows display
-sxplot <$datafile -geom 1200x450+0+0 title="Simple 2 media model" \
+sxplot <$datafile  title="Simple 2 media model" \
         label1="Depth (km)" label2="Distance (km)" &
 
 exit 0
