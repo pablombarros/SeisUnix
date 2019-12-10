@@ -9,10 +9,13 @@ B = .
 
 LFLAGS = $(PRELFLAGS) -Bstatic   $(POSTLFLAGS)
 
-PROGS =			\
-	$B/seg2segy	\
-	$B/seg2segy_local \
+#PROGS =			\
+#	$B/seg2segy	\
+#	$B/seg2segy_local \
 #	$B/seg2fix
+
+PROGS =			\
+	$B/seg2segy
 
 
 INSTALL:	$(PROGS)

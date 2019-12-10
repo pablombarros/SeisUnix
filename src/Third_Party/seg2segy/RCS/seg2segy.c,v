@@ -1,10 +1,19 @@
-head	1.4;
+head	1.6;
 access;
 symbols;
-locks
-	john:1.4; strict;
+locks; strict;
 comment	@ * @;
 
+
+1.6
+date	2019.12.10.18.40.34;	author john;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2019.12.10.17.57.25;	author john;	state Exp;
+branches;
+next	1.4;
 
 1.4
 date	2019.11.21.22.34.22;	author john;	state Exp;
@@ -32,9 +41,9 @@ desc
 @
 
 
-1.4
+1.6
 log
-@changed long to int to allow compilation under 64 bit
+@changed tmpnam to mkstemp
 @
 text
 @/* Copyright (c) Colorado School of Mines, 2002.*/
@@ -73,7 +82,7 @@ text
 	-partial addition of structures to handle the keywords and headers.
 	but I eventually gave up.
 
-	$Id: seg2segy.c,v 1.2 2003/02/06 19:05:45 pm Exp $
+	$Id: seg2segy.c,v 1.5 2019/12/10 17:57:25 john Exp john $
 
 	Changes:
 	Feb 96.  Trace header was not being written out with swap on bytes above
@@ -102,6 +111,9 @@ text
 	file altogether!
 
 	$Log: seg2segy.c,v $
+	Revision 1.5  2019/12/10 17:57:25  john
+	changed long to int and ld to d
+
 	Revision 1.2  2003/02/06 19:05:45  pm
 	fixed sawtooth on 20bit packed data conversion case 3
 	
@@ -124,7 +136,6 @@ text
 
 	Revision 1.5  1998/01/07 13:36:15  kay
 	added new changes and a Log for the future
-
 
  */
 
@@ -341,20 +352,32 @@ char *defaults[] = {
 NULL};
 	char **defaultsptr=defaults;
 
+/*
 	char tmpfilename[L_tmpnam];
 	FILE *tmpfileptr;
 
 	tmpnam(tmpfilename);
 	tmpfileptr=fopen(tmpfilename, "w");
+*/
+
+	FILE *tmpfileptr;
+	char template_name[]="/tmp/cmguiXXXXXX";
+	int temp_fd;
+
+	temp_fd=mkstemp(template_name);
+	tmpfileptr=fdopen(temp_fd,"w");
+
 	/*fwrite(defaults, sizeof(char), strlen(defaults), tmpfileptr); */
 
 	while(*defaultsptr) fprintf(tmpfileptr,"%s\n", *defaultsptr++);
 
-	tmpfileptr=freopen(tmpfilename,"r",tmpfileptr);
+/*	 tmpfileptr=freopen(tmpfilename,"r",tmpfileptr); */
+
+	tmpfileptr=freopen(template_name,"r",tmpfileptr);
 
 	parseSegyKeys(tmpfileptr, keywords);
 	fclose(tmpfileptr);
-	remove(tmpfilename);
+/*	remove(tmpfilename); */
 	
 }        /* end loadSegyKeyTableDefaults() */
 
@@ -899,7 +922,7 @@ main (int argc, char *argv[])
 		outbuf[k] = finbuf[k]/scale;
 
 		for (k = 0; k < numsamples; k++) 
-		fprintf(stderr,"dataval = %ld \n", outbuf[k]); 
+		fprintf(stderr,"dataval = %d \n", outbuf[k]); 
 
 		fprintf(stderr," if dataval = 0 then increase the value of scale, recompile\n");
 		break;
@@ -984,7 +1007,7 @@ main (int argc, char *argv[])
 		}
 		if (!reversed) {
 	for (k = 0; k < numsamples; k++)
-		swapint ((intptr_t *)&outbuf[k]);
+		swapint ((int *)&outbuf[k]);
 	}
 	
 	if ((int) numsamples != (k = fwrite (outbuf, 4, (int) numsamples, f2))) {
@@ -999,6 +1022,42 @@ main (int argc, char *argv[])
 	fclose(f2);
 	return 0;
 }        /* end main */
+@
+
+
+1.5
+log
+@changed long to int and ld to d
+@
+text
+@d37 1
+a37 1
+	$Id: seg2segy.c,v 1.2 2003/02/06 19:05:45 pm Exp $
+d66 3
+d307 1
+d313 9
+d326 3
+a328 1
+	tmpfileptr=freopen(tmpfilename,"r",tmpfileptr);
+d332 1
+a332 1
+	remove(tmpfilename);
+@
+
+
+1.4
+log
+@changed long to int to allow compilation under 64 bit
+@
+text
+@a88 1
+
+d862 1
+a862 1
+		fprintf(stderr,"dataval = %ld \n", outbuf[k]); 
+d947 1
+a947 1
+		swapint ((intptr_t *)&outbuf[k]);
 @
 
 

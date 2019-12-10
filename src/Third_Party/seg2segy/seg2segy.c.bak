@@ -34,7 +34,7 @@
 	-partial addition of structures to handle the keywords and headers.
 	but I eventually gave up.
 
-	$Id: seg2segy.c,v 1.6 2019/12/10 18:40:34 john Exp $
+	$Id: seg2segy.c,v 1.2 2003/02/06 19:05:45 pm Exp $
 
 	Changes:
 	Feb 96.  Trace header was not being written out with swap on bytes above
@@ -63,12 +63,6 @@
 	file altogether!
 
 	$Log: seg2segy.c,v $
-	Revision 1.6  2019/12/10 18:40:34  john
-	changed tmpnam to mkstemp
-
-	Revision 1.5  2019/12/10 17:57:25  john
-	changed long to int and ld to d
-
 	Revision 1.2  2003/02/06 19:05:45  pm
 	fixed sawtooth on 20bit packed data conversion case 3
 	
@@ -307,32 +301,20 @@ char *defaults[] = {
 NULL};
 	char **defaultsptr=defaults;
 
-/*
 	char tmpfilename[L_tmpnam];
 	FILE *tmpfileptr;
 
 	tmpnam(tmpfilename);
 	tmpfileptr=fopen(tmpfilename, "w");
-*/
-
-	FILE *tmpfileptr;
-	char template_name[]="/tmp/cmguiXXXXXX";
-	int temp_fd;
-
-	temp_fd=mkstemp(template_name);
-	tmpfileptr=fdopen(temp_fd,"w");
-
 	/*fwrite(defaults, sizeof(char), strlen(defaults), tmpfileptr); */
 
 	while(*defaultsptr) fprintf(tmpfileptr,"%s\n", *defaultsptr++);
 
-/*	 tmpfileptr=freopen(tmpfilename,"r",tmpfileptr); */
-
-	tmpfileptr=freopen(template_name,"r",tmpfileptr);
+	tmpfileptr=freopen(tmpfilename,"r",tmpfileptr);
 
 	parseSegyKeys(tmpfileptr, keywords);
 	fclose(tmpfileptr);
-/*	remove(tmpfilename); */
+	remove(tmpfilename);
 	
 }        /* end loadSegyKeyTableDefaults() */
 
