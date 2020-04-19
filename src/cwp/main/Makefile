@@ -7,6 +7,7 @@ LFLAGS = $(PRELFLAGS) -L$L -lcwp $(POSTLFLAGS)
 
 PROGS =			\
 	$B/ctrlstrip	\
+	$B/conjtest	\
 	$B/downfort	\
 	$B/fcat		\
 	$B/isatty	\

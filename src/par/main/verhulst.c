@@ -41,6 +41,14 @@ char *sdoc[] = {
 " In the Verhulst equation, a1 is the reproduction rate and	",
 " a2 is the carrying capacity					",
 " 	x'(t) = a1 * x * ( 1 - x/a2 )			 	",
+"								",
+" Example: COVID-19 US statistics:				",
+" set h=1, which represents a time increment in days. Choose	",
+" y0=1 a1=.176 a2=1e7 stepmax=200. The carrying capacity is taken",
+" to be 10 million total cases stepmax represents 200 days of   ",
+" the epidemic.							",
+"								",
+" Day zero of the epidemic in the US was 22 Jan 2020.		",
 NULL};
 
 /*

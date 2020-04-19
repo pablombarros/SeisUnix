@@ -28,6 +28,7 @@ PROGS =			\
 	$B/ibm2float	\
 	$B/kaperture	\
 	$B/linrort	\
+	$B/logisticfit	\
 	$B/lorenz	\
 	$B/mkparfile	\
 	$B/makevel	\
@@ -43,6 +44,7 @@ PROGS =			\
 	$B/regrid3	\
 	$B/resamp	\
 	$B/rossler	\
+	$B/sirepidemic	\
 	$B/smooth2	\
 	$B/smooth3d	\
 	$B/smoothint2	\
