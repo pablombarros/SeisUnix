@@ -21,7 +21,6 @@
 			prefix for storing temporary files; else if the	
 			the CWP_TMPDIR environment variable is set use	
 			its value for the path; else use tmpfile()	
-
  Notes:								
  If unstacked traces are input, they should be NMO-corrected and sorted
  into common-offset  gathers.  One common-offset gather ends and another

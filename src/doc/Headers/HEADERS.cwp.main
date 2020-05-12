@@ -1,3 +1,4 @@
+compute solution for x in Ax=b using conjugate gradients
 * CTRLSTRIP - Strip non-graphic characters
 * DOWNFORT - change Fortran programs to lower case, preserving strings
 * FCAT - fast cat with 1 read per file 

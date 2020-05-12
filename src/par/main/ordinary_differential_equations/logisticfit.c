@@ -15,6 +15,8 @@ char *sdoc[] = {
 " 									",
 " Required Parameter:							",
 " n=			the number of values of t and P(t)		",
+" nstart=0		start of input data window			",
+" nend=n		end   of input data window			",
 " 									",
 " Optional Parameters:							",
 " outpar=/dev/tty 	output parameter file				",
@@ -102,13 +104,18 @@ main(int argc, char **argv)
 
 	char *outpar=NULL;	/* name of file holding output parfile	*/
 	FILE *outparfp=NULL;	/* ... its file pointer			*/
+
 	int n=0;		/* number of (t, P(t))			*/
+	int nstart=0;		/* start of input data window		*/
+	int nend=0;		/* ..end of input data window		*/
+	int nwindow=0;		/* number of values in window		*/
 	int ncount=0;		/* number of values read		*/
+
 	size_t nread;		/* number of items read			*/
 	float tp[1]={0.0};	/* full input data vector t followed by P */
 	float *p=NULL;		/* P(t) values binary floats		*/
 	float *t=NULL;		/* t binary floats			*/
-	float coeff[4]={0.0,0.0,0.0,0.0};;	/* coefficients from linear_regression */
+	float coeff[4]={0.0,0.0,0.0,0.0};	 /* coefficients from linear_regression */
 	float K=0.0;		/* carrying capacity */
 	float r=0.0;		/* growth rate */
 
@@ -129,15 +136,29 @@ main(int argc, char **argv)
 
 
 	MUSTGETPARINT("n",&n); /* the number of t,P(t) values */
-	t = ealloc1float(n);
-	p = ealloc1float(n);
+	if (!getparint("nstart",&nstart))		nstart=0;
+	if (!getparint("nend",&nend))			nend=n;
+	if (nend < nstart)
+		err("nend cannot be greater than nstart!");
+	if (nend > n)
+		err("nend cannot be greater than n!");
+	if (nstart < 0)
+		err("nstart cannot be less than 0!");
+	if (nend < 0)
+		err("nstart cannot be less than 0!");
 
-	/* Loop over data converting to ascii */
+	nwindow=(nend-nstart);
+
+
+	t = ealloc1float(nwindow);
+	p = ealloc1float(nwindow);
+
+	/* Loop over data reading time and p data */
 	while ((nread = efread(tp, FSIZE, 1, stdin))) {
-		if (ncount < n )
-			t[ncount] = tp[0];
-		if (ncount >= n)
-			p[ncount-n] = tp[0];
+		if ( ncount >= nstart && ncount < nend )
+			t[ncount-nstart] = tp[0];
+		if (ncount >= n+nstart)
+			p[ncount-(n+nstart)] = tp[0];
 
 		++ncount;
 	}
@@ -147,7 +168,7 @@ main(int argc, char **argv)
 		register int i=0;
 		float *logpprime=NULL;	/* logpprime_e(P) */
 
-		logpprime=ealloc1float(n);
+		logpprime=ealloc1float(nwindow);
 
 		
 		/**** differentiate p[i] and divide by p[i] */
@@ -155,18 +176,21 @@ main(int argc, char **argv)
 		logpprime[0] = (float) ((p[1] - p[0])/(t[1]-t[0]))/p[0];
 		
 		/* do the middle values as a centered difference */
-		for (i=1; i<n-1; ++i) 
+		for (i=1; i<nwindow-1; ++i) 
 			logpprime[i] = (float) ((p[i+1] - p[i-1])/(2*(t[i+1]-t[i-1])))/p[i];
 
 		/* do last value as a lagging difference */
-		logpprime[n-1] = (float) ((p[n-1] - p[n-2])/(t[n-1] - t[n-2]))/p[n-1];
+		logpprime[nwindow-1] = (float) ((p[nwindow-1] - p[nwindow-2])/(t[nwindow-1] - t[nwindow-2]))/p[nwindow-1];
 		
 		/***** end differentiate **/
 		
 		/* perform linear regression on logpprime as a function p */
-		linear_regression(logpprime, p, n, coeff);
+		linear_regression(logpprime, p, nwindow, coeff);
 
 		K = (float) NINT(-coeff[1]/coeff[0]);
+		if (K < p[nwindow-1])
+			warn("K = %f is less than largest value p[%d]=%f!",
+					K,nwindow-1,p[nwindow-1]);
 
 		Kfit = coeff[2];
 		Kerr = coeff[3];
@@ -179,12 +203,12 @@ main(int argc, char **argv)
 		register int i=0;
 		float *logpp=NULL;
 
-		logpp = ealloc1float(n);
-		for (i=0; i<n; ++i)
+		logpp = ealloc1float(nwindow);
+		for (i=0; i<nwindow; ++i)
 			logpp[i] = (float) log(p[i]/(K-p[i]));
 
 		/* perform linear regression on (log(p[i]/(K-p[i]),t) */
-		linear_regression(logpp, t, n, coeff);
+		linear_regression(logpp, t, nwindow, coeff);
 	
 		r = coeff[0];
 		rfit = coeff[2];
@@ -196,8 +220,8 @@ main(int argc, char **argv)
 	fprintf(outparfp, "Carrying capacity estimate: K = %0.0f\n",K);
 	fprintf(outparfp, "Growth rate estimate: r = %f\n",r );
 	fprintf(outparfp, "\n");
-	fprintf(outparfp, "Goodness of fit: K-fit = %f, percent error: K = %f\n",Kfit,Kerr);
-	fprintf(outparfp, "Goodness of fit: r-fit = %f, percent error: r = %f\n",rfit,rerr);
+	fprintf(outparfp, "Goodness of fit: K-fit = %f, percent error: K-err = %f\n",Kfit,Kerr);
+	fprintf(outparfp, "Goodness of fit: r-fit = %f, percent error: r-err = %f\n",rfit,rerr);
 
 
 	return(CWP_Exit());

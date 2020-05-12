@@ -1,0 +1,137 @@
+
+ SEIREPIDEMIC - the SEIR EPIDEMIC model				
+
+  seirepidemic > [stdout]					
+
+ Required Parameters: none					
+ Optional Parameters:						
+ S0=1000		initial number of susceptibles		
+ E0=1			initial number of exposed		
+ I0=1			initial number of infectives		
+ R0=0.0		initial number of removed (should be 0)	
+
+ k=.5			transmission rate			
+ b=.3333		removal rate = death + recovery rates	
+
+ .... with vital dynamics (i.e. birth and death rate) 		
+ mu=0.0		birth rate 				
+ nu=0.0		death rate 				
+
+ h=1			increment in time			
+ tol=1.e-08		error tolerance				
+ stepmax=40		maximum number of steps to compute	
+ mode=SEIR		S -> E -> I -> R			
+			=S only, =E only, =I only, =R only	
+ Notes:							
+ This program is really just a demo showing how to use the 	
+ differential equation solver rke_solve written by Francois 	
+ Pinard, based on a modified form of the 4th order Runge-Kutta 
+ method, which employs the error checking method of R. England 
+ 1969.								
+
+ The output consists of unformated C-style binary floats, of	
+ either pairs or triplets as specified by the "mode" paramerter.
+
+ About the SEIR epidemic model:					
+ r0 = number of new infections per single infected host  	
+  1 < r0 < 1.5 for influenza (2.2 to 2.7 for Covid-19)		
+  b, k, S0, and r0 are related via				
+  k = b*S0/r0							
+  It is often easier to determine the recovery rate k (in units
+  of h and to determine reasonable estimate of S0 and of r0 	
+  and to calculate the infection rate b = k*r0/S0		
+
+ S = total number susceptible to the infection			
+ E = total number of exposed					
+ I = total number of those capable of passing on the infection	
+ R = total number removed = dead + recovered			
+
+
+ Examples:							
+ Default:							
+ seirepidemic | xgraph n=40 nplot=3 d1=1 &			
+
+ Hypothetical flu in a school models:				
+
+ seirepidemic h=0.1 stepmax=100 b=.3 k=.9 S0=100 mode=SEIR |	
+    xgraph n=100 nplot=3 d1=1 style=normal &			
+
+ seirepidemic h=1 stepmax=50 b=0.2 k=0.1 S0=1000 I0=1 mode=SEIR |
+     xgraph n=50 nplot=3 d1=1 style=normal			
+
+ Hong Kong Flu 1968-1969:					", 
+ https://services.math.duke.edu/education/ccp/materials/diffcalc/sir/sir1.html
+ Population is S0=7.9 million, r0=1.5, the average period of	
+ infectiveness is  3 days so k=1/3, b=r0*k/S0=6.3e-8, and initial
+ infected is I0=10.						
+
+  seirepidemic h=1 stepmax=200 k=.3333 b=6.3e-8 S0=7.9e6 mode=SEIR |
+      xgraph n=200 nplot=3 d1=1 style=normal			
+
+ Alternatively, if we normalize S0, I0, and R0 by the total	
+ population, then S0=1.0 the initial population of infectives  
+ becomes I0=1.27e-6, the average period of infectiveness is	 
+ 3 days making k=1/3, and the possibility of infective contact 
+ is every 2 days, making b=1/2.  Note that in the S0=1.0 case,
+ r0=1.5 = b/k.							
+
+ seirepidemic h=1 stepmax=100 b=.5 k=.333 S0=1.0 I0=1.27e-6 mode=SEIR |
+   xgraph n=100 nplot=3 d1=1 style=normal			
+
+ Thus, it may be easier to determine b and k with S0=1.0, and
+ then try different I0 values					
+
+
+ References:
+
+ Kermack, W. O. and A. G. McKendrick (1927) A contribution to the 
+  mathematical theory of epidemics, Procedings of the Royal Socieity A.
+
+ The SRI model describes an epidemic in terms of
+   S = susceptibles in a population
+   E = exposed in a population
+   I = infectives in a population
+   R = removed = recovered + dead
+
+   S0 = initial value of the susceptibles
+   E0 = initial value of the exposed
+   I0 = initial value of the infectives
+   R0 = initial removed value = 0
+   
+  Always S(t) + E(t) + I(t) + R(t) = total population
+   
+   r0 = b*S0/k  = basic reproduction rate
+   b = rate of exposure
+   s = rate of infection of the exposed
+   k = rate removal = recovery rate + death rate
+
+   Without vital dynamics.
+   The encounters between susceptibles and infectives is represented
+   by the product S*I  
+	S'(t) = - b*S*I		( newly exposed )
+	E'(t) = b*S*I - s*E	( exposed - newly infected )
+	I'(t) = s*E - k*I 	( infectives - newly removed )
+	R'(t) = k*I 		( removed )	
+
+   With vital dynamics (birth and death rates added).
+   The encounters between susceptibles and infectives is represented
+   by the product S*I  
+	S'(t) = mu - nu*S -  b*S*I  (birth - dead - newly exposed)
+	E'(t) = b*S*I - nu*E - s*E  (exposed - dead - newly infected)
+	I'(t) = s*E - k*I - nu*I    (infected - newly removed - dead))
+	R'(t) = k*I - nu*R	    (removed - dead )	
+
+ S(t)= susceptible members (no births, deaths, immigration, or emigration)
+ E(t)= Exposed number 
+ I(t)= infective number 
+ R(t)= removed members = recovered + dead + sequestered
+
+ There is an impiled flow from S(t) -> E(t) -> I(t) -> R(t), though infected
+ who are quarantined immediately become part of R(t).
+
+ The product b*S*I denotes the interaction of the infective population with
+ the susceptible population..
+
+ Author:  April 2020: John Stockwell
+
+

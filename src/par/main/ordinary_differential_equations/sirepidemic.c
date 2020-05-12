@@ -10,7 +10,8 @@
 
 char *sdoc[] = {
 "								",
-" SIREPIDEMIC - the SIR EPIDEMIC model				",
+" SIREPIDEMIC - the SIR, SIRS EPIDEMIC models with and without	",
+"		 vital dynamics					",
 "								",
 "  sirepidemic > [stdout]					",
 "								",
@@ -19,9 +20,16 @@ char *sdoc[] = {
 " S0=1000		initial number of susceptibles		",
 " I0=1			initial number of infectives		",
 " R0=0.0		initial number of removed (should be 0)	",
+"	 		(not the basic reproducion rate r0	",
 " 								",
 " k=.5			transmission rate			",
 " b=.3333		removal rate = death + recovery rates	",
+" 								",
+"  ... with vital dynamics					",
+" mu=0.0		birth rate				",
+" nu=0.0		death rate				",
+"  ... SIRS ... with reinfection				",
+" xi=0.0		re-infection parameter			",
 " 								",
 " h=1			increment in time			",
 " tol=1.e-08		error tolerance				",
@@ -51,6 +59,8 @@ char *sdoc[] = {
 " I = total number of those capable of passing on the infection	",
 " R = total number removed = dead + recovered			",
 "								",
+" When xi is nonzero, then there is a potential that fraction of", 
+" the removed population can be reinfected			",
 "								",
 " Examples:							",
 " Default:							",
@@ -107,19 +117,25 @@ NULL};
  *   r0 = b*S0/k  = basic reproduction rate
  *   b = rate of infection
  *   k = rate removal = recovery rate + death rate
- *
+ *   xi = re-infection rate 
+ *   mu = birth rate  
+ *   nu = death rate
+ *   
  *   The encounters between susceptibles and the infectives is represented
  *   by the product S*I  
- *	S'(t) =  -b*S*I		(the rate of change of S is always negative)
- *	I'(t) = b*S*I - k*I	(starts small becomes large, then tapers off)
- *	R'(t) = k*I		(the rate of change of R is always positive)
+ *	S'(t) = mu - nu*S + xi*R - b*S*I 
+ *	I'(t) = b*S*I - k*I - nu*I 
+ *	R'(t) = k*I - xi*R - nu*R
  *
- * S(t)= susceptible members (no births, deaths, immigration, or emigration)
- * I(t)= infective number (includes asymptomatic carriers)
+ *
+ * S(t)= susceptible members 
+ * I(t)= infective number 
  * R(t)= removed members = recovered + dead + sequestered
  *
  * There is an impiled flow from S(t) -> I(t) -> R(t), though infected
- * who are quarantined immediately become part of R(t).
+ * who are quarantined immediately become part of R(t). The product xi*R
+ * are the reinfected members of the recovered group, and are thus 
+ * removed from the recovered group and fed back to the susceptible group.
  *
  * The product b*S*I denotes the interaction of the infective population with
  * the susceptible population..
@@ -291,14 +307,24 @@ Notes: This is an example of an autonomous system of ODE's
 {
 	double b=0.0;	/* infection rate		*/
 	double k=0.0;	/* removal rate			*/
+	/* reinfection */
+	double xi=0.0;	/* re-infection rate		*/
+
+	/* vital dyamics include */
+	double mu=0.0;	/* (linear) birth rate		*/
+	double nu=0.0;	/* death rate			*/
+	
+
 	
 	/* parameters */
-	if (!getpardouble("b", &b))		b = .5;
-	if (!getpardouble("k", &k))		k = .333;
+	if (!getpardouble("b", &b))		b = 0.5;
+	if (!getpardouble("k", &k))		k = 0.333;
+	if (!getpardouble("xi", &xi))		xi = 0.0;
+	if (!getpardouble("mu", &mu))		mu = 0.0;
 
-	yprime[0] = -b*y[0]*y[1] ;
-	yprime[1] = b*y[0]*y[1]  - k*y[1];
-	yprime[2] = k*y[1]; 
+	yprime[0] = mu - b*y[0]*y[1] + xi*y[2] - nu*y[0];
+	yprime[1] = b*y[0]*y[1]  - k*y[1] - nu*y[1];
+	yprime[2] = k*y[1] - xi*y[2] - nu*y[2]; 
 
     return 1;
 }

@@ -18,6 +18,7 @@ I2A - convert binary integers to ascii
 IBM2FLOAT - convert IBM tape FLOATS to native binary FLOATS	
 KAPERTURE - generate the k domain of a line scatterer for a seismic array
 LINRORT - linearized P-P, P-S1 and P-S2 reflection coefficients 	
+LOGISTICFIT - least squares fit of a LOGISTIC function to input data 	
 
 MAKEVEL - MAKE a VELocity function v(x,y,z)				
 MKPARFILE - convert ascii to par file format 				
@@ -32,6 +33,9 @@ REFREALAZIHTI -  REAL AZImuthal REFL/transm coeff for HTI media
 REFREALVTI -  REAL REFL/transm coeff for VTI media and symmetry-axis	
 REGRID3 - REwrite a [ni3][ni2][ni1] GRID to a [no3][no2][no1] 3-D grid
 RESAMP - RESAMPle the 1st dimension of a 2-dimensional function f(x1,x2)
+
+
+
 
 SMOOTH2 --- SMOOTH a uniformly sampled 2d array of data, within a user-
 SMOOTH3D - 3D grid velocity SMOOTHing by the damped least squares	
