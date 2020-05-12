@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.		       */
 
-/* VOLTLOTKA: $Revision: 1.1 $ ; $Date: 2020/05/10 04:56:58 $        */
+/* VOLTLOTKA: $Revision: 1.2 $ ; $Date: 2020/05/12 21:39:20 $        */
 
 #include "par.h"
 #include "rke.h"
@@ -23,6 +23,8 @@ char *sdoc[] = {
 "								",
 " x0=500		initial number of prey			",
 " y0=25			initial number of predator		",
+"								",
+" thresh=1.0		extinction if x < thresh or y < thresh	",
 "								",
 " h=1.0			step size				",
 " stepmax=100		maximum number of steps to compute	",
@@ -53,6 +55,7 @@ char *sdoc[] = {
 " Default: classic Snowshoe hare versus Canadian lynx		",
 " voltlotka | xgraph n=100 nplot=2 d1=1				",
 " 								",
+" Caveat: if there is weird behavior, try reducing the h= value	",
 NULL};
 
 /*
@@ -217,14 +220,19 @@ Notes: This is an example of an autonomous system of ODE's
 	double b=0.0;	/* prey removal  by predation	*/
 	double c=0.0;	/* predator removal rate	*/
 	double p=0.0;	/* predator increase rate	*/
+	double thresh=1.0;	/* threshold */
 
 	/* parameters */
 	if (!getpardouble("a", &a))		a = 0.5;
 	if (!getpardouble("b", &b))		b = 0.02;
 	if (!getpardouble("c", &c))		c = 0.75;
 	if (!getpardouble("p", &p))		p = 0.005;
+	if (!getpardouble("thresh", &thresh))	thresh=1.0;
 
 	/* Volterra-Lotka predator-prey equations */
+	if (y[0] < thresh) y[0] = 0.0;
+	if (y[1] < thresh) y[1] = 0.0;
+
 	yprime[0] = a*y[0]  - b*y[0]*y[1];
 	yprime[1] = -c*y[1]  + p*y[0]*y[1];
 
