@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.		       */
 
-/* VOLTLOTKA: $Revision: 1.2 $ ; $Date: 2020/05/12 21:39:20 $        */
+/* VOLTLOTKA: $Revision: 1.3 $ ; $Date: 2020/05/15 20:06:40 $        */
 
 #include "par.h"
 #include "rke.h"
@@ -10,7 +10,9 @@
 
 char *sdoc[] = {
 "								",
-" VOLTLOTKA - The classical Volterra-Lotka predator-prey model	",
+" VOLTLOTKA -  VOLTerra-LOTKA predator-prey model, modified 	",
+"	        slightly to include a carrying capacity of the  ",
+"		prey species						",
 "								",
 "  voltlotka  > [stdout]					",
 "								",
@@ -21,14 +23,18 @@ char *sdoc[] = {
 " c=0.75		predator reduction rate			",
 " d=0.005		predator increase by prey capture	",
 "								",
+" K=1000000		carrying capacity of prey environment 	",
+"			reduces to classical Volterra-Lotka when",
+"			K >> x and K >> y	",
+"								",
 " x0=500		initial number of prey			",
 " y0=25			initial number of predator		",
 "								",
-" thresh=1.0		extinction if x < thresh or y < thresh	",
+" thresh=1.0		extinction if x <= thresh or y <= thresh",
 "								",
 " h=1.0			step size				",
 " stepmax=100		maximum number of steps to compute	",
-" mode=PP		Predator followed by Prey		",
+" mode=PP		number of Pred. followed by number of Prey",
 "			=R predator only, =Y prey only		",
 " Notes:							",
 " This program is really just a demo showing how to use the 	",
@@ -40,9 +46,9 @@ char *sdoc[] = {
 " The output consists of unformated C-style binary floats, of	",
 " either pairs or triplets as specified by the \"mode\" paramerter.",
 "								",
-" Volterra-Lotka equations: 					",
-" dx/dt = ax - bxy						",
-" dy/dt = -cy + pxy						",
+" Modified Volterra-Lotka equations: 					",
+" dx/dt = a*x*(1 - x/K) - b*x*y					",
+" dy/dt = -c*y + p*x*y						",
 "								",
 " x = number of members of the prey species			",
 " y = number of members of the predator species 		",
@@ -50,10 +56,12 @@ char *sdoc[] = {
 " pxy = predator population increase due due to predation	",
 " a = prey increase parameter (prey have unlimited food)	",
 " c = predator reduction (predators starve without prey)	",
+" K = carrying capacity of for the prey specie, when K large	",
+"     (1 - x/K)-> 1 and the system reduces to original VL system",
 "								",
 " Examples:							",
 " Default: classic Snowshoe hare versus Canadian lynx		",
-" voltlotka | xgraph n=100 nplot=2 d1=1				",
+" voltlotka | xgraph n=100 nplot=2 d1=1 style=normal &		",
 " 								",
 " Caveat: if there is weird behavior, try reducing the h= value	",
 NULL};
@@ -68,7 +76,7 @@ NULL};
 
 /* Prototype of function used internally */
 static int
-volterra_lotka_equations(double t, double y[2] , double yprime[2]);
+modified_volterra_lotka_equations(double t, double y[2] , double yprime[2]);
 
 /* Define values of imode */
 #define PP_MODE 0
@@ -152,7 +160,7 @@ main(int argc, char **argv)
 	
 	/* initialize Runge-Kutta-England routines */
 	p = (rke_variables)
-		rke_init(3, volterra_lotka_equations);
+		rke_init(3, modified_volterra_lotka_equations);
 
 	/* set tolerance */
 	p->error_bias=tol;
@@ -205,9 +213,9 @@ main(int argc, char **argv)
 
 
 static int
-volterra_lotka_equations(double t, double y[2] , double yprime[3])
+modified_volterra_lotka_equations(double t, double y[2] , double yprime[3])
 /*********************************************************************
-volterra_lotka_equations - the system of ODE's describing predator-prey
+modified_volterra_lotka_equations - the system of ODE's describing predator-prey
 **********************************************************************
 t	independent variable "time"
 y 	dependent variable being solved for y(t)
@@ -220,20 +228,25 @@ Notes: This is an example of an autonomous system of ODE's
 	double b=0.0;	/* prey removal  by predation	*/
 	double c=0.0;	/* predator removal rate	*/
 	double p=0.0;	/* predator increase rate	*/
-	double thresh=1.0;	/* threshold */
+	double thresh=1.0;	/* threshold */	
+
+	/* modification */
+	double K=0.0;	/* prey carrying capacity	*/
 
 	/* parameters */
 	if (!getpardouble("a", &a))		a = 0.5;
 	if (!getpardouble("b", &b))		b = 0.02;
 	if (!getpardouble("c", &c))		c = 0.75;
 	if (!getpardouble("p", &p))		p = 0.005;
+	if (!getpardouble("K", &K))		K = 1000000;
+
 	if (!getpardouble("thresh", &thresh))	thresh=1.0;
 
 	/* Volterra-Lotka predator-prey equations */
-	if (y[0] < thresh) y[0] = 0.0;
-	if (y[1] < thresh) y[1] = 0.0;
+	if (y[0] <= thresh) y[0] = 0.0;
+	if (y[1] <= thresh) y[1] = 0.0;
 
-	yprime[0] = a*y[0]  - b*y[0]*y[1];
+	yprime[0] = a*y[0]*(1 - y[0]/K)  - b*y[0]*y[1];
 	yprime[1] = -c*y[1]  + p*y[0]*y[1];
 
     return 1;

@@ -118,7 +118,7 @@
    r0 = b*S0/k  = basic reproduction rate
    b = rate of infection
    k = rate removal
-   nu = death rate  
+   nu = mortality rate  
   
    The encounters between susceptibles and the infectives is represented
    by the product S*I  

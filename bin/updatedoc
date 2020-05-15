@@ -5,7 +5,13 @@
 # Usage: updatedoc  path
 #
 # Notes:
-# Paths include: cwp/main cwp/lib cwp/shell par/main par/lib par/shell
+# Paths include: cwp/main cwp/lib cwp/shell par/main/apertures 
+# par/main/cellular_automata par/main/data_conversion 
+# par/main/material_parameters par/main/ordinary_differential_equations
+# par/main/parameter_file_utilities par/main/plotting_utilities
+# par/main/ray_theory par/main/refraction par/main/resampling 
+# par/main/smoothing par/main/statistics par/main/velocity_model_building
+# par/main/velocity_perturbation par/main/wavelet_transform par/lib par/shell
 #     xplot/main xplot/lib psplot/main psplot/lib psplot/shell
 #     Xtcwp/main Xtcwp/lib Sfio/main 
 #      su/main/amplitudes su/main/attributes_parameter_estimation
@@ -47,11 +53,25 @@ case	$# in
 		
 		/bin/echo "Usage: $cmd path"
 		/bin/echo
-		/bin/echo "Paths include: cwp/main cwp/lib  par/main par/lib par/shell "
+		/bin/echo "Paths include: cwp/main cwp/lib "
+ 
+		/bin/echo " par/main/apertures par/main/cellular_automata"
+		/bin/echo " par/main/data_conversion "
+		/bin/echo " par/main/material_parameters "
+		/bin/echo " par/main/ordinary_differential_equations "
+		/bin/echo " par/main/parameter_file_utilities "
+		/bin/echo " par/main/plotting_utilities "
+		/bin/echo " par/main/ray_theory par/main/refraction "
+		/bin/echo " par/main/resampling par/main/smoothing "
+		/bin/echo " par/main/statistics "
+		/bin/echo " par/main/velocity_model_building "
+		/bin/echo " par/main/velocity_perturbation "
+		/bin/echo " par/main/wavelet_transform "
+ 		/bin/echo " par/lib par/shell "
 		/bin/echo " xplot/main xplot/lib psplot/main psplot/lib "
 		/bin/echo " Xtcwp/main Xtcwp/lib su/main su/lib su/graphics/psplot"
 		/bin/echo " su/graphics/xplot "
-		/bin/echo "su/graphics/xplot tri/main tri/lib xtri \
+		/bin/echo " su/graphics/xplot tri/main tri/lib xtri \
 			tri/graphics/psplot"
 		/bin/echo " tetra/lib tetra/main "
 		/bin/echo " Trielas/lib Trielas/main Trielas/graphics/psplot  "
