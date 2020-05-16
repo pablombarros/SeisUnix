@@ -64,7 +64,7 @@ case $# in
 	LIBS=" cwp/lib par/lib psplot/lib xplot/lib tri/lib Xtcwp/lib  \
                 Xmcwp/lib su/lib "
 
-	MAINS="cwp/main par/main psplot/main xplot/main \
+	MAINS="cwp/main psplot/main xplot/main \
 	        Xtcwp/main Xmcwp/main su/graphics/psplot \
 		comp/dct/main comp/dwpt/1d comp/dwpt/2d \
 		xtri tetra/main  Mesa/main \
@@ -82,7 +82,16 @@ case $# in
 		su/main/transforms su/main/velocity_analysis su/main/well_logs \
 		su/main/windowing_sorting_muting \
                 su/graphics/psplot su/graphics/xplot tri/main \
-                tri/graphics/psplot "
+                tri/graphics/psplot \
+		par/main/apertures par/main/cellular_automata \
+		par/main/data_conversion par/main/material_parameters \
+		par/main/ordinary_differential_equations \
+		par/main/parameter_file_utilities par/main/plotting_utilities \
+		par/main/ray_theory par/main/refraction par/main/resampling \
+		par/main/smoothing par/main/statistics \
+		par/main/velocity_model_building \
+		par/main/velocity_perturbation \
+		par/main/wavelet_transform" 
 
 	EXISTS=no
 	# loop through file extension types 
