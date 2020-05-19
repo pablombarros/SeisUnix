@@ -1,6 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.                       */
 
+/*********************** self documentation **********************/
 /***************************************************************************
 SVD - Singular Value Decomposition related routines
 ****************************************************************************
@@ -29,6 +30,7 @@ See also discussions of a similar code in Numerical Recipes in C.
 Credits
 svd_sort: Nils Maercklin, GeoForschungsZentrum (GFZ) Potsdam, Germany, 2001.
 ***************************************************************************/
+/**************** end self doc ********************************/
 
 #include <cwp.h>
 

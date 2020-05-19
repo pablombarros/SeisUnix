@@ -1,6 +1,16 @@
 #!/bin/sh
-# $Id: ps2pdfwr,v 1.4 2002/04/23 11:58:36 easysw Exp $
+# $Id: pstopdfcymk.sh,v 1.1 2020/05/19 21:15:52 john Exp john $
 # Convert PostScript to PDF without specifying CompatibilityLevel.
+
+
+/*********************** self documentation **********************/
+/******************************************************************
+PSTOPDFCYMK - convert (E)PS to PDF
+
+ pstopdfcymk [options...] (input.[e]ps|-) [output.pdf|-]
+
+******************************************************************/
+/**************** end self doc ********************************/
 
 OPTIONS="-dSAFER"
 while true

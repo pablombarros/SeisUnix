@@ -53,6 +53,7 @@ SORT - Functions to sort arrays of data or arrays of indices
 SQR - Single precision QR decomposition functions adapted from LINPACK FORTRAN:
 STOEP - Functions to solve a symmetric Toeplitz linear system of equations
 STRSTUFF -- STRing manuplation subs
+SVD - Singular Value Decomposition related routines
 SWAPBYTE - Functions to SWAP the BYTE order of binary data 
 SYMMEIGEN - Functions solving the eigenvalue problem for symmetric matrices
 

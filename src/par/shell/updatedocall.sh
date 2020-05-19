@@ -48,7 +48,7 @@ PATH=/bin:/usr/bin:/${BIN}
 echo "Updating the total CWP doc directory."
 echo "This wipes out the contents of the doc directory"
 echo "and takes a few minutes to complete."
-echo "      Do you wish to continue [y/n]?"
+echo "      Do you wish to continue [y/n]?\n"
 read RSP
 
 case $RSP in

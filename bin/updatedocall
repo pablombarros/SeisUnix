@@ -48,7 +48,7 @@ PATH=/bin:/usr/bin:/${BIN}
 echo "Updating the total CWP doc directory."
 echo "This wipes out the contents of the doc directory"
 echo "and takes a few minutes to complete."
-echo "      Do you wish to continue [y/n]?"
+echo "      Do you wish to continue [y/n]?\n"
 read RSP
 
 case $RSP in
@@ -81,6 +81,7 @@ MAINS3="tri/main tri/graphics/psplot tetra/main xtri Trielas/main Trielas/graphi
 MAINS4="su/main/amplitudes su/main/attributes_parameter_estimation su/main/convolution_correlation su/main/data_compression su/main/data_conversion su/main/datuming su/main/decon_shaping su/main/dip_moveout su/main/filters su/main/headers su/main/interp_extrap su/main/migration_inversion su/main/multicomponent su/main/noise su/main/operations su/main/picking su/main/stacking su/main/statics su/main/stretching_moveout_resamp su/main/supromax su/main/synthetics_waveforms_testpatterns su/main/tapering su/main/transforms su/main/velocity_analysis su/main/well_logs  su/main/windowing_sorting_muting "
 
 MAINS5="3D/Suinvco3d "
+
 MAINS6=" par/main/apertures par/main/cellular_automata par/main/data_conversion par/main/material_parameters par/main/ordinary_differential_equations par/main/parameter_file_utilities par/main/plotting_utilities par/main/ray_theory par/main/refraction par/main/resampling par/main/smoothing par/main/statistics par/main/velocity_model_building par/main/velocity_perturbation par/main/wavelet_transform"
 
 # do shells

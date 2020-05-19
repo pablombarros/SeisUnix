@@ -1,4 +1,26 @@
 
+Restructuring: 
+par/main 
+
+is now:
+
+par/main/apertures            
+par/main/cellular_automata
+par/main/data_conversion
+par/main/material_parameters
+par/main/ordinary_differential_equations
+par/main/parameter_file_utilities
+par/main/plotting_utilities
+par/main/ray_theory
+par/main/refraction
+par/main/resampling
+par/main/smoothing
+par/main/statistics
+par/main/velocity_model_building
+par/main/velocity_perturbation
+par/main/wavelet_transform
+
+
 
 New:
 ramac2su - converts RAMAC GPR files to su format with a nominal geometry
@@ -6,10 +28,20 @@ ramac2su - converts RAMAC GPR files to su format with a nominal geometry
                 of the Universith of Pau
 configs/Makefile.config_Linux_Ubuntu
 configs/Makefile.config_Mac_OSX_Mojave
+par/main/ordinary_differential_equations
+	 logisticfit.c - extract growth and carrying capacity for logistic
+			 model
+	 seirepidemic.c - SEIR epidemic model
+	 sirepidemic.c - SIR epidemic model
+	 sirdepidemic.c - SIRD epidemic model
+	 voltlotka.c - classic Lotka Volterra preditor-prey model
+par/main/
 
 Fixed:
-
 sugain.c - fixed a but in the AGC function seen on GPR data but not apparent on
            seismic data
 		Thanks to Dominique Rousset of the University of Pau
+
+su/lib/getSPSfile.c - replaced // comments with  /* comments */ owing to
+			a problem on CENTOS version 7.
 

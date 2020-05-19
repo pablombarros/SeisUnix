@@ -456,6 +456,7 @@ In CWPROOT/src/par/shell:
 In CWPROOT/src/psplot/shell:
 # MERGE2 - put 2 standard size PostScript figures on one page
 # MERGE4 - put 4 standard size PostScript plots on one page
+PSTOPDFCYMK - convert (E)PS to PDF
 
 In CWPROOT/src/su/shell:
 # LOOKPAR - show getpar lines in SU code with defines evaluated
@@ -534,6 +535,7 @@ SORT - Functions to sort arrays of data or arrays of indices
 SQR - Single precision QR decomposition functions adapted from LINPACK FORTRAN:
 STOEP - Functions to solve a symmetric Toeplitz linear system of equations
 STRSTUFF -- STRing manuplation subs
+SVD - Singular Value Decomposition related routines
 SWAPBYTE - Functions to SWAP the BYTE order of binary data 
 SYMMEIGEN - Functions solving the eigenvalue problem for symmetric matrices
 
@@ -576,6 +578,7 @@ fgethdr - get segy tape identification headers from the file by file pointer
 FGETTR - Routines to get an SU trace from a file 
 FPUTGTHR - put gathers to a file
 FPUTTR - Routines to put an SU trace to a file 
+*                                                                   *
 HDRPKGE - routines to access the SEGY header via the hdr structure.
 TABPLOT - TABPLOT selected sample points on selected trace
 VALPKGE - routines to handle variables of type Value

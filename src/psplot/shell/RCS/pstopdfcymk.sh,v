@@ -1,4 +1,28 @@
-#!/bin/sh
+head	1.1;
+access;
+symbols;
+locks
+	john:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2020.05.19.21.15.52;	author john;	state Exp;
+branches;
+next	;
+
+
+desc
+@pstopdfcymk.sh
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@#!/bin/sh
 # $Id: ps2pdfwr,v 1.4 2002/04/23 11:58:36 easysw Exp $
 # Convert PostScript to PDF without specifying CompatibilityLevel.
 
@@ -46,3 +70,4 @@ fi
 exec gs  -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite "-sOutputFile=$outfile" -dProcessColorModel=/DeviceCMYK  -f "$infile"
 #exec gs $OPTIONS -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite "-sOutputFile=$outfile" $OPTIONS -c .setpdfwrite -f "$infile"
 
+@
