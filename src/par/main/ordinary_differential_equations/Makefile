@@ -11,9 +11,9 @@ PROGS =			\
 	$B/logisticfit	\
 	$B/lorenz	\
 	$B/rossler	\
-	$B/sirepidemic	\
-	$B/sirdepidemic	\
-	$B/seirepidemic	\
+	$B/sir_epidemic	\
+	$B/sird_epidemic	\
+	$B/seir_epidemic	\
 	$B/verhulst	\
 	$B/voltlotka
 

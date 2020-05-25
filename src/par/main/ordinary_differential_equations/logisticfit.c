@@ -2,7 +2,7 @@
 
 /* All rights reserved.		       */
 
-/* LOGISTICFIT: $Revision: 1.2 $ ; $Date: 2020/04/19 00:31:38 $	*/
+/* LOGISTICFIT: $Revision: 1.3 $ ; $Date: 2020/05/23 21:11:42 $	*/
 
 #include "par.h"
 
@@ -15,10 +15,10 @@ char *sdoc[] = {
 " 									",
 " Required Parameter:							",
 " n=			the number of values of t and P(t)		",
+" Optional Parameters:							",
 " nstart=0		start of input data window			",
 " nend=n		end   of input data window			",
 " 									",
-" Optional Parameters:							",
 " outpar=/dev/tty 	output parameter file				",
 " 									",
 " Notes:								",
@@ -67,7 +67,7 @@ NULL};
  * intercept r. Thus, for y = mx + b    K=(-intercept/slope)
  *
  * The logarithmic derivative is implemented in this code as (dP/dt)/P
- *
+ * 
  *
  * Part II:
  * Second we note that the solution is the logistic (sigmoid function) curve given by
@@ -115,7 +115,6 @@ main(int argc, char **argv)
 	float tp[1]={0.0};	/* full input data vector t followed by P */
 	float *p=NULL;		/* P(t) values binary floats		*/
 	float *t=NULL;		/* t binary floats			*/
-	float coeff[4]={0.0,0.0,0.0,0.0};	 /* coefficients from linear_regression */
 	float K=0.0;		/* carrying capacity */
 	float r=0.0;		/* growth rate */
 
@@ -167,6 +166,7 @@ main(int argc, char **argv)
 	{	
 		register int i=0;
 		float *logpprime=NULL;	/* logpprime_e(P) */
+		float coeff[4]={0.0,0.0,0.0,0.0}; /* coefficients from linear_regression */
 
 		logpprime=ealloc1float(nwindow);
 
@@ -200,6 +200,7 @@ main(int argc, char **argv)
 	
 	/* Part II - linear fit of (log(p[i]/K-p[i],t) */
 	{	
+		float coeff[4]={0.0,0.0,0.0,0.0}; /* coefficients from linear_regression */
 		register int i=0;
 		float *logpp=NULL;
 

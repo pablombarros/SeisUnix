@@ -22,6 +22,7 @@ char *sdoc[] = {
 " stepmax=2000		maximum number of steps to compute	",
 " mode=x		xy-pairs, =yz yz-pairs, =xz xz-pairs,	",
 "			=xyz xyz-triplet, =x only, =y only, =z only",
+" toutfile=		file of time values			",
 " Notes:							",
 " This program is really just a demo showing how to use the 	",
 " differential equation solver rke_solve written by Francois 	",
@@ -33,22 +34,22 @@ char *sdoc[] = {
 " either pairs or triplets as specified by the \"mode\" paramerter.",
 "								",
 " Examples:							",
-" x is the population						",
-" verhulst stepmax=2000 mode=x | suaddhead ns=2000 | suxwigb &	",
-" y is dx/dt, the rate of growth of the population		",
-" verhulst stepmax=2000 mode=y | suaddhead ns=2000 | suxwigb &	",
-"								",
+" x is the population:						",
+"    verhulst stepmax=2000 mode=x |				",
+"	xgraph n=2000 nplot=1 d1=0.01 style=normal &		",
+" y is dx/dt, the rate of growth of the population:		",
+"    verhulst stepmax=2000 mode=y |				",
+"	xgraph n=2000 nplot=1 d1=0.01 style=normal &		",
+" show both:							",
+"    verhulst stepmax=2000 mode=x > population.bin		",
+"    verhulst stepmax=2000 mode=y > rate.bin			",
+" 								",
+" cat population.bin rate.bin |					",
+"     xplot n=2000 nplot=2 d1=.01 style=normal &		",
+" 								",
 " In the Verhulst equation, a1 is the reproduction rate and	",
 " a2 is the carrying capacity					",
 " 	x'(t) = a1 * x * ( 1 - x/a2 )			 	",
-"								",
-" Example: COVID-19 US statistics:				",
-" set h=1, which represents a time increment in days. Choose	",
-" y0=1 a1=.176 a2=1e7 stepmax=200. The carrying capacity is taken",
-" to be 10 million total cases stepmax represents 200 days of   ",
-" the epidemic.							",
-"								",
-" Day zero of the epidemic in the US was 22 Jan 2020.		",
 NULL};
 
 /*
@@ -96,6 +97,10 @@ main(int argc, char **argv)
 	cwp_String mode="x";	/* output mode of program */
 	int imode=SXY;		/* integer flag for mode */
 
+        char *toutfile="";      /* name of time values */
+        FILE *toutfp=NULL;      /* ... its file pointer */
+        cwp_Bool istoutfile=cwp_false; /* is output time file specified? */
+	float toutt[1]={0.0};	/* output times */
 
 	/* Hook up getpar */
 	initargs(argc, argv);
@@ -116,7 +121,7 @@ main(int argc, char **argv)
 	}
 
 	/* Get parameters */
-	if (!getparint("stepmax", &stepmax))	stepmax = 500;
+	if (!getparint("stepmax", &stepmax))	stepmax = 2000;
 	if (!getparint("verbose", &verbose))	verbose = 0;
 
 	if (!getpardouble("y0", &y[0]))		y[0]=10;
@@ -133,6 +138,16 @@ main(int argc, char **argv)
         else if (!STREQ(mode, "xy"))
             err("unknown operation=\"%s\", see self-doc", mode);
 
+        /* if specified, open output time values file */
+        getparstring("toutfile",&toutfile);
+        if (*toutfile!='\0') {
+                istoutfile=cwp_true;
+
+                if((toutfp=fopen(toutfile,"w"))==NULL)
+                        err("cannot open toutfile=%s\n",toutfile);
+        }
+
+
 	/* initialize Runge-Kutta-England routines */
 	p = (rke_variables)
 		rke_init(1, verhulst_equation);
@@ -146,6 +161,12 @@ main(int argc, char **argv)
 		float yout[3]={0,0,0};
 		double aimed_t;
 		t=i*h;
+
+		if (istoutfile) {
+			toutt[0]=t;
+			efwrite(toutt,FSIZE,1,toutfp);
+		}
+
 		aimed_t=t+h;
   		if (verbose) {
 			warn("using %3d accepted and %3d rejected steps",
@@ -201,9 +222,12 @@ main(int argc, char **argv)
   		rke_solve (p, &t, y, aimed_t);
 	}
 
+	
+
 	/* end the session with rke */
 	rke_term(p);
 
+	if (istoutfile) efclose(toutfp);
 	return EXIT_SUCCESS;
 }
 

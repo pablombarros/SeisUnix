@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
-/* All rights reserved.		       */
+/* All rights reserved.			*/
 
-/* SEIREPIDEMIC: $Revision: 1.1 $ ; $Date: 2020/04/23 18:58:34 $        */
+/* SEIREPIDEMIC: $Revision: 1.1 $ ; $Date: 2020/04/23 18:58:34 $	*/
 
 #include "par.h"
 #include "rke.h"
@@ -10,23 +10,28 @@
 
 char *sdoc[] = {
 "								",
-" SEIREPIDEMIC - the SEIR EPIDEMIC model				",
+" SEIREPIDEMIC - the SEIR and SEIRS EPIDEMIC models		",
 "								",
 "  seirepidemic > [stdout]					",
 "								",
 " Required Parameters: none					",
 " Optional Parameters:						",
-" S0=1000		initial number of susceptibles		",
+" normalize=1		normalize S,E,I by N; =0 don't normalize",
+" N=1000		total population			",
+" S0=N			initial number of susceptibles		",
 " E0=1			initial number of exposed		",
 " I0=1			initial number of infectives		",
 " R0=0.0		initial number of removed (should be 0)	",
 " 								",
 " k=.5			transmission rate			",
+" s=.3333		exposure to infective rate		",
 " b=.3333		removal rate = death + recovery rates	",
 " 								",
 " .... with vital dynamics (i.e. birth and death rate) 		",
 " mu=0.0		birth rate 				",
 " nu=0.0		death rate 				",
+"  ... SEIRS ... with reinfection				",
+" xi=0.0		re-infection parameter		  ",
 " 								",
 " h=1			increment in time			",
 " tol=1.e-08		error tolerance				",
@@ -43,54 +48,40 @@ char *sdoc[] = {
 " The output consists of unformated C-style binary floats, of	",
 " either pairs or triplets as specified by the \"mode\" paramerter.",
 "								",
-" About the SEIR epidemic model:					",
-" r0 = number of new infections per single infected host  	",
-"  1 < r0 < 1.5 for influenza (2.2 to 2.7 for Covid-19)		",
+" About compartmentalized models: The population is assumed to  ",
+" move from being Susceptible, to Infective, and finally to the ",
+" Removed, who are dead and the recovered.			",
+"								",
+" Important quantities:						",
+" r0 = number of new infections per single infected host	",
+"  1 < r0 < 1.5 for influenza, (2.2 to 2.7 for Covid-19), 12 to ",
+" 18 for measles.						",
 "  b, k, S0, and r0 are related via				",
-"  k = b*S0/r0							",
-"  It is often easier to determine the recovery rate k (in units",
-"  of h and to determine reasonable estimate of S0 and of r0 	",
-"  and to calculate the infection rate b = k*r0/S0		",
+"  k = b*S0/r0 = b/r0 when S0/N and S0=N			",
 "								",
-" S = total number susceptible to the infection			",
-" E = total number of exposed					",
-" I = total number of those capable of passing on the infection	",
-" R = total number removed = dead + recovered			",
-"								",
-"								",
+" S = number susceptible to the infection			",
+" E = number of exposed						",
+" I = number of those capable of passing on the infection	",
+" R = number removed = dead + recovered				",
 " Examples:							",
 " Default:							",
-" seirepidemic | xgraph n=40 nplot=3 d1=1 &			",
-" 								",
+" seirpidemic | xgraph n=40 nplot=4 d1=1 style=normal &		",
+"								",
 " Hypothetical flu in a school models:				",
+" here there is a 0.3 exposure to infective rate		",
+" seirepidemic h=0.1 stepmax=100 s=.3 b=.3 k=.9 N=100 mode=SIR | ",
+"	xgraph n=100 nplot=4 d1=1 style=normal &			",
 "								",
-" seirepidemic h=0.1 stepmax=100 b=.3 k=.9 S0=100 mode=SEIR |	",
-"    xgraph n=100 nplot=3 d1=1 style=normal &			",
-"								",
-" seirepidemic h=1 stepmax=50 b=0.2 k=0.1 S0=1000 I0=1 mode=SEIR |",
-"     xgraph n=50 nplot=3 d1=1 style=normal			",
-"								",
-" Hong Kong Flu 1968-1969:					", 
+" Hong Kong Flu 1968-1969:					",
 " https://services.math.duke.edu/education/ccp/materials/diffcalc/sir/sir1.html",
-" Population is S0=7.9 million, r0=1.5, the average period of	",
-" infectiveness is  3 days so k=1/3, b=r0*k/S0=6.3e-8, and initial",
-" infected is I0=10.						",
+" Population is N=S0=7.9 million, r0=1.5, the average period of ",
+" infectiveness is  3 days so k=1/3, b=r0*k=(3/2)(1/3)=0.54, and initial",
+" infected is I0=10. An exposed to infective rate s=1/3 is assumed",
 "								",
-"  seirepidemic h=1 stepmax=200 k=.3333 b=6.3e-8 S0=7.9e6 mode=SEIR |",
-"      xgraph n=200 nplot=3 d1=1 style=normal			",
+"  seirepidemic h=1 stepmax=200 s=.3333 k=.3333 b=.5 N=7.9e6 mode=SIR |",
+"	xgraph n=200 nplot=4 d1=1 style=normal &		",
 "								",
-" Alternatively, if we normalize S0, I0, and R0 by the total	",
-" population, then S0=1.0 the initial population of infectives  ",
-" becomes I0=1.27e-6, the average period of infectiveness is	 ",
-" 3 days making k=1/3, and the possibility of infective contact ",
-" is every 2 days, making b=1/2.  Note that in the S0=1.0 case,",
-" r0=1.5 = b/k.							",
 "								",
-" seirepidemic h=1 stepmax=100 b=.5 k=.333 S0=1.0 I0=1.27e-6 mode=SEIR |",
-"   xgraph n=100 nplot=3 d1=1 style=normal			",
-" 								",
-" Thus, it may be easier to determine b and k with S0=1.0, and",
-" then try different I0 values					",
 NULL};
 
 /*
@@ -110,7 +101,9 @@ NULL};
  *   I0 = initial value of the infectives
  *   R0 = initial removed value = 0
  *   
- *  Always S(t) + E(t) + I(t) + R(t) = total population
+ *   S(t) + E(t) + I(t) + R(t) = N 
+ *   
+ *   S(t) + E(t) + I(t) + R(t) = 1  when S, E, and I are normalized by N
  *   
  *   r0 = b*S0/k  = basic reproduction rate
  *   b = rate of exposure
@@ -130,8 +123,8 @@ NULL};
  *   by the product S*I  
  *	S'(t) = mu - nu*S -  b*S*I  (birth - dead - newly exposed)
  *	E'(t) = b*S*I - nu*E - s*E  (exposed - dead - newly infected)
- *	I'(t) = s*E - k*I - nu*I    (infected - newly removed - dead))
- *	R'(t) = k*I - nu*R	    (removed - dead )	
+ *	I'(t) = s*E - k*I - nu*I	(infected - newly removed - dead))
+ *	R'(t) = k*I - nu*R		(removed - dead )	
  *
  * S(t)= susceptible members (no births, deaths, immigration, or emigration)
  * E(t)= Exposed number 
@@ -168,7 +161,10 @@ main(int argc, char **argv)
 	int verbose=0;		/* verbose flag =1 chatty, =0 silent */
 	int stepmax=0;		/* maximum number of steps */
 
-	/* initial values of S, I, R */
+	/* initializations */
+	int normalize=1;	/* normalize S and I by N; =0 don't normalize */
+	double N=0.0;	   /* total population size */
+
 	double S0=0.0;		/* initial value of susceptible population */
 	double E0=0.0;		/* initial value of expose */
 	double I0=0.0;		/* initial value of infectives */
@@ -214,12 +210,14 @@ main(int argc, char **argv)
 	if (!getparint("verbose", &verbose))	verbose = 0;
 
 	/* Initial conditions y[0] = S  y[1]=E  y[2]=I  y[3]=R */
-	if (!getpardouble("S0", &S0))		S0=1000;
-		y[0] = S0;
-	if (!getpardouble("E0", &E0))		E0=1.0;
-		y[1] = E0;
-	if (!getpardouble("I0", &I0))		I0=0.0;
-		y[2] = I0;
+	if (!getparint("normalize", &normalize))	normalize=1;
+	if (!getpardouble("N", &N))		N=1000;
+	if (!getpardouble("S0", &S0))	   S0=N;
+		 y[0] = (normalize ? S0/N: S0);
+	if (!getpardouble("E0", &E0))	   E0=1.0;
+		 y[1] = (normalize ? I0/N: I0);
+	if (!getpardouble("I0", &I0))	   I0=1.0;
+		 y[1] = (normalize ? I0/N: I0);
 	if (!getpardouble("R0", &R0))		R0=0.0;
 		y[3] = R0;
 
@@ -229,12 +227,12 @@ main(int argc, char **argv)
 	/* Get output mode, recall imode initialized to the default FABS */
 	if (!getpardouble("h", &h))		h = 1.0;
 	getparstring("mode", &mode);
-	if (STREQ(mode, "S"))    	imode = S_MODE;
+	if (STREQ(mode, "S"))		imode = S_MODE;
 	else if (STREQ(mode, "E"))	imode = E_MODE;
 	else if (STREQ(mode, "I"))	imode = I_MODE;
-	else if (STREQ(mode, "R"))      imode = R_MODE;
+	else if (STREQ(mode, "R"))	imode = R_MODE;
 	else if (!STREQ(mode, "SEIR"))
-	    err("unknown operation=\"%s\", see self-doc", mode);
+		err("unknown operation=\"%s\", see self-doc", mode);
 
 	/* allocate space in the output array */
 	yout = ealloc2float(4,4*stepmax);
@@ -322,22 +320,30 @@ Notes: This is an example of an autonomous system of ODE's
 	double b=0.0;	/* exposure rate		*/
 	double s=0.0;	/* exposure to infection rate	*/
 	double k=0.0;	/* removal rate			*/
+	
 	/* ... vital dynamics ... */
 	double mu=0.0;	/* birth rate			*/
 	double nu=0.0;	/* death rate			*/
+
+	/* ... reinfection ... */
+	double xi=0.0;	/* reinfection rate */
 	
 	/* parameters */
 	if (!getpardouble("b", &b))		b = .5;
 	if (!getpardouble("s", &k))		s = .333;
 	if (!getpardouble("k", &k))		k = .333;
+
 	/* ... vital dynamics ... */
 	if (!getpardouble("mu", &mu))		mu = 0.0;
 	if (!getpardouble("nu", &nu))		nu = 0.0;
 
-	yprime[0] = mu - nu*y[0] - b*y[0]*y[1] ;
+	/* reinfection */
+	if (!getpardouble("xi", &xi))		xi = 0.0;
+
+	yprime[0] = mu - nu*y[0] - b*y[0]*y[1] + xi*y[3] ;
 	yprime[1] = b*y[0]*y[1]  - nu*y[1] -  s*y[1];
 	yprime[2] = s*y[1] - k*y[2] - nu*y[2]; 
-	yprime[3] = k*y[2] - nu*y[3]; 
+	yprime[3] = k*y[2] - nu*y[3] - xi*y[3]; 
 
-    return 1;
+	return 1;
 }

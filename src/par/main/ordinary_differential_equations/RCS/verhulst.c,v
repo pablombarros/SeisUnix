@@ -1,9 +1,20 @@
-head	1.3;
+head	1.5;
 access;
 symbols;
-locks; strict;
+locks
+	john:1.5; strict;
 comment	@ * @;
 
+
+1.5
+date	2020.05.23.21.10.54;	author john;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2020.05.19.21.57.50;	author john;	state Exp;
+branches;
+next	1.3;
 
 1.3
 date	2011.10.20.21.08.50;	author john;	state Exp;
@@ -26,9 +37,9 @@ desc
 @
 
 
-1.3
+1.5
 log
-@added copyright statement
+@added toutfile option
 @
 text
 @/* Copyright (c) Colorado School of Mines, 2011.*/
@@ -55,6 +66,7 @@ char *sdoc[] = {
 " stepmax=2000		maximum number of steps to compute	",
 " mode=x		xy-pairs, =yz yz-pairs, =xz xz-pairs,	",
 "			=xyz xyz-triplet, =x only, =y only, =z only",
+" toutfile=		file of time values			",
 " Notes:							",
 " This program is really just a demo showing how to use the 	",
 " differential equation solver rke_solve written by Francois 	",
@@ -66,11 +78,19 @@ char *sdoc[] = {
 " either pairs or triplets as specified by the \"mode\" paramerter.",
 "								",
 " Examples:							",
-" x is the population						",
-" verhulst stepmax=2000 mode=x | suaddhead ns=2000 | suxwigb &	",
-" y is dx/dt, the rate of growth of the population		",
-" verhulst stepmax=2000 mode=y | suaddhead ns=2000 | suxwigb &	",
-"								",
+" x is the population:						",
+"    verhulst stepmax=2000 mode=x |				",
+"	xgraph n=2000 nplot=1 d1=0.01 style=normal &		",
+" y is dx/dt, the rate of growth of the population:		",
+"    verhulst stepmax=2000 mode=y |				",
+"	xgraph n=2000 nplot=1 d1=0.01 style=normal &		",
+" show both:							",
+"    verhulst stepmax=2000 mode=x > population.bin		",
+"    verhulst stepmax=2000 mode=y > rate.bin			",
+" 								",
+" cat population.bin rate.bin |					",
+"     xplot n=2000 nplot=2 d1=.01 style=normal &		",
+" 								",
 " In the Verhulst equation, a1 is the reproduction rate and	",
 " a2 is the carrying capacity					",
 " 	x'(t) = a1 * x * ( 1 - x/a2 )			 	",
@@ -121,6 +141,10 @@ main(int argc, char **argv)
 	cwp_String mode="x";	/* output mode of program */
 	int imode=SXY;		/* integer flag for mode */
 
+        char *toutfile="";      /* name of time values */
+        FILE *toutfp=NULL;      /* ... its file pointer */
+        cwp_Bool istoutfile=cwp_false; /* is output time file specified? */
+	float toutt[1]={0.0};	/* output times */
 
 	/* Hook up getpar */
 	initargs(argc, argv);
@@ -141,7 +165,7 @@ main(int argc, char **argv)
 	}
 
 	/* Get parameters */
-	if (!getparint("stepmax", &stepmax))	stepmax = 500;
+	if (!getparint("stepmax", &stepmax))	stepmax = 2000;
 	if (!getparint("verbose", &verbose))	verbose = 0;
 
 	if (!getpardouble("y0", &y[0]))		y[0]=10;
@@ -158,6 +182,16 @@ main(int argc, char **argv)
         else if (!STREQ(mode, "xy"))
             err("unknown operation=\"%s\", see self-doc", mode);
 
+        /* if specified, open output time values file */
+        getparstring("toutfile",&toutfile);
+        if (*toutfile!='\0') {
+                istoutfile=cwp_true;
+
+                if((toutfp=fopen(toutfile,"w"))==NULL)
+                        err("cannot open toutfile=%s\n",toutfile);
+        }
+
+
 	/* initialize Runge-Kutta-England routines */
 	p = (rke_variables)
 		rke_init(1, verhulst_equation);
@@ -171,6 +205,12 @@ main(int argc, char **argv)
 		float yout[3]={0,0,0};
 		double aimed_t;
 		t=i*h;
+
+		if (istoutfile) {
+			toutt[0]=t;
+			efwrite(toutt,FSIZE,1,toutfp);
+		}
+
 		aimed_t=t+h;
   		if (verbose) {
 			warn("using %3d accepted and %3d rejected steps",
@@ -226,9 +266,12 @@ main(int argc, char **argv)
   		rke_solve (p, &t, y, aimed_t);
 	}
 
+	
+
 	/* end the session with rke */
 	rke_term(p);
 
+	if (istoutfile) efclose(toutfp);
 	return EXIT_SUCCESS;
 }
 
@@ -255,6 +298,38 @@ Notes: This is an example of an autonomous system of ODE's
 	y[1] = yprime[0];
     return 1;
 }
+@
+
+
+1.4
+log
+@changed selfdoc
+@
+text
+@d25 1
+d100 4
+d124 1
+a124 1
+	if (!getparint("stepmax", &stepmax))	stepmax = 500;
+d141 10
+d164 6
+d225 2
+d230 1
+@
+
+
+1.3
+log
+@added copyright statement
+@
+text
+@d36 13
+a48 5
+" x is the population						",
+" verhulst stepmax=2000 mode=x | suaddhead ns=2000 | suxwigb &	",
+" y is dx/dt, the rate of growth of the population		",
+" verhulst stepmax=2000 mode=y | suaddhead ns=2000 | suxwigb &	",
+"								",
 @
 
 

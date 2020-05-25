@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.		       */
 
-/* SIREPIDEMIC: $Revision: 1.21 $ ; $Date: 2015/02/19 18:25:06 $        */
+/* SIR_EPIDEMIC: $Revision: 1.21 $ ; $Date: 2015/02/19 18:25:06 $        */
 
 #include "par.h"
 #include "rke.h"
@@ -10,17 +10,20 @@
 
 char *sdoc[] = {
 "								",
-" SIREPIDEMIC - the SIR, SIRS EPIDEMIC models with and without	",
+" SIR_EPIDEMIC - the SIR and SIRS EPIDEMIC models with and without",
 "		 vital dynamics					",
 "								",
-"  sirepidemic > [stdout]					",
+"  sir_epidemic > [stdout]					",
 "								",
 " Required Parameters: none					",
 " Optional Parameters:						",
-" S0=1000		initial number of susceptibles		",
+" normalize=1		Normalize S, I by N; =0 don't normalize	",
+" scale=0		don't scale; =1 scale S,I,R by N	",
+" N=1000		total population size			",
+" S0=N			initial number of susceptibles		",
 " I0=1			initial number of infectives		",
 " R0=0.0		initial number of removed (should be 0)	",
-"	 		(not the basic reproducion rate r0	",
+"	 		(not the basic reproducion rate r0)	",
 " 								",
 " k=.5			transmission rate			",
 " b=.3333		removal rate = death + recovery rates	",
@@ -46,55 +49,59 @@ char *sdoc[] = {
 " The output consists of unformated C-style binary floats, of	",
 " either pairs or triplets as specified by the \"mode\" paramerter.",
 "								",
-" About the SIR epidemic model:					",
+" About compartmentalized models: The population is assumed to  ",
+" move from being Susceptible, to Infective, and finally to the ",
+" Removed, who are dead and the recovered.			",
+"								",
+" Important quantities:						",
 " r0 = number of new infections per single infected host  	",
-"  1 < r0 < 1.5 for influenza (2.2 to 2.7 for Covid-19)		",
+"  1 < r0 < 1.5 for influenza, (2.2 to 2.7 for Covid-19), 12 to	",
+" 18 for measles.						",
 "  b, k, S0, and r0 are related via				",
-"  k = b*S0/r0							",
+"  k = b*S0/r0 = b/r0 when S0/N and S0=N 			",
+"  								",
 "  It is often easier to determine the recovery rate k (in units",
 "  of h and to determine reasonable estimate of S0 and of r0 	",
-"  and to calculate the infection rate b = k*r0/S0		",
+"  and to calculate the infection rate b = k*r0/S0 or b=k*r0	",
+"  when S0=N and is normalized by N.				",
 "								",
 " S = total number susceptible to the infection			",
 " I = total number of those capable of passing on the infection	",
 " R = total number removed = dead + recovered			",
 "								",
 " When xi is nonzero, then there is a potential that fraction of", 
-" the removed population can be reinfected			",
+" the removed population can be reinfected.			",
 "								",
 " Examples:							",
 " Default:							",
-" sirepidemic | xgraph n=40 nplot=3 d1=1 &			",
+" sir_epidemic | xgraph n=40 nplot=3 d1=1 style=normal &	",
 " 								",
-" Hypothetical flu in a school models:				",
+" Influenza in an English boarding school, 1978:		",
+" N=762 I0=1,  2 students infected per day, 1/2 of the infected	",
+" population removed per day. Take b=2 k=0.5 			",
 "								",
-" sirepidemic h=0.1 stepmax=100 b=.3 k=.9 S0=100 mode=SIR |	",
-"    xgraph n=100 nplot=3 d1=1 style=normal &			",
-"								",
-" sirepidemic h=1 stepmax=50 b=0.2 k=0.1 S0=1000 I0=1 mode=SIR |",
-"     xgraph n=50 nplot=3 d1=1 style=normal			",
-"								",
-" Hong Kong Flu 1968-1969:					", 
+" Normalized by N:						",
+" sir_epidemic h=0.1 stepmax=200 I0=1 b=2 k=.5 N=762 mode=SIR |	",
+"  xgraph n=200 nplot=3 d1=.1 style=normal label1=\"days\"  &	",
+" 								",
+" Normalized by N, output scaled by N:				",
+" sir_epidemic h=0.1 stepmax=200 I0=1 b=2 k=.5 N=762 mode=SIR scale=1 |",
+"  xgraph n=200 nplot=3 d1=.1 style=normal label1=\"days\" &	",
+" 								",
+" Kong Flu 1968-1969:						",
 " https://services.math.duke.edu/education/ccp/materials/diffcalc/sir/sir1.html",
-" Population is S0=7.9 million, r0=1.5, the average period of	",
-" infectiveness is  3 days so k=1/3, b=r0*k/S0=6.3e-8, and initial",
+" Population is N=S0=7.9 million, r0=1.5, the average period of	",
+" infectiveness is  3 days so k=1/3, b=r0*k=(3/2)(1/3)=0.5, and initial",
 " infected is I0=10.						",
 "								",
-"  sirepidemic h=1 stepmax=200 k=.3333 b=6.3e-8 S0=7.9e6 mode=SIR |",
-"      xgraph n=200 nplot=3 d1=1 style=normal			",
+"  Normalized by N						",
+"  sir_epidemic h=1 stepmax=200 k=.3333 b=.5 N=7.9e6 mode=SIR |	",
+"      xgraph n=200 nplot=3 d1=1 style=normal &			",
 "								",
-" Alternatively, if we normalize S0, I0, and R0 by the total	",
-" population, then S0=1.0 the initial population of infectives  ",
-" becomes I0=1.27e-6, the average period of infectiveness is	 ",
-" 3 days making k=1/3, and the possibility of infective contact ",
-" is every 2 days, making b=1/2.  Note that in the S0=1.0 case,",
-" r0=1.5 = b/k.							",
-"								",
-" sirepidemic h=1 stepmax=100 b=.5 k=.333 S0=1.0 I0=1.27e-6 mode=SIR |",
-"   xgraph n=100 nplot=3 d1=1 style=normal			",
+"  Normalized by N, with scaling of the output by N:		",
+"  sir_epidemic h=1 scale=1 stepmax=200 k=.3333 b=.5 N=7.9e6 mode=SIR |",
+"      xgraph n=200 nplot=3 d1=1 style=normal &			",
 " 								",
-" Thus, it may be easier to determine b and k with S0=1.0, and",
-" then try different I0 values					",
 NULL};
 
 /*
@@ -112,7 +119,9 @@ NULL};
  *   I0 = initial value of the infectives
  *   R0 = initial removed value = 0
  *   
- *  Always S(t) + I(t) + R(t) = S0 + I0   
+ *   S(t) + I(t) + R(t) = S0 + I0   = N for the unnormalized case.
+ *   If normalized by total population N, then S(t) + I(t) + R(t) = 1 
+ *   and S(t) starts at its maxium value of S0/N.   
  *   
  *   r0 = b*S0/k  = basic reproduction rate
  *   b = rate of infection
@@ -120,23 +129,35 @@ NULL};
  *   xi = re-infection rate 
  *   mu = birth rate  
  *   nu = death rate
- *   
+ *    
  *   The encounters between susceptibles and the infectives is represented
  *   by the product S*I  
+ *
+ *  SIR model:  
+ *	S'(t) =  - b*S*I 
+ *	I'(t) = b*S*I- k*I 
+ *	R'(t) = k*I 
+ *    
+ *  SIR model with vital statistics (mu birth rate, nu death rate):  
+ *	S'(t) = mu - nu*S - b*S*I 
+ *	I'(t) = b*S*I - k*I - nu*I 
+ *	R'(t) = k*I -  nu*R
+ *
+ *  SIRS model with vital statistics (mu birth rate, nu death rate) and reinfection:  
  *	S'(t) = mu - nu*S + xi*R - b*S*I 
  *	I'(t) = b*S*I - k*I - nu*I 
  *	R'(t) = k*I - xi*R - nu*R
  *
- *
  * S(t)= susceptible members 
- * I(t)= infective number 
+ * I(t)= infectives
  * R(t)= removed members = recovered + dead + sequestered
  *
  * There is an impiled flow from S(t) -> I(t) -> R(t), though infected
- * who are quarantined immediately become part of R(t). The product xi*R
- * are the reinfected members of the recovered group, and are thus 
- * removed from the recovered group and fed back to the susceptible group.
+ * who are quarantined immediately become part of R(t). 
  *
+ * The product xi*R are the reinfected members of the recovered group, and are thus 
+ * removed from the recovered group and fed back to the susceptible group.
+ * 
  * The product b*S*I denotes the interaction of the infective population with
  * the susceptible population..
  *
@@ -164,10 +185,13 @@ main(int argc, char **argv)
 	int stepmax=0;		/* maximum number of steps */
 
 	/* initial values of S, I, R */
+	int normalize=1;	/* normalize S and I by N; =0 don't normalize */
+	int scale=0;		/* don't scale; =1 scale output S,I,R by N    */
+	double N=0.0;		/* total population size */
 	double S0=0.0;		/* initial value of susceptible population */
 	double I0=0.0;		/* initial value of infectives */
 	double R0=0.0;		/* initial value of removed */
-
+	
 	double t=0.0;		/* time */
 	double h=.001;		/* time increment */
 	double tol=0.0;		/* time increment */
@@ -208,10 +232,13 @@ main(int argc, char **argv)
 	if (!getparint("verbose", &verbose))	verbose = 0;
 
 	/* Initial conditions y[0] = S  y[1]=I  y[2]=R */
-	if (!getpardouble("S0", &S0))		S0=1000;
-		y[0] = S0;
+	if (!getparint("normalize", &normalize))	normalize=1;
+	if (!getparint("scale", &scale))	scale=0;
+	if (!getpardouble("N", &N))		N=1000;
+	if (!getpardouble("S0", &S0))		S0=N;
+		 y[0] = (normalize ? S0/N: S0);
 	if (!getpardouble("I0", &I0))		I0=1.0;
-		y[1] = I0;
+		 y[1] = (normalize ? I0/N: I0);
 	if (!getpardouble("R0", &R0))		R0=0.0;
 		y[2] = R0;
 
@@ -262,21 +289,21 @@ main(int argc, char **argv)
 
 	if (imode==S_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][0];
+			tempout[i] = (scale ?  N*yout[i][0]: yout[i][0]);
 	} else if (imode==I_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][1];
+			tempout[i] = (scale ? N*yout[i][1]: yout[i][1]);
 	} else if (imode==R_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][2];
+			tempout[i] = (scale ? N*yout[i][2]: yout[i][2]);
 	} else if (imode==SIR_MODE) {
 
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][0];
+			tempout[i] = (scale ?  N*yout[i][0]: yout[i][0]);
 		for (i=0; i<stepmax; ++i)
-			tempout[i+stepmax] = yout[i][1];
+			tempout[i+stepmax] = (scale ? N*yout[i][1]: yout[i][1]);
 		for (i=0; i<stepmax; ++i)
-			tempout[i+2*stepmax] = yout[i][2];
+			tempout[i+2*stepmax] = (scale ? N*yout[i][2]: yout[i][2]);
 	}
 
 	if (imode==SIR_MODE) {
@@ -313,8 +340,6 @@ Notes: This is an example of an autonomous system of ODE's
 	/* vital dyamics include */
 	double mu=0.0;	/* (linear) birth rate		*/
 	double nu=0.0;	/* death rate			*/
-	
-
 	
 	/* parameters */
 	if (!getpardouble("b", &b))		b = 0.5;
