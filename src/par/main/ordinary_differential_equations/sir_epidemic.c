@@ -240,7 +240,7 @@ main(int argc, char **argv)
 	if (!getpardouble("I0", &I0))		I0=1.0;
 		 y[1] = (normalize ? I0/N: I0);
 	if (!getpardouble("R0", &R0))		R0=0.0;
-		y[2] = R0;
+		y[2] = (normalize ? R0/N: R0);
 
 	if (!getpardouble("h", &h))		h = 1.0;
 	if (!getpardouble("tol", &tol))		tol = RKE_ERR_BIAS_INIT;

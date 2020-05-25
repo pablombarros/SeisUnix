@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.		       */
 
-/* SIRDEPIDMEIC: $Revision: 1.1 $ ; $Date: 2020/04/23 18:58:03 $        */
+/* SIRD_EPIDEMIC: $Revision: 1.1 $ ; $Date: 2020/04/23 18:58:03 $        */
 
 #include "par.h"
 #include "rke.h"
@@ -10,17 +10,20 @@
 
 char *sdoc[] = {
 "								",
-" SIRDEPIDMEIC - the SIRD EPIDEMIC model with			",
+" SIRD_EPIDEMIC - the SIRD and SIRDS EPIDEMIC models 		",
 "								",
 "  sirdepidemic > [stdout]					",
 "								",
 " Required Parameters: none					",
 " Optional Parameters:						",
-" S0=1000		initial number of susceptibles		",
+" normalize=1		normalize S,I by N; =0 don't normalize	",
+" scale=0		don't scale; =1 scale output S,I,R by N	",
+" N=1000		total population			",
+" S0=N			initial number of susceptibles		",
 " I0=1			initial number of infectives		",
-" R0=0.0		initial number of removed (should be 0)	",
-"	 		(not the basic reproducion rate r0	",
-" D0=0			initial number of dead (should be 0)	",
+" R0=0			initial number of removed (usually 0)	",
+"	 		(not the basic reproducion rate r0)	",
+" D0=0			initial number of dead (usually 0)	",
 " 								",
 " k=.5			transmission rate			",
 " b=.3333		removal rate = death + recovery rates	",
@@ -46,10 +49,11 @@ char *sdoc[] = {
 " r0 = number of new infections per single infected host  	",
 "  1 < r0 < 1.5 for influenza (2.2 to 2.7 for Covid-19)		",
 "  b, k, S0, and r0 are related via				",
-"  k = b*S0/r0							",
+"  k = b*S0/r0. When S is normalized by N, k=b/r0		",
 "  It is often easier to determine the recovery rate k (in units",
 "  of h and to determine reasonable estimate of S0 and of r0 	",
-"  and to calculate the infection rate b = k*r0/S0		",
+"  and to calculate the infection rate b = k*r0/S0, which becomes",
+"  b = k*r0 for S normalized by N.								",
 "  nu= mortality rate						",
 "								",
 " S = total number susceptible to the infection			",
@@ -59,60 +63,41 @@ char *sdoc[] = {
 "								",
 " Examples:							",
 " Default:							",
-" sirdepidemic | xgraph n=40 nplot=4 d1=1 &			",
+" sird_epidemic | xgraph n=40 nplot=3 d1=1 style=normal &	",
 " 								",
-" Hypothetical flu in a school models:				",
+" Hypothetical Influenza in a boarding school:			",
+" N=762 I0=1,  2 students infected per day, 1/2 of the infected	",
+" population removed per day. Take b=2 k=0.5			",
+" assume 1% mortality nu=0.01					",
 "								",
-" Without deaths, or with recovered and dead not distinguished:	",
-" sirdepidemic h=0.1 stepmax=100 b=.3 k=.9 S0=100 mode=SIRD |	",
-"    xgraph n=100 nplot=4 d1=1 style=normal &			",
-"								",
-" With 10 deaths (10% mortaliy)						",
-" sirdepidemic h=0.1 stepmax=100 b=.2 nu=.1 k=.9 S0=100 mode=SIRD |",
-"    xgraph n=100 nplot=4 d1=1 style=normal &			",
-"								",
-" sirdepidemic h=1 stepmax=50 b=0.2 k=0.1 S0=1000 I0=1 mode=SIRD |",
-"     xgraph n=50 nplot=4 d1=1 style=normal			",
-"								",
-" Hong Kong Flu 1968-1969:					", 
+" Normalized by N:						",
+" sird_epidemic h=0.1 stepmax=200 I0=1 b=2 k=.5 nu=.01 N=762 mode=SIRD |",
+"  xgraph n=200 nplot=4 d1=.1 style=normal label1=\"days\"  &	",
+" 								",
+" Normalized by N, output scaled by N:				",
+" sird_epidemic h=0.1 stepmax=200 I0=1 b=2 k=.5 nu=.01 N=762 mode=SIRD scale=1 |",
+"  xgraph n=200 nplot=4 d1=.1 style=normal label1=\"days\" &	",
+" 								",
+" Kong Flu 1968-1969:						",
 " https://services.math.duke.edu/education/ccp/materials/diffcalc/sir/sir1.html",
-" Population is S0=7.9 million, r0=1.5, the average period of	",
-" infectiveness is  3 days so k=1/3, b=r0*k/S0=6.3e-8, and initial",
+" Population is N=S0=7.9 million, r0=1.5, the average period of	",
+" infectiveness is  3 days so k=1/3, b=r0*k=(3/2)(1/3)=0.5, and initial",
 " infected is I0=10.						",
-" 								",
-" Without deaths, or with recovered and dead not distinguished:	",
-"  sirdepidemic h=1 stepmax=200 k=.3333 b=6.3e-8 S0=7.9e6 mode=SIRD |",
-"      xgraph n=200 nplot=4 d1=1 style=normal			",
 "								",
-" With deaths and recovered distinguished .1% mortality:	",
-"  sirdepidemic h=1 stepmax=200 k=.3323 nu=.001 b=6.3e-8 S0=7.9e6 mode=SIRD |",
-"      xgraph n=200 nplot=4 d1=1 style=normal			",
-" (you will have to zoom in on the plot to see the 12,000 deaths",
-" 								",
-" Alternatively, if we normalize S0, I0, and R0 by the total	",
-" population, then S0=1.0 the initial population of infectives  ",
-" becomes I0=1.27e-6, the average period of infectiveness is	 ",
-" 3 days making k=1/3, and the possibility of infective contact ",
-" is every 2 days, making b=1/2.  Note that in the S0=1.0 case,",
-" r0=1.5 = b/k.							",
+"  Normalized by N						",
+"  sird_epidemic h=1 stepmax=200 k=.3333 b=.5 N=7.9e6 mode=SIR |	",
+"      xgraph n=200 nplot=3 d1=1 style=normal &			",
 "								",
-" Without recovered and dead being distinguished		",
-" sirdepidemic h=1 stepmax=100 b=.5 k=.333 S0=1.0 I0=1.27e-6 mode=SIRD|",
-"   xgraph n=100 nplot=4 d1=1 style=normal			",
-" 								",
-" With recovered and dead being distinguished 0.1% mortality	",
-" sirdepidemic h=1 stepmax=100 b=.5 k=.332 nu=.001 S0=1.0 I0=1.27e-6 mode=SIRD|",
-"   xgraph n=100 nplot=4 d1=1 style=normal			",
-" 								",
-" Thus, it may be easier to determine b and k with S0=1.0, and",
-" then try different I0 values					",
+"  Normalized by N, with scaling of the output by N:		",
+"  sird_epidemic h=1 scale=1 stepmax=200 k=.3333 b=.5 N=7.9e6 mode=SIR |",
+"      xgraph n=200 nplot=3 d1=1 style=normal &			",
+
 NULL};
 
 /*
  * References:
- *
- * Kermack, W. O. and A. G. McKendrick (1927) A contribution to the 
- *  mathematical theory of epidemics, Procedings of the Royal Socieity A.
+ * Kermack, W.O. and A.G. McKendrick, A Contribution to the Mathematical Theory of Epidemics.
+ *   Proceedings of the Royal Society of London. Series A, 115:700-721, 1927.
  *
  * The SRI model describes an epidemic in terms of
  *   S = susceptibles in a population
@@ -122,12 +107,13 @@ NULL};
  *
  *   S0 = initial value of the susceptibles
  *   I0 = initial value of the infectives
- *   R0 = initial recovered = 0
- *   D0 = initial dead = 0
+ *   R0 = initial recovered = usually 0
+ *   D0 = initial dead = usually 0 
  *   
- *  Always S(t) + I(t) + R(t) + D(t) = S0 + I0   
+ *   S(t) + I(t) + R(t) + D(t) = S0 + I0  = 1   (normalized by N)
+ *   S(t) + I(t) + R(t) + D(t) = S0 + I0  = N   (not normalized by N)
  *   
- *   r0 = b*S0/k  = basic reproduction rate
+ *   r0 = b*S0/k  = basic reproduction rate = b/k when S is normalized by N
  *   b = rate of infection
  *   k = rate removal
  *   nu = mortality rate  
@@ -174,10 +160,13 @@ main(int argc, char **argv)
 	int stepmax=0;		/* maximum number of steps */
 
 	/* initial values of S, I, R */
+	int normalize=1;	/* normalize S and I by R; =0 don't normalize */
+	int scale=0;		/* don't scale; =1 scale output S,I,R,D by N */
+	double N=0.0;		/* total population size */
 	double S0=0.0;		/* initial value of susceptible population */
 	double I0=0.0;		/* initial value of infectives */
 	double R0=0.0;		/* initial value of recovered */
-	double D0=0.0;		/* initial value dead */
+	double D0=0.0;		/* initial value of dead */
 
 	double t=0.0;		/* time */
 	double h=.001;		/* time increment */
@@ -219,14 +208,17 @@ main(int argc, char **argv)
 	if (!getparint("verbose", &verbose))	verbose = 0;
 
 	/* Initial conditions y[0] = S  y[1]=I  y[2]=R */
-	if (!getpardouble("S0", &S0))		S0=1000;
-		y[0] = S0;
+	if (!getparint("normalize", &normalize))	normalize=1;
+	if (!getparint("scale", &scale))	scale=0;
+	if (!getpardouble("N", &N))		N=1000;
+	if (!getpardouble("S0", &S0))		S0=N;
+		y[0] = (normalize ? S0/N: S0);
 	if (!getpardouble("I0", &I0))		I0=1.0;
-		y[1] = I0;
+		y[1] = (normalize ? I0/N: I0);
 	if (!getpardouble("R0", &R0))		R0=0.0;
-		y[2] = R0;
+		y[2] = (normalize ? R0/N: R0);
 	if (!getpardouble("D0", &D0))		D0=0.01;
-		y[3] = D0;
+		y[3] = (normalize ? D0/N: D0);
 
 	if (!getpardouble("h", &h))		h = 1.0;
 	if (!getpardouble("tol", &tol))		tol = RKE_ERR_BIAS_INIT;
@@ -276,26 +268,26 @@ main(int argc, char **argv)
 
 	if (imode==S_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][0];
+			tempout[i] = (scale ?  N*yout[i][0]: yout[i][0]);
 	} else if (imode==I_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][1];
+			tempout[i] = (scale ? N*yout[i][1]: yout[i][1]);
 	} else if (imode==R_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][2];
+			tempout[i] = (scale ? N*yout[i][2]: yout[i][2]);
 	} else if (imode==D_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][3];
+			tempout[i] = (scale ? N*yout[i][3]: yout[i][3]);
 	} else if (imode==SIRD_MODE) {
 
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][0];
+			tempout[i] = (scale ? N*yout[i][0]: yout[i][0]);
 		for (i=0; i<stepmax; ++i)
-			tempout[i+stepmax] = yout[i][1];
+			tempout[i+stepmax] = (scale ? N*yout[i][1]: yout[i][1]);
 		for (i=0; i<stepmax; ++i)
-			tempout[i+2*stepmax] = yout[i][2];
+			tempout[i+2*stepmax] = (scale ? N*yout[i][2]: yout[i][2]);
 		for (i=0; i<stepmax; ++i)
-			tempout[i+3*stepmax] = yout[i][3];
+			tempout[i+3*stepmax] = (scale ? N*yout[i][3]: yout[i][3]);;
 	}
 
 	if (imode==SIRD_MODE) {
@@ -314,7 +306,7 @@ main(int argc, char **argv)
 static int
 sird_epidemic_equations(double t, double y[4] , double yprime[4])
 /*********************************************************************
-sir_epidemic_equations - the system of ODE's descibing the SIRD epidemic
+sird_epidemic_equations - the system of ODE's descibing the SIRD epidemic
   model
 **********************************************************************
 t	independent variable "time"
