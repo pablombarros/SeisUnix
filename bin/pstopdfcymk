@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: ps2pdfwr,v 1.4 2002/04/23 11:58:36 easysw Exp $
+# $Id: pstopdfcymk.sh,v 1.1 2020/05/19 21:15:52 john Exp john $
 # Convert PostScript to PDF without specifying CompatibilityLevel.
 
 

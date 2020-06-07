@@ -1,7 +1,7 @@
-/* Copyright (c) Colorado School of Mines, 2011.*/
+/* Copyright (c) Colorado school of Mines, 2011.*/
 /* All rights reserved.		       */
 
-/* SIR_EPIDEMIC: $Revision: 1.21 $ ; $Date: 2015/02/19 18:25:06 $        */
+/* SIR_EPIDEMIC: $Revision: 1.2 $ ; $Date: 2020/05/25 19:41:16 $        */
 
 #include "par.h"
 #include "rke.h"
@@ -17,23 +17,25 @@ char *sdoc[] = {
 "								",
 " Required Parameters: none					",
 " Optional Parameters:						",
-" normalize=1		Normalize S, I by N; =0 don't normalize	",
-" scale=0		don't scale; =1 scale S,I,R by N	",
+" normalize=1		Normalize s, i by N; =0 don't normalize	",
 " N=1000		total population size			",
-" S0=N			initial number of susceptibles		",
-" I0=1			initial number of infectives		",
-" R0=0.0		initial number of removed (should be 0)	",
-"	 		(not the basic reproducion rate r0)	",
-" 								",
+" s0=N			initial number of susceptibles		",
+" i0=1			initial number of infectives		",
+" r0=0.0		initial number of removed (should be 0)	",
+"	 		(not the basic reproducion rate R0)	",
+" scale=0		don't scale output			",
+"			=1 scale output s,i,r by N		",
+"			=2 scale output s,i,r by s0		",
 " k=.5			transmission rate			",
 " b=.3333		removal rate = death + recovery rates	",
-" 								",
 "  ... with vital dynamics					",
 " mu=0.0		birth rate				",
 " nu=0.0		death rate				",
 "  ... SIRS ... with reinfection				",
 " xi=0.0		re-infection parameter			",
-" 								",
+" ... with social distancing (Baker 2020)			",
+" gamma=0		no social distancing; gamma > 0 distancing",
+" 			(Baker 2020 uses value of 20)		",
 " h=1			increment in time			",
 " tol=1.e-08		error tolerance				",
 " stepmax=40		maximum number of steps to compute	",
@@ -54,16 +56,16 @@ char *sdoc[] = {
 " Removed, who are dead and the recovered.			",
 "								",
 " Important quantities:						",
-" r0 = number of new infections per single infected host  	",
-"  1 < r0 < 1.5 for influenza, (2.2 to 2.7 for Covid-19), 12 to	",
+" R0 = number of new infections per single infected host  	",
+"  1 < R0 < 1.5 for influenza, (2.2 to 2.7 for Covid-19), 12 to	",
 " 18 for measles.						",
-"  b, k, S0, and r0 are related via				",
-"  k = b*S0/r0 = b/r0 when S0/N and S0=N 			",
+"  b, k, s0, and R0 are related via				",
+"  k = b*s0/R0 = b/R0 when  s0=s0/N and s0=N 			",
 "  								",
 "  It is often easier to determine the recovery rate k (in units",
-"  of h and to determine reasonable estimate of S0 and of r0 	",
-"  and to calculate the infection rate b = k*r0/S0 or b=k*r0	",
-"  when S0=N and is normalized by N.				",
+"  of h and to determine reasonable estimate of s0 and of R0 	",
+"  and to calculate the infection rate b = k*R0/s0 or b=k*R0	",
+"  when s0=N and is normalized by N.				",
 "								",
 " S = total number susceptible to the infection			",
 " I = total number of those capable of passing on the infection	",
@@ -77,22 +79,22 @@ char *sdoc[] = {
 " sir_epidemic | xgraph n=40 nplot=3 d1=1 style=normal &	",
 " 								",
 " Influenza in an English boarding school, 1978:		",
-" N=762 I0=1,  2 students infected per day, 1/2 of the infected	",
+" s0=N=762 i0=1,  2 students infected per day, 1/2 of the infected	",
 " population removed per day. Take b=2 k=0.5 			",
 "								",
 " Normalized by N:						",
-" sir_epidemic h=0.1 stepmax=200 I0=1 b=2 k=.5 N=762 mode=SIR |	",
+" sir_epidemic h=0.1 stepmax=200 i0=1 b=2 k=.5 N=762 mode=SIR |	",
 "  xgraph n=200 nplot=3 d1=.1 style=normal label1=\"days\"  &	",
 " 								",
 " Normalized by N, output scaled by N:				",
-" sir_epidemic h=0.1 stepmax=200 I0=1 b=2 k=.5 N=762 mode=SIR scale=1 |",
+" sir_epidemic h=0.1 stepmax=200 i0=1 b=2 k=.5 N=762 mode=SIR scale=1 |",
 "  xgraph n=200 nplot=3 d1=.1 style=normal label1=\"days\" &	",
 " 								",
 " Kong Flu 1968-1969:						",
 " https://services.math.duke.edu/education/ccp/materials/diffcalc/sir/sir1.html",
-" Population is N=S0=7.9 million, r0=1.5, the average period of	",
-" infectiveness is  3 days so k=1/3, b=r0*k=(3/2)(1/3)=0.5, and initial",
-" infected is I0=10.						",
+" Population is N=s0=7.9 million, R0=1.5, the average period of	",
+" infectiveness is  3 days so k=1/3, b=R0*k=(3/2)(1/3)=0.5, and initial",
+" infected is i0=10.						",
 "								",
 "  Normalized by N						",
 "  sir_epidemic h=1 stepmax=200 k=.3333 b=.5 N=7.9e6 mode=SIR |	",
@@ -106,24 +108,26 @@ NULL};
 
 /*
  * References:
+ *  Baker, Rose (2020) Reactive Social distancing in a SIR model of 
+ *   epidemics such as COVID-19.	arXiv:2003.08285 
  *
  * Kermack, W. O. and A. G. McKendrick (1927) A contribution to the 
  *  mathematical theory of epidemics, Procedings of the Royal Socieity A.
  *
  * The SRI model describes an epidemic in terms of
- *   S = susceptibles in a population
- *   I = infectives in a population
- *   R = removed = recovered + dead
+ *   s = susceptibles in a population
+ *   i = infectives in a population
+ *   r = removed = recovered + dead
  *
- *   S0 = initial value of the susceptibles
- *   I0 = initial value of the infectives
- *   R0 = initial removed value = 0
+ *   s0 = initial value of the susceptibles
+ *   i0 = initial value of the infectives
+ *   r0 = initial removed value = 0 usually
  *   
- *   S(t) + I(t) + R(t) = S0 + I0   = N for the unnormalized case.
- *   If normalized by total population N, then S(t) + I(t) + R(t) = 1 
- *   and S(t) starts at its maxium value of S0/N.   
+ *   s(t) + i(t) + r(t) = s0 + i0   = N for the unnormalized case.
+ *   If normalized by total population N, then s(t) + i(t) + r(t) = 1 
+ *   and s(t) starts at its maxium value of s0/N.   
  *   
- *   r0 = b*S0/k  = basic reproduction rate
+ *   R0 = b*s0/k  = basic reproduction rate = b/k when s0=N  and s0=s0/N
  *   b = rate of infection
  *   k = rate removal = recovery rate + death rate
  *   xi = re-infection rate 
@@ -131,34 +135,43 @@ NULL};
  *   nu = death rate
  *    
  *   The encounters between susceptibles and the infectives is represented
- *   by the product S*I  
+ *   by the product s*I  
  *
  *  SIR model:  
- *	S'(t) =  - b*S*I 
- *	I'(t) = b*S*I- k*I 
- *	R'(t) = k*I 
+ *	s'(t) =  - b*s(t)*i(t) 
+ *	i'(t) = b*s(t)*i(t)- k*i(t) 
+ *	r'(t) = k*i(t) 
+ *
+ *  SIR model (with Baker 2020 reactive social distancing):  
+ *   As infective number increases, social distancing increases and the 
+ *   infectivity value b decreases.
+ *
+ *	s'(t) =  - b*s(t)*i(t)/(1+gamma*i(t)) 
+ *	i'(t) = b*s(t)*i(t)/(1+gamma*i(t)) - k*i(t) 
+ *	r'(t) = k*i(t) 
  *    
  *  SIR model with vital statistics (mu birth rate, nu death rate):  
- *	S'(t) = mu - nu*S - b*S*I 
- *	I'(t) = b*S*I - k*I - nu*I 
- *	R'(t) = k*I -  nu*R
+ *	s'(t) = mu - nu*s - b*s*i
+ *	i'(t) = b*s*i - k*i - nu*i 
+ *	r'(t) = k*i -  nu*r
  *
  *  SIRS model with vital statistics (mu birth rate, nu death rate) and reinfection:  
- *	S'(t) = mu - nu*S + xi*R - b*S*I 
- *	I'(t) = b*S*I - k*I - nu*I 
- *	R'(t) = k*I - xi*R - nu*R
+ *	s'(t) = mu - nu*s + xi*r - b*s*i 
+ *	i'(t) = b*s*i - k*i - nu*i 
+ *	r'(t) = k*i - xi*r - nu*r
  *
- * S(t)= susceptible members 
- * I(t)= infectives
- * R(t)= removed members = recovered + dead + sequestered
+ * s(t)= susceptible members 
+ * i(t)= infectives
+ * r(t)= removed members = recovered + dead + sequestered
  *
- * There is an impiled flow from S(t) -> I(t) -> R(t), though infected
- * who are quarantined immediately become part of R(t). 
+ * There is an impiled flow from s(t) -> i(t) -> r(t), though infected
+ * who are quarantined immediately become part of r(t). 
  *
- * The product xi*R are the reinfected members of the recovered group, and are thus 
- * removed from the recovered group and fed back to the susceptible group.
+ * The product xi*r are the reinfected members of the recovered group,
+ * and are thus removed from the recovered group and fed back to the
+ * susceptible group.
  * 
- * The product b*S*I denotes the interaction of the infective population with
+ * The product b*s*i denotes the interaction of the infective population with
  * the susceptible population..
  *
  * Author:  April 2020: John Stockwell
@@ -184,13 +197,15 @@ main(int argc, char **argv)
 	int verbose=0;		/* verbose flag =1 chatty, =0 silent */
 	int stepmax=0;		/* maximum number of steps */
 
-	/* initial values of S, I, R */
-	int normalize=1;	/* normalize S and I by N; =0 don't normalize */
-	int scale=0;		/* don't scale; =1 scale output S,I,R by N    */
+	/* initial values of s, I, R */
+	int normalize=1;	/* normalize s and I by N; =0 don't normalize */
+	int scale=0;		/* don't scale; =1 scale output s,i,r by N    */
+				/* =2 scale output s,i,r by s0	*/
+	float scalar=0.0;	/* scale value */
 	double N=0.0;		/* total population size */
-	double S0=0.0;		/* initial value of susceptible population */
-	double I0=0.0;		/* initial value of infectives */
-	double R0=0.0;		/* initial value of removed */
+	double s0=0.0;		/* initial value of susceptible population */
+	double i0=0.0;		/* initial value of infectives */
+	double r0=0.0;		/* initial value of removed */
 	
 	double t=0.0;		/* time */
 	double h=.001;		/* time increment */
@@ -231,16 +246,18 @@ main(int argc, char **argv)
 	if (!getparint("stepmax", &stepmax))	stepmax = 40;
 	if (!getparint("verbose", &verbose))	verbose = 0;
 
-	/* Initial conditions y[0] = S  y[1]=I  y[2]=R */
+	/* Initial conditions y[0] = s  y[1]=I  y[2]=R */
 	if (!getparint("normalize", &normalize))	normalize=1;
-	if (!getparint("scale", &scale))	scale=0;
 	if (!getpardouble("N", &N))		N=1000;
-	if (!getpardouble("S0", &S0))		S0=N;
-		 y[0] = (normalize ? S0/N: S0);
-	if (!getpardouble("I0", &I0))		I0=1.0;
-		 y[1] = (normalize ? I0/N: I0);
-	if (!getpardouble("R0", &R0))		R0=0.0;
-		y[2] = (normalize ? R0/N: R0);
+	if (!getpardouble("s0", &s0))		s0=N;
+		 y[0] = (normalize ? s0/N: s0);
+	if (!getpardouble("i0", &i0))		i0=1.0;
+		 y[1] = (normalize ? i0/N: i0);
+	if (!getpardouble("r0", &r0))		r0=0.0;
+		y[2] = (normalize ? r0/N: r0);
+
+	/* scale output flag */
+	if (!getparint("scale", &scale))	scale=0;
 
 	if (!getpardouble("h", &h))		h = 1.0;
 	if (!getpardouble("tol", &tol))		tol = RKE_ERR_BIAS_INIT;
@@ -249,7 +266,7 @@ main(int argc, char **argv)
 	if (!getpardouble("h", &h))		h = 1.0;
 	getparstring("mode", &mode);
 	if (STREQ(mode, "S"))    	imode = S_MODE;
-	else if (STREQ(mode, "I"))	imode = I_MODE;
+	else if (STREQ(mode, "S"))	imode = I_MODE;
 	else if (STREQ(mode, "R"))      imode = R_MODE;
 	else if (!STREQ(mode, "SIR"))
 	    err("unknown operation=\"%s\", see self-doc", mode);
@@ -286,24 +303,31 @@ main(int argc, char **argv)
 
 	/* write out according to the mode */
 	tempout = ealloc1float(3*stepmax);
+	
+
+	if (scale==1) {
+		scalar=N;
+	} else if (scale==2) {
+		scalar=s0;
+	}
 
 	if (imode==S_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = (scale ?  N*yout[i][0]: yout[i][0]);
+			tempout[i] = (scale ?  scalar*yout[i][0]: yout[i][0]);
 	} else if (imode==I_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = (scale ? N*yout[i][1]: yout[i][1]);
+			tempout[i] = (scale ? scalar*yout[i][1]: yout[i][1]);
 	} else if (imode==R_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = (scale ? N*yout[i][2]: yout[i][2]);
+			tempout[i] = (scale ? scalar*yout[i][2]: yout[i][2]);
 	} else if (imode==SIR_MODE) {
 
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = (scale ?  N*yout[i][0]: yout[i][0]);
+			tempout[i] = (scale ?  scalar*yout[i][0]: yout[i][0]);
 		for (i=0; i<stepmax; ++i)
-			tempout[i+stepmax] = (scale ? N*yout[i][1]: yout[i][1]);
+			tempout[i+stepmax] = (scale ? scalar*yout[i][1]: yout[i][1]);
 		for (i=0; i<stepmax; ++i)
-			tempout[i+2*stepmax] = (scale ? N*yout[i][2]: yout[i][2]);
+			tempout[i+2*stepmax] = (scale ? scalar*yout[i][2]: yout[i][2]);
 	}
 
 	if (imode==SIR_MODE) {
@@ -340,6 +364,9 @@ Notes: This is an example of an autonomous system of ODE's
 	/* vital dyamics include */
 	double mu=0.0;	/* (linear) birth rate		*/
 	double nu=0.0;	/* death rate			*/
+
+	/* social distancing following Baker 2020 */
+	double gamma=0.0;	/* social distancing parameter */
 	
 	/* parameters */
 	if (!getpardouble("b", &b))		b = 0.5;
@@ -347,8 +374,11 @@ Notes: This is an example of an autonomous system of ODE's
 	if (!getpardouble("xi", &xi))		xi = 0.0;
 	if (!getpardouble("mu", &mu))		mu = 0.0;
 
-	yprime[0] = mu - b*y[0]*y[1] + xi*y[2] - nu*y[0];
-	yprime[1] = b*y[0]*y[1]  - k*y[1] - nu*y[1];
+	/* Baker 2020 reactive social distancing */
+	if (!getpardouble("gamma", &gamma))	gamma = 0.0;
+
+	yprime[0] = mu - b*y[0]*y[1]/(1 + gamma*y[1]) + xi*y[2] - nu*y[0];
+	yprime[1] = b*y[0]*y[1]/(1 + gamma*y[1])  - k*y[1] - nu*y[1];
 	yprime[2] = k*y[1] - xi*y[2] - nu*y[2]; 
 
     return 1;

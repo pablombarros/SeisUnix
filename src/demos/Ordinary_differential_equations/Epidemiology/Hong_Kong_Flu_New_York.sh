@@ -22,22 +22,23 @@
 #								
 # When xi is nonzero, then there is a potential that fraction of 
 # the removed population can be reinfected.			
-
- 
+#
+# When mu>0 and nu>0 birth and death occur.
+# 
 #  The SRI model describes an epidemic in terms of
 #    S = susceptibles in a population
 #    I = infectives in a population
 #    R = removed = recovered + dead
 # 
-#    S0 = initial value of the susceptibles
-#    I0 = initial value of the infectives
-#    R0 = initial removed value = 0
+#    s0 = initial value of the susceptibles
+#    i0 = initial value of the infectives
+#    r0 = initial removed value = 0
 #    
-#    S(t) + I(t) + R(t) = S0 + I0   = N for the unnormalized case.
-#    If normalized by total population N, then S(t) + I(t) + R(t) = 1 
-#    and S(t) starts at its maxium value of S0/N.   
+#    s(t) + i(t) + r(t) = r0 + r0   = N for the unnormalized case.
+#    If normalized by total population N, then s(t) + i(t) + r(t) = 1 
+#    and s(t) starts at its maxium value of s0/N, if normalization.   
 #    
-#    r0 = bS0/k  = basic reproduction rate
+#    R0 = bS0/k  = basic reproduction rate
 #    b = rate of infection
 #    k = rate removal = recovery rate + death rate
 #    xi = re-infection rate 
@@ -45,34 +46,41 @@
 #    nu = death rate
 #     
 #    The encounters between susceptibles and the infectives is represented
-#    by the product SI  
+#    by the product  s*i 
 # 
-#   SIR model:  
-# 	S'(t) =  - bSI 
-# 	I'(t) = bSI- kI 
-# 	R'(t) = kI 
+#   SIR model:   (Here ' = d/dt )
+# 	s'(t) =  - b*s(t)*i(t) 
+# 	i'(t) = b*s(t)*i(t)- k*i(t)
+# 	r'(t) = k*i(t) 
+# 
+#   SIR model with Baker 2020 social distancing:  
+# 	s'(t) =  - b*s*i/(1 + gamma*i) 
+# 	i'(t) = b*s*i/(1 + gamma*i) - k*i 
+# 	r'(t) = k*i 
 #     
-#   SIR model with vital statistics (mu birth rate, nu death rate):  
-# 	S'(t) = mu - nuS - bSI 
-# 	I'(t) = bSI - kI - nuI 
-# 	R'(t) = kI -  nuR
+#   SIR model with vital dynamics (mu birth rate, nu death rate):  
+# 	s'(t) = mu - nu*s - b*s*i 
+# 	i'(t) = b*s*i - k*i - nu*i 
+# 	r'(t) = k*i -  nu*r
 # 
-#   SIRS model with vital statistics (mu birth rate, nu death rate) and reinfection:  
-# 	S'(t) = mu - nuS + xiR - bSI 
-# 	I'(t) = bSI - kI - nuI 
-# 	R'(t) = kI - xiR - nuR
+#   SIRS model with vital dynamics (mu birth rate, nu death rate),
+#    and xi reinfection:  
+# 	s'(t) = mu - nu*s + xi*r - b*s*i 
+# 	i'(t) = b*s*i - k*i - nu*i 
+# 	r'(t) = k*i - xi*r - nu*r
 # 
-#  S(t)= susceptible members 
-#  I(t)= infectives
-#  R(t)= removed members = recovered + dead + sequestered
+#  s(t)= susceptible members 
+#  i(t)= infectives
+#  r(t)= removed members = recovered + dead + sequestered
 # 
-#  There is an impiled flow from S(t) -> I(t) -> R(t), though infected
+#  There is an impiled flow from s(t) -> i(t) -> r(t), though infected
 #  who are quarantined immediately become part of R(t). 
 # 
-#  The product xiR are the reinfected members of the recovered group, and are thus 
-#  removed from the recovered group and fed back to the susceptible group.
+#  The product xi*r are the reinfected members of the recovered group,
+#  and are thus removed from the recovered group and fed back to the 
+#  susceptible group.
 #  
-#  The product bSI denotes the interaction of the infective population with
+#  The product b*s*i denotes the interaction of the infective population with
 #  the susceptible population..
 # 
 								
@@ -85,15 +93,60 @@
 # infected is I0=10.						
 #								
 #  Normalized by N						
- sir_epidemic h=1 stepmax=200 k=.3333 b=.5 N=7.9e6 mode=SIR |	
+ sir_epidemic h=1 i0=10 stepmax=200 k=.3333 b=.5 N=7.9e6 mode=SIR |
       xgraph n=200 nplot=3 d1=1 style=normal \
  width=1000 height=1000  \
  title="New York winter 1968-1969 Hong Kong Flu"  &
 
 #  Normalized by N, output scaled by N
- sir_epidemic h=1 scale=1 stepmax=200 k=.3333 b=.5 N=7.9e6 mode=SIR |
+ sir_epidemic h=1 scale=1 i0=10 stepmax=200 k=.3333 b=.5 N=7.9e6 mode=SIR |
       xgraph n=200 nplot=3 d1=1 style=normal  \
  width=1000 height=1000  \
  title="New York winter 1968-1969 Hong Kong Flu"  &
+
+############ Vital dynamics ###################
+# an example based on the Hong Kong flu data
+#  Normalized by N						
+ sir_epidemic h=1 i0=10 stepmax=200 mu=.001 nu=10 \
+    k=.3333 b=.5 N=7.9e6 mode=SIR |
+      xgraph n=200 nplot=3 d1=1 style=normal \
+ width=1000 height=1000  \
+ title="New York winter 1968-1969 Hong Kong Flu, birth and death"  &
+
+#  Normalized by N, output scaled by N
+ sir_epidemic h=1 scale=1 i0=10 stepmax=200 mu=.001 nu=10 k=.3333 b=.5 N=7.9e6 mode=SIR |
+      xgraph n=200 nplot=3 d1=1 style=normal  \
+ width=1000 height=1000  \
+ title="New York winter 1968-1969 Hong Kong Flu, birth and death"  &
+
+#### Social distancing #######
+#  Normalized by N
+# social distancing gamma=20 following Baker 2020
+ sir_epidemic h=1 i0=10 stepmax=200 gamma=20 k=.3333 b=.5 N=7.9e6 mode=SIR |
+      xgraph n=200 nplot=3 d1=1 style=normal \
+ width=1000 height=1000  \
+ title="New York winter 1968-1969 Hong Kong Flu with social distancing "  &
+
+#  Normalized by N, output scaled by N
+ sir_epidemic h=1 scale=1 i0=10 stepmax=200 gamma=20 k=.3333 b=.5 \
+  N=7.9e6 mode=SIR | xgraph n=200 nplot=3 d1=1 style=normal  \
+ width=1000 height=1000  \
+ title="New York winter 1968-1969 Hong Kong Flu with social distancing "  &
+
+########## Re-infection ##############
+# with re-infection it starts to look more like a predator-prey model
+# Re-infection 0.01% re-infection rate xi=0.0001
+#  Normalized by N						
+ sir_epidemic h=1 i0=10 stepmax=20000 k=.3333 b=.5 xi=.0001 N=7.9e6 mode=SIR |
+      xgraph n=20000 nplot=3 d1=1 style=normal \
+ width=1000 height=1000  \
+ title="New York winter 1968-1969 Hong Kong Flu, with re-infection"  &
+
+#  Normalized by N, output scaled by N
+ sir_epidemic h=1 scale=1 i0=10 stepmax=20000 k=.3333 b=.5 xi=.0001 N=7.9e6 \
+  mode=SIR | xgraph n=20000 nplot=3 d1=1 style=normal  \
+ width=1000 height=1000  \
+ title="New York winter 1968-1969 Hong Kong Flu, with re-infection"  &
+
 
 exit 0

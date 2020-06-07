@@ -141,7 +141,7 @@ Author:  Chris Liner, UTulsa, 11/16/03
 	coeff[1] = b;
         
         /* correlation coefficient */
-        num = n*sxy - sx*sy;
+        num = ABS(n*sxy - sx*sy);
         den = (n*sx2 - sx*sx)*(n*sy2 - sy*sy);
         den = sqrt(den);
 

@@ -4,10 +4,10 @@
 
  Required Parameter:							
  n=			the number of values of t and P(t)		
+ Optional Parameters:							
  nstart=0		start of input data window			
  nend=n		end   of input data window			
 
- Optional Parameters:							
  outpar=/dev/tty 	output parameter file				
 
  Notes:								
@@ -55,7 +55,7 @@
  intercept r. Thus, for y = mx + b    K=(-intercept/slope)
 
  The logarithmic derivative is implemented in this code as (dP/dt)/P
-
+ 
 
  Part II:
  Second we note that the solution is the logistic (sigmoid function) curve given by

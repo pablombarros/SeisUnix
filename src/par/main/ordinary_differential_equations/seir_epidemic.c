@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.			*/
 
-/* SEIREPIDEMIC: $Revision: 1.1 $ ; $Date: 2020/04/23 18:58:34 $	*/
+/* SEIREPIDEMIC: $Revision: 1.2 $ ; $Date: 2020/05/25 19:41:16 $	*/
 
 #include "par.h"
 #include "rke.h"
@@ -17,14 +17,15 @@ char *sdoc[] = {
 " Required Parameters: none					",
 " Optional Parameters:						",
 " normalize=1		normalize S,E,I by N; =0 don't normalize",
+" scale=0		don't scale; =1  scale output S,E,I by N",
 " N=1000		total population			",
-" S0=N			initial number of susceptibles		",
-" E0=1			initial number of exposed		",
-" I0=1			initial number of infectives		",
-" R0=0.0		initial number of removed (should be 0)	",
+" s0=N			initial number of susceptibles		",
+" e0=1			initial number of exposed		",
+" i0=1			initial number of infectives		",
+" r0=0.0		initial number of removed (should be 0)	",
 " 								",
 " k=.5			transmission rate			",
-" s=.3333		exposure to infective rate		",
+" eti=.3333		exposure to infective rate		",
 " b=.3333		removal rate = death + recovery rates	",
 " 								",
 " .... with vital dynamics (i.e. birth and death rate) 		",
@@ -56,8 +57,8 @@ char *sdoc[] = {
 " r0 = number of new infections per single infected host	",
 "  1 < r0 < 1.5 for influenza, (2.2 to 2.7 for Covid-19), 12 to ",
 " 18 for measles.						",
-"  b, k, S0, and r0 are related via				",
-"  k = b*S0/r0 = b/r0 when S0/N and S0=N			",
+"  b, k, s0, and r0 are related via				",
+"  k = b*s0/r0 = b/r0 when s0/N and s0=N			",
 "								",
 " S = number susceptible to the infection			",
 " E = number of exposed						",
@@ -74,9 +75,9 @@ char *sdoc[] = {
 "								",
 " Hong Kong Flu 1968-1969:					",
 " https://services.math.duke.edu/education/ccp/materials/diffcalc/sir/sir1.html",
-" Population is N=S0=7.9 million, r0=1.5, the average period of ",
+" Population is N=s0=7.9 million, r0=1.5, the average period of ",
 " infectiveness is  3 days so k=1/3, b=r0*k=(3/2)(1/3)=0.54, and initial",
-" infected is I0=10. An exposed to infective rate s=1/3 is assumed",
+" infected is i0=10. An exposed to infective rate s=1/3 is assumed",
 "								",
 "  seirepidemic h=1 stepmax=200 s=.3333 k=.3333 b=.5 N=7.9e6 mode=SIR |",
 "	xgraph n=200 nplot=4 d1=1 style=normal &		",
@@ -96,16 +97,16 @@ NULL};
  *   I = infectives in a population
  *   R = removed = recovered + dead
  *
- *   S0 = initial value of the susceptibles
- *   E0 = initial value of the exposed
- *   I0 = initial value of the infectives
- *   R0 = initial removed value = 0
+ *   s0 = initial value of the susceptibles
+ *   e0 = initial value of the exposed
+ *   i0 = initial value of the infectives
+ *   r0 = initial removed value = 0
  *   
  *   S(t) + E(t) + I(t) + R(t) = N 
  *   
  *   S(t) + E(t) + I(t) + R(t) = 1  when S, E, and I are normalized by N
  *   
- *   r0 = b*S0/k  = basic reproduction rate
+ *   r0 = b*s0/k  = basic reproduction rate
  *   b = rate of exposure
  *   s = rate of infection of the exposed
  *   k = rate removal = recovery rate + death rate
@@ -117,6 +118,15 @@ NULL};
  *	E'(t) = b*S*I - s*E	( exposed - newly infected )
  *	I'(t) = s*E - k*I 	( infectives - newly removed )
  *	R'(t) = k*I 		( removed )	
+ *
+ *  Without vital dynamics.
+ *  SIR model (with Baker 2020 reactive social distancing):
+ *   As infective number increases, social distancing increases and the  
+ *   infectivity value b decreases.
+ *
+ *      s'(t) =  - b*s(t)*i(t)/(1+gamma*i(t))
+ *      i'(t) = b*s(t)*i(t)/(1+gamma*i(t)) - k*i(t)
+ *      r'(t) = k*i(t)
  *
  *   With vital dynamics (birth and death rates added).
  *   The encounters between susceptibles and infectives is represented
@@ -163,12 +173,13 @@ main(int argc, char **argv)
 
 	/* initializations */
 	int normalize=1;	/* normalize S and I by N; =0 don't normalize */
-	double N=0.0;	   /* total population size */
+	int scale=0;		/* don't scale; =1 scale S,I,E,R by N */
+	double N=0.0;		/* total population size */
 
-	double S0=0.0;		/* initial value of susceptible population */
-	double E0=0.0;		/* initial value of expose */
-	double I0=0.0;		/* initial value of infectives */
-	double R0=0.0;		/* initial value of removed */
+	double s0=0.0;		/* initial value of susceptible population */
+	double e0=0.0;		/* initial value of expose */
+	double i0=0.0;		/* initial value of infectives */
+	double r0=0.0;		/* initial value of removed */
 
 	double t=0.0;		/* time */
 	double h=.001;		/* time increment */
@@ -211,15 +222,16 @@ main(int argc, char **argv)
 
 	/* Initial conditions y[0] = S  y[1]=E  y[2]=I  y[3]=R */
 	if (!getparint("normalize", &normalize))	normalize=1;
+	if (!getparint("scale", &scale))	scale=0;
 	if (!getpardouble("N", &N))		N=1000;
-	if (!getpardouble("S0", &S0))	   S0=N;
-		 y[0] = (normalize ? S0/N: S0);
-	if (!getpardouble("E0", &E0))	   E0=1.0;
-		 y[1] = (normalize ? I0/N: I0);
-	if (!getpardouble("I0", &I0))	   I0=1.0;
-		 y[1] = (normalize ? I0/N: I0);
-	if (!getpardouble("R0", &R0))		R0=0.0;
-		y[3] = R0;
+	if (!getpardouble("s0", &s0))	   s0=N;
+		 y[0] = (normalize ? s0/N: s0);
+	if (!getpardouble("e0", &e0))	   e0=1.0;
+		 y[1] = (normalize ? i0/N: i0);
+	if (!getpardouble("i0", &i0))	   i0=1.0;
+		 y[1] = (normalize ? i0/N: i0);
+	if (!getpardouble("r0", &r0))		r0=0.0;
+		y[3] = (normalize ? r0/N: r0);
 
 	if (!getpardouble("h", &h))		h = 1.0;
 	if (!getpardouble("tol", &tol))		tol = RKE_ERR_BIAS_INIT;
@@ -269,26 +281,26 @@ main(int argc, char **argv)
 
 	if (imode==S_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][0];
+			tempout[i] = (scale ? N*yout[i][0]: yout[i][0]);
 	} else if (imode==E_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][1];
+			tempout[i] = (scale ? N*yout[i][1]: yout[i][1]);
 	} else if (imode==I_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][2];
+			tempout[i] = (scale ? N*yout[i][2]: yout[i][2]);
 	} else if (imode==R_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][3];
+			tempout[i] = (scale ? N*yout[i][3]: yout[i][3]);
 	} else if (imode==SEIR_MODE) {
 
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = yout[i][0];
+			tempout[i] = (scale ? N*yout[i][0]: yout[i][0]);
 		for (i=0; i<stepmax; ++i)
-			tempout[i+stepmax] = yout[i][1];
+			tempout[i+stepmax] = (scale ? N*yout[i][1]: yout[i][1]);
 		for (i=0; i<stepmax; ++i)
-			tempout[i+2*stepmax] = yout[i][2];
+			tempout[i+2*stepmax] = (scale ? N*yout[i][2]: yout[i][2]);
 		for (i=0; i<stepmax; ++i)
-			tempout[i+3*stepmax] = yout[i][3];
+			tempout[i+3*stepmax] = (scale ? N*yout[i][3]: yout[i][3]);
 	}
 
 	if (imode==SEIR_MODE) {
@@ -318,7 +330,7 @@ Notes: This is an example of an autonomous system of ODE's
 **********************************************************************/
 {
 	double b=0.0;	/* exposure rate		*/
-	double s=0.0;	/* exposure to infection rate	*/
+	double eti=0.0;	/* exposure to infection rate	*/
 	double k=0.0;	/* removal rate			*/
 	
 	/* ... vital dynamics ... */
@@ -330,7 +342,7 @@ Notes: This is an example of an autonomous system of ODE's
 	
 	/* parameters */
 	if (!getpardouble("b", &b))		b = .5;
-	if (!getpardouble("s", &k))		s = .333;
+	if (!getpardouble("eti", &k))		eti = .333;
 	if (!getpardouble("k", &k))		k = .333;
 
 	/* ... vital dynamics ... */
@@ -341,8 +353,8 @@ Notes: This is an example of an autonomous system of ODE's
 	if (!getpardouble("xi", &xi))		xi = 0.0;
 
 	yprime[0] = mu - nu*y[0] - b*y[0]*y[1] + xi*y[3] ;
-	yprime[1] = b*y[0]*y[1]  - nu*y[1] -  s*y[1];
-	yprime[2] = s*y[1] - k*y[2] - nu*y[2]; 
+	yprime[1] = b*y[0]*y[1]  - nu*y[1] -  eti*y[1];
+	yprime[2] = eti*y[1] - k*y[2] - nu*y[2]; 
 	yprime[3] = k*y[2] - nu*y[3] - xi*y[3]; 
 
 	return 1;
