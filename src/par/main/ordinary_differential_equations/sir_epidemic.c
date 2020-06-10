@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado school of Mines, 2011.*/
 /* All rights reserved.		       */
 
-/* SIR_EPIDEMIC: $Revision: 1.2 $ ; $Date: 2020/05/25 19:41:16 $        */
+/* SIR_EPIDEMIC: $Revision: 1.3 $ ; $Date: 2020/06/10 22:12:13 $        */
 
 #include "par.h"
 #include "rke.h"
@@ -201,7 +201,7 @@ main(int argc, char **argv)
 	int normalize=1;	/* normalize s and I by N; =0 don't normalize */
 	int scale=0;		/* don't scale; =1 scale output s,i,r by N    */
 				/* =2 scale output s,i,r by s0	*/
-	float scalar=0.0;	/* scale value */
+	float scalar=0.0;	/* outpiutscale factor */
 	double N=0.0;		/* total population size */
 	double s0=0.0;		/* initial value of susceptible population */
 	double i0=0.0;		/* initial value of infectives */
@@ -305,6 +305,7 @@ main(int argc, char **argv)
 	tempout = ealloc1float(3*stepmax);
 	
 
+	/* set output scalar */
 	if (scale==1) {
 		scalar=N;
 	} else if (scale==2) {

@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.			*/
 
-/* SEIREPIDEMIC: $Revision: 1.2 $ ; $Date: 2020/05/25 19:41:16 $	*/
+/* SEIREPIDEMIC: $Revision: 1.3 $ ; $Date: 2020/06/10 22:12:13 $	*/
 
 #include "par.h"
 #include "rke.h"
@@ -17,7 +17,9 @@ char *sdoc[] = {
 " Required Parameters: none					",
 " Optional Parameters:						",
 " normalize=1		normalize S,E,I by N; =0 don't normalize",
-" scale=0		don't scale; =1  scale output S,E,I by N",
+" scale=0		don't scale				",
+"			=1 scale output S,E,I by N		",
+"			=2 scale output S,E,I by s0		",
 " N=1000		total population			",
 " s0=N			initial number of susceptibles		",
 " e0=1			initial number of exposed		",
@@ -174,6 +176,8 @@ main(int argc, char **argv)
 	/* initializations */
 	int normalize=1;	/* normalize S and I by N; =0 don't normalize */
 	int scale=0;		/* don't scale; =1 scale S,I,E,R by N */
+				/* =2 scale output s,i,r by s0  */
+	float scalar=0;		/* output scale factor */
 	double N=0.0;		/* total population size */
 
 	double s0=0.0;		/* initial value of susceptible population */
@@ -222,7 +226,6 @@ main(int argc, char **argv)
 
 	/* Initial conditions y[0] = S  y[1]=E  y[2]=I  y[3]=R */
 	if (!getparint("normalize", &normalize))	normalize=1;
-	if (!getparint("scale", &scale))	scale=0;
 	if (!getpardouble("N", &N))		N=1000;
 	if (!getpardouble("s0", &s0))	   s0=N;
 		 y[0] = (normalize ? s0/N: s0);
@@ -232,6 +235,9 @@ main(int argc, char **argv)
 		 y[1] = (normalize ? i0/N: i0);
 	if (!getpardouble("r0", &r0))		r0=0.0;
 		y[3] = (normalize ? r0/N: r0);
+
+	/* scale output flag */
+	if (!getparint("scale", &scale))	scale=0;
 
 	if (!getpardouble("h", &h))		h = 1.0;
 	if (!getpardouble("tol", &tol))		tol = RKE_ERR_BIAS_INIT;
@@ -279,28 +285,35 @@ main(int argc, char **argv)
 	/* write out according to the mode */
 	tempout = ealloc1float(4*stepmax);
 
+	/* set output scalar */
+	if (scale==1) {
+		scalar=N;
+	} else if (scale==2) {
+		scalar=s0;
+	}
+
 	if (imode==S_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = (scale ? N*yout[i][0]: yout[i][0]);
+			tempout[i] = (scale ? scalar*yout[i][0]: yout[i][0]);
 	} else if (imode==E_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = (scale ? N*yout[i][1]: yout[i][1]);
+			tempout[i] = (scale ? scalar*yout[i][1]: yout[i][1]);
 	} else if (imode==I_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = (scale ? N*yout[i][2]: yout[i][2]);
+			tempout[i] = (scale ? scalar*yout[i][2]: yout[i][2]);
 	} else if (imode==R_MODE) {
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = (scale ? N*yout[i][3]: yout[i][3]);
+			tempout[i] = (scale ? scalar*yout[i][3]: yout[i][3]);
 	} else if (imode==SEIR_MODE) {
 
 		for (i=0; i<stepmax; ++i)
-			tempout[i] = (scale ? N*yout[i][0]: yout[i][0]);
+			tempout[i] = (scale ? scalar*yout[i][0]: yout[i][0]);
 		for (i=0; i<stepmax; ++i)
-			tempout[i+stepmax] = (scale ? N*yout[i][1]: yout[i][1]);
+			tempout[i+stepmax] = (scale ? scalar*yout[i][1]: yout[i][1]);
 		for (i=0; i<stepmax; ++i)
-			tempout[i+2*stepmax] = (scale ? N*yout[i][2]: yout[i][2]);
+			tempout[i+2*stepmax] = (scale ? scalar*yout[i][2]: yout[i][2]);
 		for (i=0; i<stepmax; ++i)
-			tempout[i+3*stepmax] = (scale ? N*yout[i][3]: yout[i][3]);
+			tempout[i+3*stepmax] = (scale ? scalar*yout[i][3]: yout[i][3]);
 	}
 
 	if (imode==SEIR_MODE) {
