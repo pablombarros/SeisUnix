@@ -80,6 +80,7 @@ prune:
 	find $(TMPDIR) -name prop -type d -print -prune -exec rm -rf {} \;
 	find $(TMPDIR) -name Idle -type d -print -prune  -exec rm -rf {} \;
 	find $(TMPDIR) -name .dir\* -print -exec rm -rf {} \;
+	find $(TMPDIR) -name .swp\* -print -exec rm -rf {} \;
 	find $(TMPDIR) -name .index -print  -exec rm -rf {} \;
 	find $(TMPDIR) -name .places -print -exec rm -rf {} \;
 	find $(TMPDIR) -name .dir.\*wmd -print -exec rm -rf {} \;
