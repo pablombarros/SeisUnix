@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.		       */
 
-/* SIRD_EPIDEMIC: $Revision: 1.3 $ ; $Date: 2020/06/10 22:12:13 $	*/
+/* SIRD_EPIDEMIC: $Revision: 1.4 $ ; $Date: 2020/06/12 23:37:18 $	*/
 
 #include "par.h"
 #include "rke.h"
@@ -94,7 +94,8 @@ char *sdoc[] = {
 "  Normalized by N, with scaling of the output by N:		",
 "  sird_epidemic h=1 scale=1 i0=10 stepmax=200 k=.3333 b=.5 N=7.9e6 mode=SIR |",
 "      xgraph n=200 nplot=3 d1=1 style=normal &			",
-
+"     								", 
+" Related programs: sir_epidemic, seir_epidemic			", 
 NULL};
 
 /*

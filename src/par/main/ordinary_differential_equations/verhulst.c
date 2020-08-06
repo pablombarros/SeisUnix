@@ -50,6 +50,7 @@ char *sdoc[] = {
 " In the Verhulst equation, a1 is the reproduction rate and	",
 " a2 is the carrying capacity					",
 " 	x'(t) = a1 * x * ( 1 - x/a2 )			 	",
+" Related program: logisticfit 					",
 NULL};
 
 /*

@@ -17,7 +17,7 @@ char *sdoc[] = {
 " n=			the number of values of t and P(t)		",
 " Optional Parameters:							",
 " nstart=0		start of input data window			",
-" nend=n		end   of input data window			",
+" nend=n		end of input data window			",
 " 									",
 " outpar=/dev/tty 	output parameter file				",
 " 									",
@@ -46,6 +46,7 @@ char *sdoc[] = {
 " 									",
 " Caveat: this code will give results that get you close, but you may   ",
 " have to hand adjust r and K to suit your data. 			",
+" Related program: verhulst 						",
 NULL};
 
 /*

@@ -8,13 +8,13 @@
 # r0 = number of new infections per single infected host  	
 #  1 < r0 < 1.5 for influenza, (2.2 to 2.7 for Covid-19), 12 to	
 # 18 for measles.						
-#  b, k, S0, and r0 are related via				
-#  k = bS0/r0 = b/r0 when S0/N and S0=N 			
+#  b, k, s0, and r0 are related via				
+#  k = b*s0/r0 = b/r0 when s0/N and s0=N 			
 #  								
 #  It is often easier to determine the recovery rate k (in units
-#  of h and to determine reasonable estimate of S0 and of r0 	
-#  and to calculate the infection rate b = kr0/S0 or b=kr0	
-#  when S0=N and is normalized by N.				
+#  of h and to determine reasonable estimate of s0 and of r0 	
+#  and to calculate the infection rate b = kr0/s0 or b=kr0	
+#  when s0=N and is normalized by N.				
 #								
 # S = total number susceptible to the infection			
 # I = total number of those capable of passing on the infection	
@@ -38,7 +38,7 @@
 #    If normalized by total population N, then s(t) + i(t) + r(t) = 1 
 #    and s(t) starts at its maxium value of s0/N, if normalization.   
 #    
-#    R0 = bS0/k  = basic reproduction rate
+#    r0 = b*s0/k  = basic reproduction rate
 #    b = rate of infection
 #    k = rate removal = recovery rate + death rate
 #    xi = re-infection rate 
@@ -58,7 +58,10 @@
 # 	i'(t) = b*s*i/(1 + gamma*i) - k*i 
 # 	r'(t) = k*i 
 #     
-#   SIR model with vital dynamics (mu birth rate, nu death rate):  
+#   The reactive social distancing is to replace b with b/(1+gamma*i) which 
+#   changes as the number of infectives increases)  
+#     
+#  SIR model with vital dynamics (mu birth rate, nu death rate):  
 # 	s'(t) = mu - nu*s - b*s*i 
 # 	i'(t) = b*s*i - k*i - nu*i 
 # 	r'(t) = k*i -  nu*r
@@ -88,7 +91,7 @@
  						
 # Hong Kong Flu 1968-1969:			
 # https://services.math.duke.edu/education/ccp/materials/diffcalc/sir/sir1.html
-# Population is N=S0=7.9 million, r0=1.5, the average period of	
+# Population is N=s0=7.9 million, r0=1.5, the average period of	
 # infectiveness is  3 days so k=1/3, b=r0k=(3/2)(1/3)=0.5, and initial
 # infected is I0=10.						
 #								

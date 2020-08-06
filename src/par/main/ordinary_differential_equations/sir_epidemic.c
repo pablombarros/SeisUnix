@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado school of Mines, 2011.*/
 /* All rights reserved.		       */
 
-/* SIR_EPIDEMIC: $Revision: 1.3 $ ; $Date: 2020/06/10 22:12:13 $        */
+/* SIR_EPIDEMIC: $Revision: 1.4 $ ; $Date: 2020/06/12 23:37:18 $        */
 
 #include "par.h"
 #include "rke.h"
@@ -104,6 +104,7 @@ char *sdoc[] = {
 "  sir_epidemic h=1 scale=1 stepmax=200 k=.3333 b=.5 N=7.9e6 mode=SIR |",
 "      xgraph n=200 nplot=3 d1=1 style=normal &			",
 " 								",
+" Related programs: sird_epidemic, seir_epidemic 		",
 NULL};
 
 /*
@@ -201,12 +202,12 @@ main(int argc, char **argv)
 	int normalize=1;	/* normalize s and I by N; =0 don't normalize */
 	int scale=0;		/* don't scale; =1 scale output s,i,r by N    */
 				/* =2 scale output s,i,r by s0	*/
-	float scalar=0.0;	/* outpiutscale factor */
+	float scalar=0.0;	/* output scale factor */
 	double N=0.0;		/* total population size */
 	double s0=0.0;		/* initial value of susceptible population */
 	double i0=0.0;		/* initial value of infectives */
 	double r0=0.0;		/* initial value of removed */
-	
+
 	double t=0.0;		/* time */
 	double h=.001;		/* time increment */
 	double tol=0.0;		/* time increment */
@@ -374,6 +375,7 @@ Notes: This is an example of an autonomous system of ODE's
 	if (!getpardouble("k", &k))		k = 0.333;
 	if (!getpardouble("xi", &xi))		xi = 0.0;
 	if (!getpardouble("mu", &mu))		mu = 0.0;
+
 
 	/* Baker 2020 reactive social distancing */
 	if (!getpardouble("gamma", &gamma))	gamma = 0.0;

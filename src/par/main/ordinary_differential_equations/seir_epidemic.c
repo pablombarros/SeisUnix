@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.			*/
 
-/* SEIREPIDEMIC: $Revision: 1.3 $ ; $Date: 2020/06/10 22:12:13 $	*/
+/* SEIREPIDEMIC: $Revision: 1.4 $ ; $Date: 2020/06/12 23:37:18 $	*/
 
 #include "par.h"
 #include "rke.h"
@@ -72,19 +72,19 @@ char *sdoc[] = {
 "								",
 " Hypothetical flu in a school models:				",
 " here there is a 0.3 exposure to infective rate		",
-" seirepidemic h=0.1 stepmax=100 s=.3 b=.3 k=.9 N=100 mode=SIR | ",
-"	xgraph n=100 nplot=4 d1=1 style=normal &			",
+" seirepidemic h=0.1 stepmax=100 s=.3 b=.3 k=.9 N=100 mode=SIR |",
+"	xgraph n=100 nplot=4 d1=1 style=normal &		",
 "								",
 " Hong Kong Flu 1968-1969:					",
 " https://services.math.duke.edu/education/ccp/materials/diffcalc/sir/sir1.html",
-" Population is N=s0=7.9 million, r0=1.5, the average period of ",
+" Population is N=s0=7.9 million, r0=1.5, the average period of 	",
 " infectiveness is  3 days so k=1/3, b=r0*k=(3/2)(1/3)=0.54, and initial",
-" infected is i0=10. An exposed to infective rate s=1/3 is assumed",
-"								",
-"  seirepidemic h=1 stepmax=200 s=.3333 k=.3333 b=.5 N=7.9e6 mode=SIR |",
-"	xgraph n=200 nplot=4 d1=1 style=normal &		",
-"								",
-"								",
+" infected is i0=10. An exposed to infective rate s=1/3 is assumed	",
+"									",
+"  seirepidemic h=1 stepmax=200 s=.3333 k=.3333 b=.5 N=7.9e6 mode=SIR |	",
+"	xgraph n=200 nplot=4 d1=1 style=normal &			",
+"									",
+" Related programs: sir_epidemic, sird_epidemic 			",
 NULL};
 
 /*
