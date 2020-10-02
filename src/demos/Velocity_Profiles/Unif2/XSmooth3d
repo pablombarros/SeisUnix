@@ -26,7 +26,6 @@ do
 done
 
 xmovie <moviefile   n1=$n1 n2=$n2 d1=$d1 d2=$d2 loop=1\
-	 title="Smooth3d r1=r2=2*%g "\
-	-geometry ${WIDTH}x${HEIGHT}+${WIDTHOFF}+${HEIGHTOFF} &
+	 title="Smooth3d r1=r2=2*%g " &
 
 exit 0

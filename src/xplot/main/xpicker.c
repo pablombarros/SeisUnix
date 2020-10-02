@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.                       */
 
-/* XPICKER: $Revision: 1.26 $ ; $Date: 2011/11/21 17:03:51 $  */
+/* XPICKER: $Revision: 1.29 $ ; $Date: 2020/10/02 15:42:59 $  */
 
 #include "par.h"
 #include "xplot.h"
@@ -69,7 +69,7 @@ char *sdoc[] = {
 " va=1		   =0 for no variable-area; =1 for variable-area fill	",
 "                        =2 for variable area, solid/grey fill          ",
 "                        SHADING: 2<=va<=5  va=2 light grey, va=5 black ",
-" verbose=1	      =1 for info printed on stderr (0 for no info)	",
+" verbose=0	      =1 for info printed on stderr (0 for no info)	",
 " xbox=50		x in pixels of upper left corner of window	",
 " ybox=50		y in pixels of upper left corner of window	",
 " wbox=550	      	width in pixels of window			",
@@ -300,7 +300,8 @@ void draw_pick(Display *dpy, Window win, GC gc, pick_t *pick, int i,
 	       int width, int height,
 	       float x1begb, float x1endb,
 	       float x2begb, float x2endb,
-	       float p2beg, float p2end);
+	       float p2beg, float p2end,
+	       int verbose);
 void draw_command_bar(int winwidth, TextSet *filename_input,
 		      char *pick_fname, int control_mode, int edit_mode,
 		      int cross_mode);
@@ -444,7 +445,9 @@ main (int argc, char **argv)
 
 	/* set up file to save mouse picks */
 	if (!getparstring("mpicks", &mpicks)) mpicks = "pick_file";
-		mpicksfp = efopen(mpicks, "w");
+		/* mpicksfp = efopen(mpicks, "w"); */ /* Original */ 
+		mpicksfp = efopen(mpicks, "a+");  /* Correction DR */ 
+		efclose(mpicksfp);
 	/* read binary data to be plotted */
 	nz = n1*n2;
 	z = ealloc1float(nz);
@@ -469,7 +472,7 @@ main (int argc, char **argv)
 		clip = temp[iz];
 		free1float(temp);
 	}
-	verbose = 1;  getparint("verbose",&verbose);
+	if (!getparint("verbose",&verbose)) verbose=0;
 	if (verbose) warn("clip=%g",clip);
 
 	/* get wiggle-trace-variable-area parameters */
@@ -677,7 +680,8 @@ main (int argc, char **argv)
 					width,height,
 					x1begb,x1endb,
 					x2begb,x2endb,
-					p2beg,p2end);
+					p2beg,p2end,
+					verbose);
 			}
 
 		/* else if key down */
@@ -1384,7 +1388,7 @@ void save_picks(pick_t **apick, int num_wiggles, char *fname,
 	int i=num_wiggles/*dummy*/;
 	int num_picks=0;
 
-	fp=fopen(fname,"w+");
+	fp=fopen(fname,"w");
 	if(fp == NULL)
 		err("Could not open pick output file '%s'",fname);
 
@@ -1392,9 +1396,9 @@ void save_picks(pick_t **apick, int num_wiggles, char *fname,
 
 	if (verbose) warn("save: end %d max %d ",*pickdimend,*pickdimax);
  	for(i=0;i< *pickdimax;i++) {
-		if((*apick)[i].picked)  {
+		if((*apick)[i].picked) {
 		  num_picks++;
-	if (verbose) warn("save: ar%d pick%d %f %f %d ", i,num_picks,
+		if (verbose) warn("save: ar%d pick%d %f %f %d ", i,num_picks,
 			(*apick)[i].x2, (*apick)[i].time,(*apick)[i].picked);
 		}
 	}
@@ -1421,10 +1425,19 @@ void load_picks(pick_t **apick, int num_wiggles, char *fname,
 {
 	FILE *fp;
 	int i,num_picks = num_wiggles/*dummy*/;
+	int rc;
 	float xval,time;
+	char* buffer = NULL; /* used to count the number of picks in the pick file */
+  	size_t length = 0; /* used to count the number of picks in the pick file */
 
-	if((fp=fopen(fname,"r+")) == NULL)
+
+	if((fp=efopen(fname,"r+")) == NULL)
 		err("Could not open pick input file '%s'",fname);
+	num_picks=0;
+	while (getline(&buffer, &length,fp)!=-1) ++num_picks; /* count the number of picks */
+	if (verbose) warn ("Numpicks=%d", num_picks);
+	efclose (fp); fp=efopen(fname,"r"); /* close and reopen the pick file to rewind it */
+	
 
 	 /* fscanf(fp,"%d\n",&num_picks); */
 /* dynamically reallocate memory for picks if necessary  - Bill Lutter    */
@@ -1434,19 +1447,20 @@ void load_picks(pick_t **apick, int num_wiggles, char *fname,
 	for(i=0;i<num_picks;i++) {
 		++*pickdimend;
 		if (x1x2==0) {
-			fscanf(fp,"%f %f\n",&xval,&time);
+			rc=fscanf(fp,"%f %f\n",&xval,&time);
 		} else {
-			fscanf(fp,"%f %f\n",&time,&xval);
+			rc=fscanf(fp,"%f %f\n",&time,&xval);
 		}
+		if (rc == 0) err("Pick file read error");
 		(*apick)[*pickdimend-1].picked=TRUE;
 		(*apick)[*pickdimend-1].x2=xval;
 		(*apick)[*pickdimend-1].time=time;
-       printf("load: %d %f %f %d \n",*pickdimend,(*apick)[*pickdimend-1].x2,
+		if (verbose) printf("load: %d %f %f %d \n",*pickdimend,(*apick)[*pickdimend-1].x2,
 	   (*apick)[*pickdimend-1].time,(*apick)[*pickdimend-1].picked);
 	}
-	printf("load: end %d max %d  \n",*pickdimend,*pickdimax);
+	if (verbose) printf("load: end %d max %d  \n",*pickdimend,*pickdimax);
 
-	fclose(fp);
+	efclose(fp);
 	warn("Pick input successful");
 }
 
@@ -1497,7 +1511,8 @@ void edit_pick(Display *dpy, Window win, GC gc, XEvent event,
 					draw_pick(dpy,win,red_r_gc,*apick,ihead,
 						x,y, width,height, x1begb,
 						x1endb, x2begb,x2endb,
-						p2beg,p2end);
+						p2beg,p2end,
+						verbose);
 					(*apick)[ihead].picked=FALSE;
       				}
 		 	}
@@ -1514,7 +1529,8 @@ void edit_pick(Display *dpy, Window win, GC gc, XEvent event,
 							x,y, width,height,
 		 					x1begb,x1endb,
 							x2begb,x2endb,
-							p2beg,p2end);
+							p2beg,p2end,
+							verbose);
 				}   */
       
 			scale = width/(x2endb+p2end-x2begb-p2beg);
@@ -1558,7 +1574,8 @@ void draw_pick(Display *dpy, Window win, GC gc, pick_t *pick, int i,
 	       int width, int height,
 	       float x1begb, float x1endb,
 	       float x2begb, float x2endb,
-	       float p2beg, float p2end)
+	       float p2beg, float p2end,
+	       int verbose)
 {
 	int x,y;
 	float scale,base;
@@ -1569,7 +1586,7 @@ void draw_pick(Display *dpy, Window win, GC gc, pick_t *pick, int i,
   	x = base+scale*(pick[i].x2)-0.5;       
 	/* y=ymargin+x1begb+(pick[i].time-x1begb)/(x1endb-x1begb)*height; */
 	y=ymargin+(pick[i].time-x1begb)/(x1endb-x1begb)*height; /* xxxc */
-	printf("DRAW: %d %f %f \n",i,pick[i].x2,pick[i].time);
+	if (verbose) printf("DRAW: %d %f %f \n",i,pick[i].x2,pick[i].time);
 	draw_seg(dpy,win,gc,x,y);
 }
 
@@ -1592,7 +1609,7 @@ void check_buttons(Display *dpy, Window win, GC gc,XEvent event,pick_t **apick,
 {
 	int mx=event.xbutton.x;
 	int my=event.xbutton.y;
-	if(gc != gc)
+	/* if(gc != gc) */
 	height += 0;  x+= 0;  y += 0; /* keep compiler happy */
 	x1begb += 0.0; x1endb += 0.0; /* keep compiler happy */
 	x2begb += 0.0; x2endb += 0.0; /* keep compiler happy */
@@ -1723,7 +1740,7 @@ void draw_command_bar(int winwidth, TextSet *filename_input,
 		SetCurrentTextSet(filename_input,DOWN);
 	else
 		SetCurrentTextSet(filename_input,UP);
-		RefreshTextSet(filename_input);
+	RefreshTextSet(filename_input);
 
 	/* make sure fg,bg are what xpicker expects */
 	/* garnish may have mauled them */
@@ -1816,7 +1833,7 @@ void add_pick(pick_t **apick, int *pickdimax, int *pickdimend,
    then ioff is negative.  Then use mouse derived x-axis value for pick.  */
 			      if (ioff >= 0 ) {
 				for (i=0;i <= ioff; i++) {
-				   dxval = abs(off[i] - *pick_num);
+				   dxval = fabsf(off[i] - *pick_num);
 				   if ( dxval <= dxmin) {
 				      *ihead = i;
 				      dxmin = dxval;   
@@ -1827,7 +1844,7 @@ void add_pick(pick_t **apick, int *pickdimax, int *pickdimend,
 			       (*apick)[*pickdimend].x2 = *pick_num;
 			       (*apick)[*pickdimend].time = fy;
 			       (*apick)[*pickdimend].picked=TRUE;
-		   printf("ADD (x,t): (%d, %f) pick(i,x,t): (%d, %f, %f)\n",
+		    if (verbose) printf("ADD (x,t): (%d, %f) pick(i,x,t): (%d, %f, %f)\n",
 		   *pick_num, fy,*pickdimend,(*apick)[*pickdimend].x2,(*apick)[*pickdimend].time);
 			       ++*pickdimend;
 
@@ -1840,7 +1857,7 @@ int i = pickdimax[0]/*dummy*/;
 float dxmin=100000., dxval,dtval;
 			      if (ioff >= 0 ) {
 				for (i=0;i <= ioff; i++) {
-				   dxval = abs(off[i] - *pick_num);
+				   dxval = fabsf(off[i] - *pick_num);
 				   if ( dxval <= dxmin) {
 				      *ihead = i;
 				      dxmin = dxval;   

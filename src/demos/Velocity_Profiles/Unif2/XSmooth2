@@ -24,8 +24,7 @@ do
 	smooth2 < $outfile2 r1=$i r2=$i n1=100 n2=100 >>moviefile
 done
 
-xmovie <moviefile  n1=$n1 n2=$n2 d1=$d1 d2=$d2 loop=1 sleep=1000000 \
-	 title="Smooth2 r1=r2=2*%g" windowtitle="Movie" \
-	-geometry ${WIDTH}x${HEIGHT}+${WIDTHOFF}+${HEIGHTOFF} &
+xmovie <moviefile  n1=$n1 n2=$n2 d1=$d1 d2=$d2 loop=1 sleep=2 \
+	 title="Smooth2 r1=r2=2*%g" windowtitle="Movie" &
 
 exit 0

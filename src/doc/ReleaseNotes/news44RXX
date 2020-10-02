@@ -1,3 +1,15 @@
+John Stockwell retired from the Colorado School of Mines effectively
+1 Jan 2018. He continues to work with Seismic Unix. 
+Please email: john.19071969@gmail.com
+if you have questions, or if you want to supply  bug fixes or new SU code.
+
+Summer 2018 - Thanks to Dominque Rousset of the University of Pau,
+Seismic Unix distributions and other information may be found at
+
+https://wiki.seismic-unix.org
+
+
+What is new in the SU package:
 
 Restructuring: 
 par/main 
@@ -34,10 +46,15 @@ par/main/ordinary_differential_equations
 	 seirepidemic.c - SEIR epidemic model
 	 sirepidemic.c - SIR epidemic model
 	 sirdepidemic.c - SIRD epidemic model
-	 voltlotka.c - classic Lotka Volterra preditor-prey model
-par/main/
+	 voltlotka.c - classic Lotka Volterra predator-prey model
+demos/Ordinary_differential_equations
+	 Epidemiology
+	 Logistic_Equation
+	 Predator_Prey
 
 Fixed:
+demos/Velocity_Profiles/Marmousi/marmousi.dat - profile given as ASCII with no
+	attempt at compression.
 sugain.c - fixed a but in the AGC function seen on GPR data but not apparent on
            seismic data
 		Thanks to Dominique Rousset of the University of Pau

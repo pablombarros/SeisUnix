@@ -33,8 +33,7 @@ do
 	eval HOFF='$'HEIGHTOFF$j
 	unif2 <$outfile method=$i |
 	xmovie  n1=$n1 n2=$n2 d1=$d1 d2=$d2 \
-		title="$i Interpolation" \
-		-geometry ${WIDTH}x${HEIGHT}+${WOFF}+${HOFF} &
+		title="$i Interpolation" &
 	j=`expr $j + 1`
 done
 
@@ -51,7 +50,6 @@ unif2 < $outfile method=spline \
 	dvdz=$dvdz1,$dvdz2,$dvdz3,$dvdz4,$dvdz5 \
 	x0=$x0 z0=$z0 |
 	xmovie n1=$n1 n2=$n2 d1=$d1 d2=$d2 \
-	title="Smooth background wavespeeds"\
-	-geometry ${WIDTH}x${HEIGHT}+${WIDTHOFF5}+${HEIGHTOFF5} &
+	title="Smooth background wavespeeds" &
 
 exit

@@ -23,7 +23,6 @@ do
 	unif2 method=spline >>moviefile
 done
 xmovie <moviefile  n1=$n1 n2=$n2 d1=$d1 d2=$d2 loop=1\
-	 title="Smoothint r=200*%g "\
-	-geometry ${WIDTH}x${HEIGHT}+${WIDTHOFF}+${HEIGHTOFF} &
+	 title="Smoothint r=200*%g " &
 
 exit 0
