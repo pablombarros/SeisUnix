@@ -311,7 +311,7 @@ main(int argc, char **argv)
 				for (it=nt-1; it>0 && atn[it]>=osmute; --it);
 			}
 			itmute = it;
-
+			
 
 			/* if inverse NMO will be performed */
 			if (invert) {
