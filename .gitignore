@@ -1,6 +1,6 @@
 etc
 lib
-bin/*
+bin
 prop
 INSTALL
 Idle
