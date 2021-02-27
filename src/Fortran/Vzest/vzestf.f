@@ -1116,7 +1116,7 @@ c global parms
         character*120 basecmigfile
         character*120 topzgridfile
         character*120 basezgridfile
-        character*120 fnames(3)
+        character*120 fnames(2)
 
 c local parms
 c work will be used to read in traveltime

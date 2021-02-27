@@ -10,8 +10,8 @@ PROGS	=	$B/tableq
 LIB = librt.a
 
 ARCH =					\
-	$(LIB)(ktime_3d_rayq.o)	\
-        $(LIB)(util_drt.o)     
+        $(LIB)(util_drt.o)    \
+	$(LIB)(ktime_3d_rayq.o)
 
 INSTALL:	$(LIB) $(PROGS)
 	@touch $@

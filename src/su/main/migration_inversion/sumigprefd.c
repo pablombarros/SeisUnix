@@ -9,7 +9,6 @@
 #include <signal.h>
 /* #include <time.h> */
 
-
 /*********************** self documentation ******************************/
 char *sdoc[] = {
 "									",
@@ -21,7 +20,7 @@ char *sdoc[] = {
 " Required Parameters:							",  
 " nxo=		number of total horizontal output samples		",
 " nxshot=	number of shot gathers to be migrated			",
-" nz=		number of depth sapmles					",
+" nz=		number of depth samples					",
 " dx=		horizontal sampling interval				",	
 " dz=		depth sampling interval				 	",
 " vfile=	velocity profile, it must be binary format (see Notes)	",
@@ -173,7 +172,7 @@ main (int argc, char **argv)
 	cresult = alloc2float(nz,nxo);
 	vp = alloc2float(nxo,nz);
 
-	/* load velicoty file */
+	/* load velocity file */
 	vfp=efopen(vfile,"r");
 	efread(vp[0],FSIZE,nz*nxo,vfp);
 	efclose(vfp);
@@ -198,7 +197,8 @@ main (int argc, char **argv)
 			dt = ((double) tr.dt)/1000000.0;
 		} else { /* dt not set, assume 4 ms */
 			dt = 0.004;
-			if(verbose) warn("tr.dt not set, assuming dt=0.004");
+			if(verbose==1) warn("tr.dt not set, assuming dt=0.004");
+
 		}
 	}
 	if (!getparfloat("dx",&dx)) {
@@ -206,7 +206,7 @@ main (int argc, char **argv)
 			dx = tr.d2;
 		} else {
 			dx = 1.0;
-			if(verbose) warn("tr.d2 not set, assuming d2=1.0");
+			if(verbose==1) warn("tr.d2 not set, assuming d2=1.0");
 		}
 	}
 
@@ -238,7 +238,7 @@ main (int argc, char **argv)
 		/* the number of frequencies to migrated*/
 		truenw=nf4-nf1+1;
 		fw=0.0+nf1*dw;
-		if(verbose)
+		if(verbose==2)
 			warn("nf1=%d nf2=%d nf3=%d nf4=%d nw=%d",nf1,nf2,nf3,nf4,truenw);
 
 		/* allocate space */
@@ -304,7 +304,7 @@ main (int argc, char **argv)
 			if(gxmin>gx)gxmin=gx;
 			if(gxmax<gx)gxmax=gx;
 
-			if(verbose)
+			if(verbose==2)
 				warn(" inside loop:  min_sx_gx %f isx %d igx %d gx %f sx %f",min_sx_gx,isx,igx,gx,sx);
 
 			/* sx, gx must increase monotonically */
@@ -322,7 +322,7 @@ main (int argc, char **argv)
 		if (isx==oldisx) 
 			warn("repeated isx!!! check dx or scalco value!!!");
 		oldisx=isx;
-		if(verbose) {
+		if(verbose==2) {
 			warn("sx %f, gx %f , gxmin %f  gxmax %f nx %d",sx,gx,gxmin,gxmax, nx);
 			warn("isx %d igx %d ixshot %d" ,isx,igx,ixshot);
 		}
@@ -349,11 +349,12 @@ main (int argc, char **argv)
 		/* the total traces to be migrated */
 		nx=ix3-ix2+1;
 		nw=truenw;
+		
 
 		/* allocate space for velocity profile within the aperature */
 		v=alloc2float(nx,nz);	
-		for(iz=0;iz<nz;iz++)
-			for(ix=0;ix<nx;ix++)
+		for(iz=0;iz<nz;++iz)
+			for(ix=0;ix<nx;++ix)
 				v[iz][ix]=vp[iz][ix+ix2];
 
 
@@ -392,7 +393,7 @@ main (int argc, char **argv)
 			cp1[iw][ixshot-ix2]=wlsp[iw+nf1];
 		}
 
-		if(verbose) {
+		if(verbose==2) {
 			warn("ixshot %d ix %d ix1 %d ix2 %d ix3 %d",ixshot,ix,ix1,ix2,ix3);
 			warn("oldsx %f ",oldsx);
 		}
@@ -457,6 +458,9 @@ main (int argc, char **argv)
 		free2float(v);
 	
 		--nxshot;
+
+		if (verbose==1)
+			warn("nxshot %d",nxshot);
 
  	} while(nxshot);
 
@@ -736,3 +740,4 @@ get_sx_gx - get sx and gx from headrs
 
 	return;
 }
+

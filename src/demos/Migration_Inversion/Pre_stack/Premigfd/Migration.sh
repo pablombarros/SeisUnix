@@ -33,9 +33,12 @@ NZ1=`expr $NZ - 2`
 # transpose the velocity grid
 transp < tmp n1=$NZ1 > vel_tr
 
+#
+lpad=100
+rpad=100
 echo
 echo "  starting migration ..."
-$ProgramName < data.su nflag=1 nxo=$NX dx=$DX nz=$NZ1 dz=$DZ nxshot=$NSHOTS fmax=25. f3=40. f4=50. vfile=vel_tr verbose=0 > image.su
+$ProgramName < data.su nflag=1 nxo=$NX dx=$DX nz=$NZ1 dz=$DZ nxshot=$NSHOTS fmax=25. f3=40. f4=50. vfile=vel_tr verbose=1 $lpad $rpad > image.su
 
 suximage < image.su title="stacked image from $ProgramName " \
          label1="Depth [m]" label2="Distance [m]" \

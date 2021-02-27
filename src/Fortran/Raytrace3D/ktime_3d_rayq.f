@@ -1132,7 +1132,7 @@ c     t_cpu_1 = second()
      1 it_ray,xs,ys,zs
      1,x_min,x_max,y_min,y_max,z_min,z_max
      1,m_ray,m_tube,n_ray,n_tube
-     1, a_ray, b_ray
+     1,a_ray,b_ray
      1,x_ray(1,i_ray_2),y_ray(1,i_ray_2),z_ray(1,i_ray_2)
      1,s_ray(1,i_ray_2)
      1,px_ray(1,i_ray_2),py_ray(1,i_ray_2),pz_ray(1,i_ray_2)
@@ -2039,7 +2039,7 @@ c  compute the velocity at the source location
       call ktime_3d_compute_v_grad_1(
      1 xs,ys,zs
      1,1
-     1, zs,xs,ys
+     1,zs,xs,ys
      1,1.,1.0,1.
      1,nz_vel,z0_vel,dz_vel
      1,nx_vel,x0_vel,dx_vel
@@ -6017,7 +6017,7 @@ c  compute the velocity at the source location
       call ktime_3d_compute_v_grad_1(
      1 xs,ys,zs
      1,1
-     1, zs,xs,ys
+     1,zs,xs,ys
      1,1.,1.0,1.
      1,nz_vel,z0_vel,dz_vel
      1,nx_vel,x0_vel,dx_vel

@@ -193,6 +193,7 @@ main (int argc, char **argv)
 			dt = ((double) tr.dt)/1000000.0;
 		} else { /* dt not set, assume 4 ms */
 			dt = 0.004;
+			if (verbose==1)
 			warn("tr.dt not set, assuming dt=0.004");
 		}
 	}
@@ -201,6 +202,7 @@ main (int argc, char **argv)
 			dx = tr.d2;
 		} else {
 			dx = 1.0;
+			if (verbose==1)
 			warn("tr.d2 not set, assuming d2=1.0");
 		}
 	}
@@ -231,7 +233,7 @@ main (int argc, char **argv)
 		truenw=nf4-nf1+1;
 		fw=0.0+nf1*dw;
 
-		if (verbose)
+		if (verbose==2)
 		warn("nf1=%d nf2=%d nf3=%d nf4=%d nw=%d",nf1,nf2,nf3,nf4,truenw);
 
 		/* allocate space */
@@ -257,8 +259,9 @@ main (int argc, char **argv)
 		for(it=0;it<ntw;it++) {
 	  		wl[(it-ntw/2+ntfft) % ntfft]=wtmp[it];
 		}
-		*/
-	  	/*  warn("%12i    %12f    \n",(it-ntw/2+ntfft) % ntfft,wtmp[it]); */
+		
+		if (verbose==2)
+	  		warn("%12i    %12f    \n",(it-ntw/2+ntfft) % ntfft,wtmp[it]); */
 		/* End of new code */
 		free1float(wtmp);
 
@@ -303,12 +306,13 @@ main (int argc, char **argv)
                 oldgx=gx;
                 oldgxmax=gxmax;
                 oldgxmin=gxmin;
+
                 while(gettr(&tr)) { /* begin looping over traces within a shot gather */
 
                         /* get sx and gx */
                         get_sx_gx(&sx,&gx);
+			if (verbose==2) warn("%d nx=%d", igx, nx);
 /*
-warn("%d nx=%d", igx, nx);
                         sx = (sx - min_sx_gx);
                         gx = (gx - min_sx_gx);
 */
@@ -325,7 +329,7 @@ warn("%d nx=%d", igx, nx);
                         if(gxmin>gx)gxmin=gx;
                         if(gxmax<gx)gxmax=gx;
 
-                        if(verbose)
+                        if(verbose==2)
                                 warn(" inside loop:  min_sx_gx %f isx %d igx %d gx %f sx %f",min_sx_gx,isx,igx,gx,sx);
                         /* sx, gx must increase monotonically */
                         if (!(oldsx <= sx) )
@@ -343,7 +347,7 @@ warn("%d nx=%d", igx, nx);
 			warn("repeated isx!!! check dx or scalco value!!!");
 		oldisx=isx;
                 ixshot=isx;
-                if(verbose) {
+                if(verbose==2) {
                         warn("sx %f, gx %f , gxmin %f  gxmax %f nx %d",sx,gx,gxmin,gxmax, nx);
                         warn("isx %d igx %d ixshot %d" ,isx,igx,ixshot);
                 }
@@ -416,7 +420,7 @@ warn("%d nx=%d", igx, nx);
 			cp1[iw][ixshot-ix2]=wlsp[iw+nf1];
 		}
 
-                if(verbose) {
+                if(verbose==2) {
                         warn("ixshot %d ix %d ix1 %d ix2 %d ix3 %d",ixshot,ix,ix1,ix2,ix3);
                         warn("oldsx %f ",oldsx);
                 }
@@ -525,6 +529,9 @@ warn("%d nx=%d", igx, nx);
 		free2float(v);
 
 		--nxshot;
+
+		if (verbose==1)
+			warn("nsxhot %d", nxshot);
 
 	} while(nxshot);
 

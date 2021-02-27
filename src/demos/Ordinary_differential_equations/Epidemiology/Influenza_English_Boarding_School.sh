@@ -5,7 +5,7 @@
 # SIR model
 
 # Important quantities:						
-# R0 = the basic reproductive ratio, which is the number of new 
+# R0 = the basic reproductive rate, which is the number of new 
 # infections per single infected host  	
 #  1 < R0 < 1.5 for influenza, (2.2 to 2.7 for Covid-19), 12 to	
 # 18 for measles.						
@@ -25,7 +25,7 @@
 # the removed population can be reinfected.			
 
  
-#  The SrI model describes an epidemic in terms of
+#  The SIR model describes an epidemic in terms of
 #    s = susceptibles in a population
 #    i = infectives in a population
 #    r = removed = recovered + dead
@@ -45,7 +45,7 @@
 #    mu = birth rate  
 #    nu = death rate
 #     
-#    The encounters between susceptibles and the infectives is represented
+#    The encounters between susceptibles and the infectives are represented
 #    by the product s*i
 # 
 #   SIR model:  
@@ -58,7 +58,7 @@
 # 	i'(t) = b*s*i - k*i - nu*i 
 # 	r'(t) = ki -  nur
 # 
-#   sIRs model with vital statistics (mu birth rate, nu death rate) and reinfection:  
+#   SIRS model with vital statistics (mu birth rate, nu death rate) and reinfection:  
 # 	s'(t) = mu - nu*s + xi*r - b*s*i 
 # 	i'(t) = b*s*i - k*i - nu*i 
 # 	r'(t) = k*i - xi*r - nu*r
@@ -119,11 +119,11 @@ cat real_data.bin model_data_2.bin |
  linewidth=0,3,3,3 linecolor=4,5,4,6  \
  marksize=20,0,0,0 mark=3,0,0,0 \
  style=normal label1="days" \
- title="Model and Data: b=1.75 k=.5  " \
+ title="Model and Data: better fit b=1.75 k=.5  " \
  width=1000 height=1000  \
  label2="number of students" &				
 
-# allow a 1% reinfection rate xi=0.01
+# allow a 1% reinfection rate xi=.01
 
  sir_epidemic h=.1 stepmax=2000 i0=1 b=1.75 k=.5 N=762 xi=.01  mode=SIR scale=1 > model_data_3.bin
 

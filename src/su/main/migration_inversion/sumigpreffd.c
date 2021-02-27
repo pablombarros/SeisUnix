@@ -198,6 +198,7 @@ main (int argc, char **argv)
 			dt = ((double) tr.dt)/1000000.0;
 		} else { /* dt not set, assume 4 ms */
 			dt = 0.004;
+			if (verbose==1)
 			warn("tr.dt not set, assuming dt=0.004");
 		}
 	}
@@ -206,6 +207,7 @@ main (int argc, char **argv)
 			dx = tr.d2;
 		} else {
 			dx = 1.0;
+			if (verbose==1)
 			warn("tr.d2 not set, assuming d2=1.0");
 		}
 	}
@@ -235,7 +237,7 @@ main (int argc, char **argv)
 		/* the number of frequency to migrated */
 		truenw=nf4-nf1+1;
 		fw=0.0+nf1*dw;
-		if (verbose)
+		if (verbose==2)
 			warn("nf1=%d nf2=%d nf3=%d nf4=%d nw=%d",nf1,nf2,nf3,nf4,truenw);
 
 		/* allocate space */
@@ -298,7 +300,7 @@ main (int argc, char **argv)
 			if(gxmin>gx)gxmin=gx;
 			if(gxmax<gx)gxmax=gx;
 
-			if(verbose)
+			if(verbose==2)
 				warn(" inside loop:  min_sx_gx %f isx %d igx %d gx %f sx %f",min_sx_gx,isx,igx,gx,sx);
 
 
@@ -316,7 +318,7 @@ main (int argc, char **argv)
 			warn("repeated isx!!! check dx or scalco value!!!");
 		oldisx=isx;
 		ixshot=isx;
-		if(verbose) {
+		if(verbose==2) {
 			warn("sx %f, gx %f , gxmin %f  gxmax %f nx %d",sx,gx,gxmin,gxmax, nx);
 			warn("isx %d igx %d ixshot %d" ,isx,igx,ixshot);
 		}
@@ -392,7 +394,7 @@ main (int argc, char **argv)
 			cp1[iw][ixshot-ix2]=wlsp[iw+nf1];
 		}
 	
-		if(verbose) {
+		if(verbose==2) {
 				warn("ixshot %d ix %d ix1 %d ix2 %d ix3 %d",ixshot,ix,ix1,ix2,ix3);
 				warn("oldsx %f ",oldsx);
 		}
@@ -510,6 +512,10 @@ main (int argc, char **argv)
 		free2float(v);
 
 		--nxshot;
+
+		if (verbose==1)
+			warn("nxshot %d",nxshot);
+		
 	} while	(nxshot);
 
 

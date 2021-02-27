@@ -11,14 +11,14 @@ on a synthetic data set. The traveltime tables are generated
 by rayt2d
 
 To run demo, type:
-Unif2      to compute the v(x,z) velocity profile and view  it;
+Unif2.sh      to compute the v(x,z) velocity profile and view  it;
 PSmod      view v(x,z) profile (PostScript output);
 Xmod      view v(x,z) profile (PostScript output);
-Rayt2d 	   to generate traveltime tables;
+Rayt2d.sh 	   to generate traveltime tables;
 PStime     view the traveltime tables (PostScript output)
 Xtime      movie of traveltime tables (X-windows output)
 Synlv      to generated  synthetic seismograms
-Sukdmig2d  to migrate the synthetic seismograms
+Sukdmig2d.sh  to migrate the synthetic seismograms
 Xplot      view the synthetic data and migrated image (X-windows output)
 PSplot     view the synthetic data and migrated image (PostScript output)
 

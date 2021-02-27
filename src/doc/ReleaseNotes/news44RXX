@@ -53,10 +53,33 @@ demos/Ordinary_differential_equations
 	 Predator_Prey
 
 Fixed:
-sugain.c - fixed a but in the AGC function seen on GPR data but not apparent on
-           seismic data
+su/main/amplitudes/sugain.c - fixed a but in the AGC function seen on GPR data but not apparent on seismic data
 		Thanks to Dominique Rousset of the University of Pau
 
 su/lib/getSPSfile.c - replaced // comments with  /* comments */ owing to
 			a problem on CENTOS version 7.
 
+Fortran/Vzest/vzestf.f - changed (about line 1119) to
+        	character*120 fnames(2) from fnames(3)
+		Thanks to Fernando Roxo da Motta
+Fortran/Raytrace3d/ktime_3d_rayq.f - ERROR of argument mismatch in two 
+   		locations. 
+		fix: added -fallow-argument-mismatch to the 
+                FFLAGS in Makefile.config_Big_Sur  this might need to
+		be propagated to all of the Makefile.config_* and this
+                likely takes care of the vzestf.f error as well. 
+
+Sfio/
+	Replaced these files with versions from the 2002 release of sfio.
+	./src/lib/sfio/Stdio_b/sprintf.c
+	./src/lib/sfio/Stdio_b/vsprintf.c
+	./src/lib/sfio/Stdio_s/stdsprintf.c
+        The make sfio should work now.
+
+demos/Ordinary_differential_equations  - has been added to go with the new
+	ordinary_differential equation items in par/main
+
+
+John Stockwell	 | john.19071969@gmail.com
+https://wiki.Seismic-Unix.org 
+(The New Home of Seismic Un*x)

@@ -46,7 +46,7 @@ while [ $ISHOT -le $NSHOTS ]; do
 
 # mute and filter the shot records
   cat tmp | \
-  sushw key=fldr a=$ISHOT  | \
+  sushw key=fldr,scalco a=$ISHOT,1  | \
   sumute key=gx xmute=0,$XS,3145 tmute=$T1,$T2,$T3 ntaper=100 | \
   sutaper ntr=$NX tr1=20 | \
   subfilt hicut=0 fpasslo=10 fstoplo=5  >> sections.su

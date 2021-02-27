@@ -5,7 +5,7 @@
 # SIR model
 
 # Important quantities:						
-# r0 = number of new infections per single infected host  	
+# r0 = number of new infections per single infected host (basic reproduction rate)  	
 #  1 < r0 < 1.5 for influenza, (2.2 to 2.7 for Covid-19), 12 to	
 # 18 for measles.						
 #  b, k, s0, and r0 are related via				
@@ -25,10 +25,10 @@
 #
 # When mu>0 and nu>0 birth and death occur.
 # 
-#  The SRI model describes an epidemic in terms of
-#    S = susceptibles in a population
-#    I = infectives in a population
-#    R = removed = recovered + dead
+#  The SIR model describes an epidemic in terms of
+#    s = susceptibles in a population
+#    i = infectives in a population
+#    r = removed = recovered + dead
 # 
 #    s0 = initial value of the susceptibles
 #    i0 = initial value of the infectives
