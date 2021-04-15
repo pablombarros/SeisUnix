@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.                       */
 
-/* SUMAX: $Revision: 1.22 $ ; $Date: 2015/08/07 21:54:19 $		*/
+/* SUMAX: $Revision: 1.23 $ ; $Date: 2021/04/15 00:30:02 $		*/
 
 #include "su.h"
 #include "segy.h"
@@ -76,12 +76,12 @@ segy   tr;
 
 int      main(int argc, char **argv)
 {
-   char    *outpar;		/* name of file holding output parfile  */
-   FILE    *outparfp;		/* ... its file pointer                 */
-   char    *output;		/* format (ascii/binary/segy) of output */
-   char    *mode;		/* desired output maxmin/max/min/abs    */
-   char    *key1;
-   char    *key2;
+   char    *outpar=NULL;	/* name of file holding output parfile  */
+   FILE    *outparfp=NULL;	/* ... its file pointer                 */
+   char    *output=NULL;	/* format (ascii/binary/segy) of output */
+   char    *mode=NULL;		/* desired output maxmin/max/min/abs    */
+   char    *key1=NULL; 		/* pointer to key1 for verbose=2 */
+   char    *key2=NULL;          /* pointer to key2 for verbose=2 */
    char    ident[256];          /* trace identification string */
 
    int      verbose;		/* flag to print extra information      */
@@ -106,30 +106,30 @@ int      main(int argc, char **argv)
    int      minit = 0;		/* sample number of min value           */
    int      absmaxit = 0;	/* sample number of abs max value       */
 
-   float    max;		/* max on a trace                       */
-   float    min;		/* min on a trace                       */
-   float    absmax;		/* absolute max on a trace              */
+   float    max = 0.;		/* max on a trace                       */
+   float    min = 0.;		/* min on a trace                       */
+   float    absmax = 0.;	/* absolute max on a trace              */
 
    int      trhldit = 0;	/* sample number of max after threshold */
-   int      trhldfit;		/* first sample to search for threshold */
+   int      trhldfit = 0;	/* first sample to search for threshold */
    int      trhldgit = 0;	/* sample of global max                 */
    int      trhldgitr = 0;	/* trace of global max                  */
-   float    trhldstrt;		/* first time to search for threshold   */
-   float    trhldamp;		/* threshold value                      */
-   float    trhldmax;		/* first max value after threshold      */
+   float    trhldstrt = 0.;	/* first time to search for threshold   */
+   float    trhldamp = 0.;	/* threshold value                      */
+   float    trhldmax = 0.;	/* first max value after threshold      */
    float    trhldgmax = 0.;	/* global max value after threshold     */
 
-   float    gmax;		/* global max                           */
-   float    gmin;		/* global min                           */
-   float    gabsmax;		/* global absolute max                  */
+   float    gmax = 0.;		/* global max                           */
+   float    gmin = 0.;		/* global min                           */
+   float    gabsmax = 0.;	/* global absolute max                  */
 
    float    grms = 0.0;		/* global rms                           */
    float    grmssumsq = 0.0;	/* global sum of sample value squared   */
    float    rms = 0.0;		/* rms on a trace                       */
    float    rmssumsq = 0.0;	/* sum of sample value squared          */
-   float    val;		/* temp for adding to rmssumsq          */
-   int ival1=0;
-   int ival2=0;
+   float    val = 0.0;		/* temp for adding to rmssumsq          */
+   int ival1 = 0;
+   int ival2 = 0;
    Value tval;
 
    /* Initialize */

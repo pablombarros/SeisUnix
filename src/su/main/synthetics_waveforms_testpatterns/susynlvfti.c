@@ -560,7 +560,7 @@ q		integral of velocity along raypath
 	double umax,time=0.0,fctn1,fctn2,fctnu,temp,mx,sm=0.0,vg,gang=0.0;
 	double rt,timenew=0.0,tnm,u,sum,del,si=0.0,vrat,zz,uv,cw=0.0,sw=0.0,
 			uv0,px,pz;
-	int j,count,it=0,nit,sig,zneg,err,tfturn,sign;
+	int j,count=0,it=0,nit,sig,zneg,err,tfturn,sign;
 
 	/* if (x,z) same as (x0,z0) */
 	if ((x==x0) && (z==z0)) {

@@ -81,6 +81,7 @@ main(int argc, char **argv)
 	int nx;			/* number of horizontal samples */
 	int option;		/* flag for requested opeartion */
 	float dt;               /* Time sample interval */
+	float dtheader;         /* Time sample interval from header*/
         float dx;               /* horizontal sample interval */
 	float xmin;		/* offset on first trace */
         float pmin;             /* Minimum slope for Tau-P transform */
@@ -110,7 +111,7 @@ main(int argc, char **argv)
         /* get info from first trace */
         if (!gettr(&tr))  err("can't get first trace");
         nt = tr.ns;
-        dt = (float) tr.dt/1000000.0;
+        dtheader = (float) tr.dt/1000000.0;
 
         /* Store traces in tmpfile while getting a count */
 	if (STREQ(tmpdir,"")) {
@@ -147,7 +148,7 @@ main(int argc, char **argv)
         if (!getparfloat("pmax",&pmax))		pmax = 0.006;
         if (!getparfloat("xmin",&xmin))		xmin = 0.0;
 	if (!getparfloat("dx",&dx))		dx = 1.0;
-	if (!getparfloat("dt",&dt))		dt = dt;
+	if (!getparfloat("dt",&dt))		dt = dtheader;
 	if (!getparfloat("fmin",&fmin))		fmin = 3.;
 	if (!getparint("npoints",&npoints))	npoints = 71;
 

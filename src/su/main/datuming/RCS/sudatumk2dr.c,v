@@ -1,9 +1,14 @@
-head	1.8;
+head	1.9;
 access;
 symbols;
 locks; strict;
 comment	@ * @;
 
+
+1.9
+date	2021.04.15.00.44.23;	author john;	state Exp;
+branches;
+next	1.8;
 
 1.8
 date	2011.11.16.17.45.18;	author john;	state Exp;
@@ -51,15 +56,15 @@ desc
 @
 
 
-1.8
+1.9
 log
-@added Reg Beardsley's checkpar()
+@changed abs to fabsf to silence warning
 @
 text
 @/* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.                       */
 
-/* SUDATUMK2DR: $Revision: 1.6 $ ; $Date: 2006/11/07 22:58:42 $	*/
+/* SUDATUMK2DR: $Revision: 1.8 $ ; $Date: 2011/11/16 17:45:18 $	*/
 
 #include "su.h"
 #include "segy.h"
@@ -900,7 +905,7 @@ nangl           array of angles that the normal form with the vertical
 
 	for(ix=0; ix<nx; ++ix){
 		xi = fx+ix*dx-x0;
-		ar = abs(xi)/dr;
+		ar = fabsf(xi)/dr;
 		jr = (int)ar;
 		sr = ar-jr;
 		sr0 = 1.0-sr;
@@ -1298,6 +1303,20 @@ void filt(float *trace,int nt,float dt,float fmax,int m,
 	free1float(rt);
 	free1complex(ct);
 }
+@
+
+
+1.8
+log
+@added Reg Beardsley's checkpar()
+@
+text
+@d4 1
+a4 1
+/* SUDATUMK2DR: $Revision: 1.6 $ ; $Date: 2006/11/07 22:58:42 $	*/
+d845 1
+a845 1
+		ar = abs(xi)/dr;
 @
 
 

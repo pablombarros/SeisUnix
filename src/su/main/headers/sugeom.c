@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.                       */
 
-/* SUGEOM: $Revision: 1.00 $ ; $Date: 2016/01/04 00:09:00 $        */
+/* SUGEOM: $Revision: 1.2 $ ; $Date: 2021/04/15 00:32:45 $        */
 
 
 #include "sugeom.h"
@@ -164,13 +164,13 @@ NULL};
 
 
 
-// Storage area for receiver points
+/* Storage area for receiver points */
 struct PointInfo *RecInfo;
 
-// Storage area for source points
+/* Storage area for source points */
 struct PointInfo *SrcInfo;
 
-// Storage area for record informations
+/* Storage area for record informations */
 struct RegInfo *FileInfo;
 
 
@@ -200,25 +200,25 @@ int main(int argc, char **argv)
    double Xcdp;            /* CDP X Coordinate                     */
    double Ycdp;            /* CDP Y Coordinate                     */
    float ibin;             /* Inline bin size/cdp interval         */
-   //float xbin;             /* Xline bin size/ Not used             */
+   /* float xbin; */           /* Xline bin size/ Not used             */
 
-   float dt;               /* sample spacing - I don't need, just check */
-   //int nt;                 /* number of points on input trace      */
+   float dt=0.0;               /* sample spacing - I don't need, just check */
+   /* int nt;    */              /* number of points on input trace      */
    cwp_Bool seismic;       /* is this seismic data?      */
 
-   // File control
-   int oldfldr;  //  fldr for last trace processed
-   int oldskip;  //  still skipping the same fldr?
-   int curx;     //  relation entry control
-   int curtrl;   //  keeping track of current trace (in case of skip)
+   /* File control */
+   int oldfldr;  /*  fldr for last trace processed */
+   int oldskip;  /*  still skipping the same fldr? */
+   int curx;     /*  relation entry control */
+   int curtrl;   /*  keeping track of current trace (in case of skip) */
 
-   int idxR;     //  Index of receiver station entry
-   int idxS;     //  Index of shot point entry
-   float recsta; //  receiver station
-   //float srcsta; //  source point station
+   int idxR;     /*  Index of receiver station entry */
+   int idxS;     /*  Index of shot point entry */
+   float recsta; /*  receiver station */
+   /* float srcsta;*/ /*  source point station */
 
-   int nproct = 0; // number of processed traces
-   //int nprocf = 0; // number of processed files
+   int nproct = 0; /* number of processed traces */
+   /* int nprocf = 0; */ /* number of processed files */
         
    /* Initialize */
    initargs(argc, argv);
@@ -239,7 +239,7 @@ int main(int argc, char **argv)
    /* Lets try to get common prefix. ===========  */
    /* ==========================================  */
    getparstring("prefix", &prefix);
-   // if ( prefix == NULL )  Who cares?
+   /* if ( prefix == NULL )  Who cares? */
 
    /* ==========================================  */
    /* Receiver points information ==============  */
@@ -248,7 +248,7 @@ int main(int argc, char **argv)
    if ( Rname == NULL ) {
       if ( prefix == NULL )
          err("**** Missing required parameter 'rps=', see self-doc");
-      //  I have a prefix and need build this file name.
+      /*  I have a prefix and need build this file name. */
       Rname = calloc(strlen(prefix)+2,sizeof(cwp_String));
       if ( Rname == NULL )
          err("**** Unable to allocate memory for R-File name.");
@@ -267,14 +267,14 @@ int main(int argc, char **argv)
    if ( numR == 0 )
       err("**** No receiver point information found!!");
 
-   // Allocate area for the receiver informations
-   // calloc zero out memory.
+   /* Allocate area for the receiver informations */
+   /* calloc zero out memory. */
    RecInfo = calloc(numR,sizeof(struct PointInfo));
    if ( RecInfo == NULL ){
       err("**** Unable to allocate memory for Receiver Point Informations!!");
    }
 
-   //  Get all Receiver Points info into memory
+   /*  Get all Receiver Points info into memory */
    RC = getPoints(fpR, 'R', rev, RecInfo);
    if ( RC != numR) {
       warn("Short read for Receiver Point Informations!");
@@ -300,7 +300,7 @@ int main(int argc, char **argv)
    if ( Sname == NULL ) {
       if ( prefix == NULL )
          err("**** Missing required parameter 'sps=', see self-doc");
-      //  I have a prefix and need build this file name.
+      /*  I have a prefix and need build this file name. */
       Sname = calloc(strlen(prefix)+2,sizeof(cwp_String));
       if ( Sname == NULL )
          err("**** Unable to allocate memory for S-File name.");
@@ -319,14 +319,14 @@ int main(int argc, char **argv)
    if ( numS == 0 )
       err("**** No source point information found!!");
 
-   // Allocate area for the Source informations
-   // calloc zero out memory.
+   /* Allocate area for the Source informations */
+   /* calloc zero out memory. */
    SrcInfo = calloc(numS,sizeof(struct PointInfo));
    if ( SrcInfo == NULL ){
       err("**** Unable to allocate memory for Source Point Informations!!");
    }
 
-   //  Get all Source Point info into memory
+   /*  Get all Source Point info into memory */
    RC = getPoints(fpS, 'S', rev, SrcInfo);
    if ( RC != numS) {
       warn("Short read for Source Point Informations!");
@@ -352,7 +352,7 @@ int main(int argc, char **argv)
    if ( Xname == NULL ) {
       if ( prefix == NULL )
          err("**** Missing required parameter 'xps=', see self-doc");
-      //  I have a prefix and need build this file name.
+      /*  I have a prefix and need build this file name. */
       Xname = calloc(strlen(prefix)+2,sizeof(cwp_String));
       if ( Xname == NULL )
          err("**** Unable to allocate memory for X-File name.");
@@ -371,14 +371,14 @@ int main(int argc, char **argv)
    if ( numX == 0 )
       err("**** No relation information found!!");
 
-   // Allocate area for the Register informations
-   // calloc zero out memory.
+   /* Allocate area for the Register informations */
+   /* calloc zero out memory. */
    FileInfo = calloc(numX,sizeof(struct RegInfo));
    if ( FileInfo == NULL ){
       err("**** Unable to allocate memory for Registers Informations!!");
    }
 
-   //  Get all Record info into memory
+   /*  Get all Record info into memory */
    RC = getFiles(fpX, rev, FileInfo);
    if ( RC != numX) {
       warn("Short read for File Informations!");
@@ -411,26 +411,26 @@ int main(int argc, char **argv)
    if (seismic) 
    {
       if (verbose)   warn("input is seismic data, trid=%d",tr.trid);
-      // dt = ((double) tr.dt)/1000000.0; // Don't use dt
+      /* dt = ((double) tr.dt)/1000000.0; */  /* Don't use dt */
    }
    else 
    {
       if (verbose) warn("input is not seismic data, trid=%d",tr.trid);
-      // dt = tr.d1; // Don't use dt
+      /* dt = tr.d1; */ /* Don't use dt */
    }
 
    /* error trapping so that the user can have a default value of dt */
    if (!(dt || getparfloat("dt", &dt))) {
-      // dt = .004;  // Don't use dt
+      /* dt = .004; */  /* Don't use dt */
       warn("WARNING:  neither dt nor d1 are set, nor is dt getparred!");
       warn("WARNING:  It is not used, just checked!!");
    }
 
-   //nt = tr.ns;
-   oldfldr  = 0;  //  fldr for last trace processed
-   oldskip = 0;   //  still skipping the same fldr?
-   curx = -1;      //  relation entry control
-   curtrl = 0;    //  keeping tracl of current trace (in case of skip)
+   /* nt = tr.ns; */
+   oldfldr  = 0;  /*  fldr for last trace processed */
+   oldskip = 0;   /*  still skipping the same fldr? */
+   curx = -1;     /*  relation entry control */
+   curtrl = 0;    /*  keeping tracl of current trace (in case of skip) */
 
       
    /* ------------------------------------------  */
@@ -441,24 +441,24 @@ int main(int argc, char **argv)
 
    do {
 
-      if (tr.fldr != oldfldr) { //  Ok, we have a new fldr.
-         // Advance relation entry?
+      if (tr.fldr != oldfldr) { /*  Ok, we have a new fldr. */
+         /* Advance relation entry? */
          if 
             (curx+1 < numX && tr.fldr == FileInfo[curx+1].Num) {
             curx++;
-            if ( curx == numX ) break;  //  No more relation available.
-            // fprintf(stderr,"==> 1-curx %d\n",curx); // Debug
-            // Process this one
+            if ( curx == numX ) break;  /*  No more relation available. */
+            /* fprintf(stderr,"==> 1-curx %d\n",curx);  Debug */
+            /* Process this one */
             if ( verbose )
                warn("** processing fldr=%d",tr.fldr);
             oldfldr = tr.fldr;
-            //fprintf(stderr,"==> New file %d: %d\n",curx,tr.fldr); // Debug
+            /* fprintf(stderr,"==> New file %d: %d\n",curx,tr.fldr);  Debug */
          }
-         else {  // skip until the next file is found
-            if ( tr.fldr != oldskip ) {  //  Skipping new fldr!
+         else {  /* skip until the next file is found */
+            if ( tr.fldr != oldskip ) {  /*  Skipping new fldr! */
                if ( curx+1 == numX) {
                   curx++;
-                  break;  //  No more relation available
+                  break;  /*  No more relation available */
                }
                warn("** skipping fldr=%d, looking for %d", 
                      tr.fldr,FileInfo[curx+1].Num);
@@ -466,124 +466,123 @@ int main(int argc, char **argv)
             }
             continue;
          }
-      }  // (tr.fldr != oldfldr)
+      }  /* (tr.fldr != oldfldr) */
 
-      //  Ok, we are processing current fldr
-      //  Is this channel within range?
-      if ( tr.tracf < FileInfo[curx].FChan ) { // skip this one
+      /*  Ok, we are processing current fldr */
+      /*  Is this channel within range? */
+      if ( tr.tracf < FileInfo[curx].FChan ) { /* skip this one */
          warn("** skipping fldr=%d, tracf=%d, looking for tracf=%d ",
                tr.fldr,tr.tracf,FileInfo[curx].FChan);
          continue;
       }
-      else if ( tr.tracf > FileInfo[curx].TChan ) { // <FIXME> still unsure
-              if ( curx+1 == numX) { // Is there any more relation info?
-                 curx++; // Signal the end of table
-                 break;  // Exit, no more relation available
+      else if ( tr.tracf > FileInfo[curx].TChan ) { /* <FIXME> still unsure */
+              if ( curx+1 == numX) { /* Is there any more relation info? */
+                 curx++; /* Signal the end of table */
+                 break;  /* Exit, no more relation available */
               }
-              if ( tr.fldr == FileInfo[curx+1].Num ) { // Is there more info?
+              if ( tr.fldr == FileInfo[curx+1].Num ) { /* Is there more info? */
                  do {
-                    // Advance the register info
+                    /* Advance the register info */
                     curx++;
-                    if ( tr.tracf >= FileInfo[curx].FChan &&  // If chan ok,
-                          tr.tracf <= FileInfo[curx].TChan) { // exit loop
-                       break; // Found it
+                    if ( tr.tracf >= FileInfo[curx].FChan &&  /* If chan ok, */
+                          tr.tracf <= FileInfo[curx].TChan) { /* exit loop */
+                       break; /* Found it */
                     }
 
                  } while (tr.fldr == FileInfo[curx+1].Num);
-                 //  Why did I get here?
-                 //  do we have a new fldr?
+                 /*  Why did I get here? */
+                 /*  do we have a new fldr? */
                  if ( tr.tracf < FileInfo[curx].FChan ||
-                      tr.tracf > FileInfo[curx].TChan) { // Ok, we have a new fldr.
-                    //  skip this trace, look for a new file
+                      tr.tracf > FileInfo[curx].TChan) { /* Ok, we have a new fldr. */
+                    /*  skip this trace, look for a new file */
                     continue;
                  }
 
               }
       }
 
-      //  Ok, seems that we are good to process this one.
-      //  Lets update the header
-      //  We will keep fldr and trcf untoutched
-      //  But will update tracl
+      /*  Ok, seems that we are good to process this one. */
+      /*  Lets update the header */
+      /*  We will keep fldr and trcf untoutched */
+      /*  But will update tracl */
       curtrl++;
       tr.tracl = curtrl;
 
 
-      if ( tr.ep == 0 ) // Only if zeroed out, keep otherwise
-         tr.ep = FileInfo[curx].SPoint; // No fractionary sp so far.
+      if ( tr.ep == 0 ) /* Only if zeroed out, keep otherwise */
+         tr.ep = FileInfo[curx].SPoint; /* No fractionary sp so far. */
 
-      tr.cdp = 0;  // not updating it yet
+      tr.cdp = 0;  /* not updating it yet */
 
-      //  This computes the receiver station 
-      //  <FIXME>  Not sure if this use of IncChan is correct. :(
-      //  It should group each IncChan channels in a single station
-      //  for multicomponent data.  
+      /*  This computes the receiver station  */
+      /*  <FIXME>  Not sure if this use of IncChan is correct. :( */
+      /*  It should group each IncChan channels in a single station */
+      /*  for multicomponent data.  */ 
       recsta = FileInfo[curx].FRecv + 
                (FileInfo[curx].TRecv-FileInfo[curx].FRecv) * 
                ((tr.tracf-FileInfo[curx].FChan)/FileInfo[curx].IncChan)/
                (FileInfo[curx].TChan-FileInfo[curx].FChan);
 
-      //  Get the index of the point at corresponding point  structure
+      /*  Get the index of the point at corresponding point  structure */
       idxR = GetPointIndex(RecInfo, numR, recsta,FileInfo[curx].RLine);
       idxS = GetPointIndex(SrcInfo, numS, FileInfo[curx].SPoint,
                            FileInfo[curx].SLine);
-      // <FIXME> - Take care for information not available!
-      // if ( idx[[R|S] < 0 ) { failed!  Skip trace/file! }
+      /* <FIXME> - Take care for information not available! */
+      /* if ( idx[[R|S] < 0 ) { failed!  Skip trace/file! } */
 
-      // Avoid division by zero.
+      /* Avoid division by zero. */
       if ( tr.scalel == 0 ) tr.scalel = 1;
       if ( tr.scalco == 0 ) tr.scalco = 1;
       
-      // The scale factor
+      /* The scale factor */
       scalel = 1./tr.scalel;
       scalco = 1./tr.scalco;
       if ( tr.scalel  < 0 )  scalel = -tr.scalel;
       if ( tr.scalco  < 0 )  scalco = -tr.scalco;
 
-      //  Source coordinates
+      /* Source coordinates */
       tr.sx = SrcInfo[idxS].X * scalco;
       tr.sy = SrcInfo[idxS].Y * scalco;
-      //  Receiver coordinates
+      /*  Receiver coordinates */
       tr.gx = RecInfo[idxR].X * scalco;
       tr.gy = RecInfo[idxR].Y * scalco;
 
-      if ( ibin != 0 )  {  // compute CDP number
+      if ( ibin != 0 )  {  /* compute CDP number */
 
-         //  CDP Position (where to store?)
+         /*  CDP Position (where to store?) */
          Xcdp = (RecInfo[idxR].X+SrcInfo[idxS].X)/2.;
          Ycdp = (RecInfo[idxR].Y+SrcInfo[idxS].Y)/2.;
 
-         //  First try for cdp computation.
-         //  (may work for 2D straight lines)
-         //
+         /*  First try for cdp computation. */
+         /*  (may work for 2D straight lines) */
          temp = sqrt(pow(Xcdp-RecInfo[0].X,2) + 
                      pow(Ycdp-RecInfo[0].Y,2));
-         tr.cdp = 100.5 + temp / ibin;  // 100 is just arbitrary
-                                        // .5  if for rounding :P
-         // Debug: print cdp# Xcdp Ycdp
-         //fprintf(stderr,"cdp %5d  %10.2f  %10.2f\n",tr.cdp,Xcdp,Ycdp);
+         tr.cdp = 100.5 + temp / ibin;  /* 100 is just arbitrary */
+                                        /* .5  if for rounding :P */
+         /* Debug: print cdp# Xcdp Ycdp */
+         /* fprintf(stderr,"cdp %5d  %10.2f  %10.2f\n",tr.cdp,Xcdp,Ycdp); */
 
       }
 
-      // Elevations
+      /* Elevations */
       tr.gelev = RecInfo[idxR].Elev * scalel;
       tr.selev = SrcInfo[idxS].Elev * scalel;
       tr.sdepth = SrcInfo[idxS].PDepth * scalel;
 
-      // Offset - The offset signal is just an educated guess.  :/
+      /* Offset - The offset signal is just an educated guess.  :/ */
       tr.offset = sqrt(pow(SrcInfo[idxS].X-RecInfo[idxR].X,2) + 
                        pow(SrcInfo[idxS].Y-RecInfo[idxR].Y,2));
       if ( SrcInfo[idxS].Point > RecInfo[idxR].Point )
          tr.offset = -tr.offset;
 
-      // Assuming all coordinates in UTM projection
+      /* Assuming all coordinates in UTM projection */
       tr.counit = 1;
 
       tr.sstat = SrcInfo[idxS].StaCor;
       tr.gstat = RecInfo[idxR].StaCor;
 
       puttr(&tr);
-      nproct++; // count processed traces
+      nproct++; /* count processed traces */
 
    } while (gettr(&tr));
 
@@ -605,9 +604,9 @@ int main(int argc, char **argv)
 
 int countRec(FILE *pfile, char type)
 {
-   //  This function read the file *pfile looking for lines with
-   //  1st character == Type.   The file must be already oppened
-   //  and will be repositioned at start point at exit.
+   /*  This function read the file *pfile looking for lines with */
+   /*  1st character == Type.   The file must be already oppened */
+   /*  and will be repositioned at start point at exit. */
 
    int tcount = 0;
    int count = 0;
@@ -634,30 +633,30 @@ int countRec(FILE *pfile, char type)
 int getPoints(FILE *pfile, char type, int rev, struct  PointInfo *Points)
 {
 
-   //  Struct PointInfo
-   //  Line:    1- Line name
-   //  Point:   2- Point number (station, PT, etc)
-   //  PDepth:  6- Point depth in relation to surface (ex buried SP)
-   //  X:      10- X coordinate
-   //  Y:      11- Y coordinate
-   //  Elev:   12- Surface elevation at point
-   //
-   //  Internal variables
+   /*  Struct PointInfo */
+   /*  Line:    1- Line name */
+   /*  Point:   2- Point number (station, PT, etc) */
+   /*  PDepth:  6- Point depth in relation to surface (ex buried SP) */
+   /*  X:      10- X coordinate */
+   /*  Y:      11- Y coordinate */
+   /*  Elev:   12- Surface elevation at point */
+   /* */
+   /*  Internal variables */
    int count = 0;
 
    while (fgets(textbuffer, sizeof(textbuffer), pfile) != NULL) /*read a line*/
    {
-       if (textbuffer[0] == type ) // Is it the desirable type?
+       if (textbuffer[0] == type ) /* Is it the desirable type? */
        {
-          // Parse record for desired fields
+          /* Parse record for desired fields */
 
-          getSPSfield(textbuffer, rev,  1, &Points[count].Line);  // 1
-          getSPSfield(textbuffer, rev,  2, &Points[count].Point); // 2
-          getSPSfield(textbuffer, rev,  5, &Points[count].StaCor);// 5
-          getSPSfield(textbuffer, rev,  6, &Points[count].PDepth);// 6
-          getSPSfield(textbuffer, rev, 10, &Points[count].X);     //10
-          getSPSfield(textbuffer, rev, 11, &Points[count].Y);     //11
-          getSPSfield(textbuffer, rev, 12, &Points[count].Elev);  //12
+          getSPSfield(textbuffer, rev,  1, &Points[count].Line);  /* 1 */
+          getSPSfield(textbuffer, rev,  2, &Points[count].Point); /* 2 */
+          getSPSfield(textbuffer, rev,  5, &Points[count].StaCor);/* 5 */
+          getSPSfield(textbuffer, rev,  6, &Points[count].PDepth);/* 6 */
+          getSPSfield(textbuffer, rev, 10, &Points[count].X);     /* 10 */
+          getSPSfield(textbuffer, rev, 11, &Points[count].Y);     /* 11 */
+          getSPSfield(textbuffer, rev, 12, &Points[count].Elev);  /* 12 */
 
           count++;
        }
@@ -669,33 +668,32 @@ int getPoints(FILE *pfile, char type, int rev, struct  PointInfo *Points)
 int getFiles(FILE*pfile,  int rev, struct  RegInfo* Files)
 {
 
-// Structure for relation (aka register) information
+/* Structure for relation (aka register) information */
 
-   // Num:        2- Field Record Number
-   // Inc:        3- Field Record Increment
-   // SLine:      5- Source Line
-   // SPoint:     6- Source Point
-   // FChan:      8- Start Channel
-   // TChan:      9- To Channel
-   // IncChan:   10- Channel Increment for multicomponent data
-   // RLine:     11- Receiver Line
-   // FRecv:     12- From Receiver Station
-   // TRecv:     13- To receiver Station
-   // RInc:      14- Receiver Index
-   //
-   //  Internal variables
+   /* Num:        2- Field Record Number */
+   /* Inc:        3- Field Record Increment */
+   /* SLine:      5- Source Line */
+   /* SPoint:     6- Source Point */
+   /* FChan:      8- Start Channel */
+   /* TChan:      9- To Channel */
+   /* IncChan:   10- Channel Increment for multicomponent data */
+   /* RLine:     11- Receiver Line  */
+   /* FRecv:     12- From Receiver Station */
+   /* TRecv:     13- To receiver Station */
+   /* RInc:      14- Receiver Index */
+   /* */
+   /*  Internal variables */
    int count = 0;
 
    while (fgets(textbuffer, sizeof(textbuffer), pfile) != NULL) /*read a line*/
    {
-       if (textbuffer[0] == 'X' ) // Is it the desirable type?
+       if (textbuffer[0] == 'X' ) /* Is it the desirable type? */
        {
-          // Initialize a few for nonzero values
-          Files[count].Inc = 1;
-          Files[count].IncChan = 1;
+          /* Initialize a few for nonzero values */
+          Files[count].Inc = 1; Files[count].IncChan = 1;
           Files[count].RInc = 1;
 
-          // Parse record for desired fields
+          /* Parse record for desired fields */
 
           getSPSfield(textbuffer, rev,  2, &Files[count].Num);    
           getSPSfield(textbuffer, rev,  3, &Files[count].Inc);   
@@ -720,19 +718,19 @@ int getFiles(FILE*pfile,  int rev, struct  RegInfo* Files)
 int GetPointIndex(struct PointInfo *Points,int nPoints, float Point,float Line)
 {
 
-   //  This function sweeps the PointInfo Points looking for an entry with the
-   //  Point and Line.
-   //  Upon finding it returns the index value.
+   /* This function sweeps the PointInfo Points looking for an entry with the */
+   /*  Point and Line. */
+   /*  Upon finding it returns the index value. */
    int i;
 
    for (i=0; i<nPoints; i++)
    {
-       if ( abs(Points[i].Line  - Line ) <= 0.01 && // Float compair :0
-            abs(Points[i].Point - Point) <= 0.01 )
+       if ( fabs(Points[i].Line  - Line ) <= 0.01 && /* Float compair :0 */
+            fabs(Points[i].Point - Point) <= 0.01 )
           return i;
    }
 
-   // failled!
+   /* failled! */
    return -1;
 
 }

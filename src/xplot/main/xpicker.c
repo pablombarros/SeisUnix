@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.                       */
 
-/* XPICKER: $Revision: 1.29 $ ; $Date: 2020/10/02 15:42:59 $  */
+/* XPICKER: $Revision: 1.26 $ ; $Date: 2011/11/21 17:03:51 $  */
 
 #include "par.h"
 #include "xplot.h"
@@ -69,7 +69,7 @@ char *sdoc[] = {
 " va=1		   =0 for no variable-area; =1 for variable-area fill	",
 "                        =2 for variable area, solid/grey fill          ",
 "                        SHADING: 2<=va<=5  va=2 light grey, va=5 black ",
-" verbose=0	      =1 for info printed on stderr (0 for no info)	",
+" verbose=1	      =1 for info printed on stderr (0 for no info)	",
 " xbox=50		x in pixels of upper left corner of window	",
 " ybox=50		y in pixels of upper left corner of window	",
 " wbox=550	      	width in pixels of window			",
@@ -300,8 +300,7 @@ void draw_pick(Display *dpy, Window win, GC gc, pick_t *pick, int i,
 	       int width, int height,
 	       float x1begb, float x1endb,
 	       float x2begb, float x2endb,
-	       float p2beg, float p2end,
-	       int verbose);
+	       float p2beg, float p2end);
 void draw_command_bar(int winwidth, TextSet *filename_input,
 		      char *pick_fname, int control_mode, int edit_mode,
 		      int cross_mode);
@@ -472,7 +471,7 @@ main (int argc, char **argv)
 		clip = temp[iz];
 		free1float(temp);
 	}
-	if (!getparint("verbose",&verbose)) verbose=0;
+	verbose = 1;  getparint("verbose",&verbose);
 	if (verbose) warn("clip=%g",clip);
 
 	/* get wiggle-trace-variable-area parameters */
@@ -680,8 +679,7 @@ main (int argc, char **argv)
 					width,height,
 					x1begb,x1endb,
 					x2begb,x2endb,
-					p2beg,p2end,
-					verbose);
+					p2beg,p2end);
 			}
 
 		/* else if key down */
@@ -1450,15 +1448,16 @@ void load_picks(pick_t **apick, int num_wiggles, char *fname,
 			rc=fscanf(fp,"%f %f\n",&xval,&time);
 		} else {
 			rc=fscanf(fp,"%f %f\n",&time,&xval);
+			warn ("test temps %f position %f",&time,&xval);
 		}
 		if (rc == 0) err("Pick file read error");
 		(*apick)[*pickdimend-1].picked=TRUE;
 		(*apick)[*pickdimend-1].x2=xval;
 		(*apick)[*pickdimend-1].time=time;
-		if (verbose) printf("load: %d %f %f %d \n",*pickdimend,(*apick)[*pickdimend-1].x2,
+       printf("load: %d %f %f %d \n",*pickdimend,(*apick)[*pickdimend-1].x2,
 	   (*apick)[*pickdimend-1].time,(*apick)[*pickdimend-1].picked);
 	}
-	if (verbose) printf("load: end %d max %d  \n",*pickdimend,*pickdimax);
+	printf("load: end %d max %d  \n",*pickdimend,*pickdimax);
 
 	efclose(fp);
 	warn("Pick input successful");
@@ -1511,8 +1510,7 @@ void edit_pick(Display *dpy, Window win, GC gc, XEvent event,
 					draw_pick(dpy,win,red_r_gc,*apick,ihead,
 						x,y, width,height, x1begb,
 						x1endb, x2begb,x2endb,
-						p2beg,p2end,
-						verbose);
+						p2beg,p2end);
 					(*apick)[ihead].picked=FALSE;
       				}
 		 	}
@@ -1529,8 +1527,7 @@ void edit_pick(Display *dpy, Window win, GC gc, XEvent event,
 							x,y, width,height,
 		 					x1begb,x1endb,
 							x2begb,x2endb,
-							p2beg,p2end,
-							verbose);
+							p2beg,p2end);
 				}   */
       
 			scale = width/(x2endb+p2end-x2begb-p2beg);
@@ -1574,8 +1571,7 @@ void draw_pick(Display *dpy, Window win, GC gc, pick_t *pick, int i,
 	       int width, int height,
 	       float x1begb, float x1endb,
 	       float x2begb, float x2endb,
-	       float p2beg, float p2end,
-	       int verbose)
+	       float p2beg, float p2end)
 {
 	int x,y;
 	float scale,base;
@@ -1586,7 +1582,7 @@ void draw_pick(Display *dpy, Window win, GC gc, pick_t *pick, int i,
   	x = base+scale*(pick[i].x2)-0.5;       
 	/* y=ymargin+x1begb+(pick[i].time-x1begb)/(x1endb-x1begb)*height; */
 	y=ymargin+(pick[i].time-x1begb)/(x1endb-x1begb)*height; /* xxxc */
-	if (verbose) printf("DRAW: %d %f %f \n",i,pick[i].x2,pick[i].time);
+	printf("DRAW: %d %f %f \n",i,pick[i].x2,pick[i].time);
 	draw_seg(dpy,win,gc,x,y);
 }
 
@@ -1844,7 +1840,7 @@ void add_pick(pick_t **apick, int *pickdimax, int *pickdimend,
 			       (*apick)[*pickdimend].x2 = *pick_num;
 			       (*apick)[*pickdimend].time = fy;
 			       (*apick)[*pickdimend].picked=TRUE;
-		    if (verbose) printf("ADD (x,t): (%d, %f) pick(i,x,t): (%d, %f, %f)\n",
+		   printf("ADD (x,t): (%d, %f) pick(i,x,t): (%d, %f, %f)\n",
 		   *pick_num, fy,*pickdimend,(*apick)[*pickdimend].x2,(*apick)[*pickdimend].time);
 			       ++*pickdimend;
 

@@ -1,9 +1,14 @@
-head	1.5;
+head	1.6;
 access;
 symbols;
 locks; strict;
 comment	@ * @;
 
+
+1.6
+date	2021.04.15.00.47.25;	author john;	state Exp;
+branches;
+next	1.5;
 
 1.5
 date	2011.11.16.17.51.02;	author john;	state Exp;
@@ -36,15 +41,15 @@ desc
 @
 
 
-1.5
+1.6
 log
-@added Reg Beardsley's checkpar()
+@removed a couple of extraneous self assigns
 @
 text
 @/* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.                       */
 
-/* SUDMOVZ: $Revision: 1.3 $ ; $Date: 2003/06/09 16:17:07 $	*/
+/* SUDMOVZ: $Revision: 1.5 $ ; $Date: 2011/11/16 17:51:02 $	*/
 
 #include "su.h"
 #include "segy.h"
@@ -261,8 +266,8 @@ main(int argc, char **argv)
 
 	/* compute extreme values */
 	ft = 0.0;
-	lt = ft+(nt-1)*dt; lt = lt;
-	lttab = ft+(nttab-1)*dt; lttab = lttab;
+	lt = ft+(nt-1)*dt;
+	lttab = ft+(nttab-1)*dt;
 	fp = 0.0;
 	lp = 1.0/vt[0];
 
@@ -1235,6 +1240,21 @@ Modified:  Craig Artley, Colorado School of Mines, 09/25/90
 		a[jt] = a[jt-1];
 	}
 }
+@
+
+
+1.5
+log
+@added Reg Beardsley's checkpar()
+@
+text
+@d4 1
+a4 1
+/* SUDMOVZ: $Revision: 1.3 $ ; $Date: 2003/06/09 16:17:07 $	*/
+d221 2
+a222 2
+	lt = ft+(nt-1)*dt; lt = lt;
+	lttab = ft+(nttab-1)*dt; lttab = lttab;
 @
 
 

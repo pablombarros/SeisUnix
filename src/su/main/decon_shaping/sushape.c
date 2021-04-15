@@ -110,7 +110,7 @@ main(int argc, char **argv)
 	getparstring("dfile",&dfile);	
 	getparstring("wfile",&wfile);	
 
-	if ((*dfile=='\0')) { /* if no dfile, then get from command line */
+	if (*dfile=='\0') { /* if no dfile, then get from command line */
 		if (!(nd = countparval("d")))
 			err("must specify d= desired wavelet");
 		d = ealloc1float(nd);	getparfloat("d", d);
@@ -126,7 +126,7 @@ main(int argc, char **argv)
 		memcpy((void *) d, (const void *) dtr.data, nd*FSIZE);
 	}
 		
-	if ((*wfile=='\0')) { /* then get w from command line */
+	if (*wfile=='\0') { /* then get w from command line */
 		if (!(nw = countparval("w")))
 			err("must specify w= desired wavelet");
 		w = ealloc1float(nw);	getparfloat("w", w);

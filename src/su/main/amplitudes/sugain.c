@@ -513,7 +513,7 @@ void do_qbal(
 		bal = ABS(data[0]);
 		for (i = 1; i < nt; ++i)  bal = MAX(bal, ABS(data[i]));
 
-		if ((bal == 0.0)) {
+		if (bal == 0.0) {
 			return;
 		} else {
 			for (i = 0; i < nt; ++i)  data[i] /= bal;
@@ -529,7 +529,7 @@ void do_qbal(
 	for (i = 0; i < nt; ++i)  absdata[i] = ABS(data[i]);
 	bal = quant(absdata, iq, nt);
 
-	if ((bal == 0.0)) {
+	if (bal == 0.0) {
 		return;
 	} else {
 		for (i = 0; i < nt; ++i)  data[i] /= bal;

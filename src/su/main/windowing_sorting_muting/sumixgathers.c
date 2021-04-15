@@ -103,8 +103,8 @@ int main(int argc, char **argv)
 			if ((tr2.offset<0.99*h[ih])&&(tr2.offset>1.01*h[ih])) flag=0;
 		}
 		if (flag==1){
-			if (scaling && fabs(tr2.offset) > 0){
-		  	  scale=(1+0.03*(fabs(tr2.offset)/1000.));
+			if (scaling && abs(tr2.offset) > 0){
+		  	  scale=(1+0.03*(abs(tr2.offset)/1000.));
 			  fprintf(stderr,"tr2.offset=%d,scale=%f\n",tr2.offset,scale);
 			  for (it=0;it<nt;it++) tr2.data[it]*=scale;
 			}

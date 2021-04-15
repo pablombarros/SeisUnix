@@ -444,7 +444,7 @@ main (int argc, char **argv)
 					complex tmp;
 					float ratio=10.0;
 		
-					if(fabs(ix+ix2-ixshot)*dx<ratio*iz*dz)
+					if(abs(ix+ix2-ixshot)*dx<ratio*iz*dz)
 						tmp=cmul(cp[iw][ix],cp1[iw][ix]);
 					else 
 						tmp=cmplx(0.0,0.0);  

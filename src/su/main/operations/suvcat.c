@@ -128,8 +128,8 @@ main(int argc, char **argv)
 		if(taptype==1){
 
 	  	for(i=0; i<taplen; i++){
-	    	  if(abs(intrace1.data[nt1-taplen+i])>
-					abs(intrace2.data[i])){
+	    	  if(fabsf(intrace1.data[nt1-taplen+i])>
+					fabsf(intrace2.data[i])){
 			hold = intrace1.data[nt1-taplen+i];
 	    	  }else{
 		        hold = intrace2.data[i];

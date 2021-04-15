@@ -52,7 +52,7 @@ Thanks to Reg Beardsley
 --------------------------------------------------------
 New codes include:
 --------------------------
-cwp/lib/unwrapephase.c - phase unwrapping routines (simple) and (oppenheim)
+cwp/lib/unwrapphase.c - phase unwrapping routines (simple) and (oppenheim)
 		-John Stockwell CWP
 cwp/lib/conjugate_gradient.c - Claerbout's simple conjugate gradient
 		   John Stockwell, CWP, Colorado School of Mines

@@ -440,7 +440,7 @@ segy tr, tro;
 	   complex tmp, tmpd;
 	   float ratio=10.0;
   
-	   if(fabs(ix+ix2-ixshot)*dx<ratio*iz*dz) {
+	   if(abs(ix+ix2-ixshot)*dx<ratio*iz*dz) {
 	     tmp=cmul(cp[iw][ix],cp1[iw][ix]);
 	     if (nflag) tmpd = cmul(cp1[iw][ix],conjg(cp1[iw][ix]));
 	   } else {

@@ -70,7 +70,7 @@ main(int argc, char **argv)
 	int ntr;		/* number of input traces */
 	int nt;			/* number of time samples */
 	int nx,sb,nrot;		/* number of horizontal samples */
-	float dt,singval;               /* Time sample interval */
+	float dt,dtheader,singval;               /* Time sample interval */
 	float **in_traces;	/* array[nx][nt] of input traces */	
 	float **out_traces;	/* array[nx][nt] of output traces */	
 	float **XT,**G,**v,*w,**u;
@@ -93,7 +93,7 @@ main(int argc, char **argv)
         /* get info from first trace */
         if (!gettr(&tr))  err("can't get first trace");
         nt = tr.ns;
-        dt = (float) tr.dt/1000000.0;
+        dtheader = (float) tr.dt/1000000.0;
          if (!getparint("sb",&sb)) sb = 0;
          if (!getparint("nrot",&nrot)) nrot = 3;
         /* Store traces in tmpfile while getting a count */
@@ -125,7 +125,7 @@ main(int argc, char **argv)
 
         /* get general flags and parameters and set defaults */
         if (!getparint("nx",&nx))          	nx = ntr;
-	if (!getparfloat("dt",&dt))		dt = dt;
+	if (!getparfloat("dt",&dt))		dt = dtheader;
 
 
 	

@@ -1409,7 +1409,7 @@ instead, call this function with negative w.
 *****************************************************************************/
 {
 	int nxfft,nk,nka,ix,ik,ip,lwrap;
-	float dk,fk,ek,fka,k,p,phase,c,s,x,xshift,temp,*kp;
+	float dk,fk,ek,fka,k,p,phase,c,s,x=0.0,xshift,temp,*kp;
 	complex czero=cmplx(0.0,0.0),*gx,*gk,*gka,*hp;
 
 	/* number of samples required to make wavenumber k periodic */

@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.                       */
 
-/* SUDMOVZ: $Revision: 1.5 $ ; $Date: 2011/11/16 17:51:02 $	*/
+/* SUDMOVZ: $Revision: 1.6 $ ; $Date: 2021/04/15 00:47:25 $	*/
 
 #include "su.h"
 #include "segy.h"
@@ -218,8 +218,8 @@ main(int argc, char **argv)
 
 	/* compute extreme values */
 	ft = 0.0;
-	lt = ft+(nt-1)*dt; lt = lt;
-	lttab = ft+(nttab-1)*dt; lttab = lttab;
+	lt = ft+(nt-1)*dt;
+	lttab = ft+(nttab-1)*dt;
 	fp = 0.0;
 	lp = 1.0/vt[0];
 

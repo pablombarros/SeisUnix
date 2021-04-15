@@ -262,7 +262,7 @@ main(int argc, char **argv)
 		intlin(nxmute,xmute,tmute,tmin,tmute[nxmute-1],1,&fval,&t); 
 		}
 
-		if (absolute) fval = abs(fval);
+		if (absolute) fval = fabsf(fval);
 		/* do the mute */
 		if (mode==0) {	/* mute above */
 			nmute = MIN(NINT((t - tmin)/dt),nt);
@@ -318,7 +318,7 @@ main(int argc, char **argv)
 		} else if (mode==4) {	/* polygonal mute */
 			tmin=twindow[0];
 			intlin(nxmute,xmute,twindow,tmin,twindow[nxmute-1],1,&twfval,&tw); 
-			if (absolute) twfval = abs(twfval);
+			if (absolute) twfval = fabsf(twfval);
 
 			nmute = NINT(tw/dt);
 			ntair = NINT(t/dt);

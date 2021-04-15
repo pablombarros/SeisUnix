@@ -162,7 +162,7 @@ main(int argc, char **argv)
 	d1 = 1.0/(nfft*dt);
 
 	if (!getparint("sign1", &sign1)) sign1 = 1;
-	if (!getparint("sign2", &sign1)) sign2 = -1;
+	if (!getparint("sign2", &sign2)) sign2 = -1;
 	if (!getparfloat("unwrap", &unwrap))	unwrap = 1.0;
 	if (sign1 != 1 && sign1 != -1)   err("sign1 = %d must be 1 or -1", sign1);
 	if (sign2 != -1 && sign2 != 1)   err("sign2 = %d must be -1 or 1", sign2);

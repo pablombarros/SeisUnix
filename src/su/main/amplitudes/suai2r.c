@@ -58,7 +58,7 @@ main(int argc, char **argv)
 	nt = tr.ns;
 
 	/* Loop over traces */
-	itr = 1;			// First trace already in
+	itr = 1;			/* First trace already in */
 	do {
 		int it;
 

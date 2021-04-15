@@ -1,9 +1,14 @@
-head	1.1;
+head	1.2;
 access;
 symbols;
 locks; strict;
 comment	@ * @;
 
+
+1.2
+date	2021.04.15.00.32.06;	author john;	state Exp;
+branches;
+next	1.1;
 
 1.1
 date	2016.04.05.19.44.27;	author john;	state Exp;
@@ -16,15 +21,15 @@ desc
 @
 
 
-1.1
+1.2
 log
-@Initial revision
+@replaced // with /* .. */
 @
 text
 @/* Copyright (c) Durham University, 2013.*/
 /* All rights reserved.		       */
 
-/* SUSVDFILT: $Revision: 1.0 $ ; $Date: 2013/11/10 18:00:00 $	*/
+/* SUSVDFILT: $Revision: 1.1 $ ; $Date: 2016/04/05 19:44:27 $	*/
 
 #include "su.h"
 #include "segy.h"
@@ -103,17 +108,17 @@ main(int argc, char **argv)
     register int i;       /* indices for components (in loops) */
     register int j,k;     /* loop index */
     int nsp;	      /* number of samples in input trace	*/
-//    int nspws;		  /* number of samples in window (wo taper)*/
-//    int nspwf;		  /* number of samples in first window    */
-//    int nspwi;		  /* number of samples in intermed. window */
-//    int nstaper;	  /* number of samples in taper		*/
+/*    int nspws; */		  /* number of samples in window (wo taper)*/
+/*    int nspwf; */		  /* number of samples in first window    */
+/*    int nspwi; */		  /* number of samples in intermed. window */
+/*    int nstaper; */	  /* number of samples in taper		*/
     int ntrc;		  /* number of input traces		*/
     int ntrw;		  /* number of traces in window		*/
-//    int ntw;		  /* number of time windows		*/
-//    int nw;	       /* number of windows per trace */
-//    int itwlen;	   /* filter window length in samples */
-//    float twlen;	  /* filter window length in seconds */
-//    float taper;	  /* length of taper */
+/*    int ntw; */	  /* number of time windows		*/
+/*    int nw; */       /* number of windows per trace */
+/*    int itwlen; */	   /* filter window length in samples */
+/*    float twlen; */  /* filter window length in seconds */
+/*/    float taper; */	  /* length of taper */
     float dt;	     /* sampling intervall in seconds */
     int numpp;	    /* number of principal planes to retain */
     int subtract;	 /* flag for subtracing eigen image from input */
@@ -199,7 +204,7 @@ main(int argc, char **argv)
     /* echo window information */
     if (verbose) {
 	warn("nsp=%d ntrc=%d ntrw=%d\n",nsp,ntrc,ntrw);
-//	warn("%d windows of %d samples per trace\n", nw, itwlen);
+/*	warn("%d windows of %d samples per trace\n", nw, itwlen); */
     }   
 
     /* allocate space */
@@ -222,7 +227,7 @@ main(int argc, char **argv)
     if (verbose) fprintf(stderr,"Processing");
 
     /* loop over time/space windows */
-   // for (iw=0;iw<ntw;iw++) {
+   /* for (iw=0;iw<ntw;iw++) { */
    
     /* copy data into matrix for SVD */
     for (i=0; i<ntrw; i++) {
@@ -293,4 +298,34 @@ static void closefiles(void)
 }
 
 /* END OF FILE */
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d4 1
+a4 1
+/* SUSVDFILT: $Revision: 1.0 $ ; $Date: 2013/11/10 18:00:00 $	*/
+d83 4
+a86 4
+//    int nspws;		  /* number of samples in window (wo taper)*/
+//    int nspwf;		  /* number of samples in first window    */
+//    int nspwi;		  /* number of samples in intermed. window */
+//    int nstaper;	  /* number of samples in taper		*/
+d89 5
+a93 5
+//    int ntw;		  /* number of time windows		*/
+//    int nw;	       /* number of windows per trace */
+//    int itwlen;	   /* filter window length in samples */
+//    float twlen;	  /* filter window length in seconds */
+//    float taper;	  /* length of taper */
+d179 1
+a179 1
+//	warn("%d windows of %d samples per trace\n", nw, itwlen);
+d202 1
+a202 1
+   // for (iw=0;iw<ntw;iw++) {
 @

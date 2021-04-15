@@ -297,7 +297,7 @@ main(int argc, char **argv)
 			for (ix=0; ix<nx; ++ix) {
 
 				/* get this x */
-				x = abs(offs[ix]);
+				x = fabsf(offs[ix]);
 
 				/* target phase */
 				arg = - phi * x;

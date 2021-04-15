@@ -507,14 +507,14 @@ main(int argc, char **argv)
 					tmp[i] = 0.0;
 				} 
 				if ( SGN(x) == SGN(y) && SGN(y) != SGN(z)) {
-					if ( abs(y) < abs(z) ) {
+					if ( fabsf(y) < fabsf(z) ) {
 						tmp[i] = y;
 					} else {
 						tmp[i] = z;
 					}
 				} 
 				if ( SGN(x) != SGN(y) && SGN(y) == SGN(z)) {
-					if ( abs(x) < abs(y) ) {
+					if ( fabsf(x) < fabsf(y) ) {
 						tmp[i] = x;
 					} else {
 						tmp[i] = y;

@@ -1,10 +1,14 @@
-head	1.2;
+head	1.3;
 access;
 symbols;
-locks
-	john:1.2; strict;
+locks; strict;
 comment	@ * @;
 
+
+1.3
+date	2021.04.15.00.30.36;	author john;	state Exp;
+branches;
+next	1.2;
 
 1.2
 date	2017.05.09.20.52.48;	author john;	state Exp;
@@ -22,9 +26,9 @@ desc
 @
 
 
-1.2
+1.3
 log
-@added technical reference
+@replaced // with /* .. */
 @
 text
 @#include "su.h"
@@ -87,7 +91,7 @@ main(int argc, char **argv)
 	nt = tr.ns;
 
 	/* Loop over traces */
-	itr = 1;			// First trace already in
+	itr = 1;			/* First trace already in */
 	do {
 		int it;
 
@@ -103,6 +107,17 @@ main(int argc, char **argv)
 
 	return 0;
 }
+@
+
+
+1.2
+log
+@added technical reference
+@
+text
+@d61 1
+a61 1
+	itr = 1;			// First trace already in
 @
 
 

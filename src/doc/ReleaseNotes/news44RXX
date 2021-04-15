@@ -1,12 +1,34 @@
-John Stockwell retired from the Colorado School of Mines effectively
-1 Jan 2018. He continues to work with Seismic Unix. 
-Please email: john.19071969@gmail.com
-if you have questions, or if you want to supply  bug fixes or new SU code.
-
 Summer 2018 - Thanks to Dominque Rousset of the University of Pau,
 Seismic Unix distributions and other information may be found at
 
 https://wiki.seismic-unix.org
+Installation tip. If you get error messages regarding the XDR materials
+you may need to install libtirpc from your Linux distribution.
+
+John Stockwell retired from the Colorado School of Mines effective
+1 Jan 2018. He continues to work with Seismic Unix. 
+Please email: john.19071969@gmail.com
+if you have questions, or if you want to supply bug fixes or new SU code.
+
+
+Ongoing issues: The GNU people have separated the tirpc library and include
+files from the main part of libgcc. These are now in a developers' package
+on many systems called libtirpc.a. The TRPC materials are used for the XDR
+part of the installation. GCC 2.32 seems to have the locations of the
+include files in the wrong place. New users can set 
+XDRFLAG =  -DSUXDR
+to
+XDRFLAG =
+and the package should install just fine. If you have been using SU awhile
+and have files in SU format, then there will be a byte swapping issue between
+data made with XDR versus data made without XDR. 
+
+Fixes:
+A number of // C++ style comments have now been changed to /*... */ style
+comments. This used to be just a warning, but now actually breaks the code
+under GCC 2.32 and a number of other compiler warnings have been silenced.
+
+Many thanks to Dominique Rousset for working on this.
 
 
 What is new in the SU package:
@@ -33,13 +55,29 @@ par/main/velocity_perturbation
 par/main/wavelet_transform
 
 
-
 New:
+su/main/transforms/sust.c
+	SUST -  Outputs a time-frequency representation of seismic data via
+           	the Stockwell transform (S- transform)
+            Thanks to Adnand Bitri (note that the Stockwell here is
+              is R. G. Stockwell, not me)
+su/main/noise/sugroll.c
+	SUGROLL - Ground roll supression using Karhunen-Loeve transform
+	    Thanks to Adnand Bitri
+
+su/main/stretching_moveout_resamp/sudlmo.c
+	SUDLMO -- Dynamic Linear Move Out Correction for Surface Waves 
+	    Thanks to Adnand Bitri
+	
 ramac2su - converts RAMAC GPR files to su format with a nominal geometry
 		Thanks to: Hervé Perrou,d  12/2000and Dominique Rousset,  2019 
                 of the Universith of Pau
 configs/Makefile.config_Linux_Ubuntu
-configs/Makefile.config_Mac_OSX_Mojave
+        Makefile.config_Mac_OSX_Mojave
+        Makefile.config_Linux_Fedora_32
+        Makefile.config_Linux_ARCH
+        Makefile.config_MacOSX_Catalina
+        Makefile.config_Mac_OSX_Big_SUR
 par/main/ordinary_differential_equations
 	 logisticfit.c - extract growth and carrying capacity for logistic
 			 model
@@ -51,6 +89,7 @@ demos/Ordinary_differential_equations
 	 Epidemiology
 	 Logistic_Equation
 	 Predator_Prey
+	
 
 Fixed:
 su/main/amplitudes/sugain.c - fixed a but in the AGC function seen on GPR data but not apparent on seismic data
@@ -58,7 +97,6 @@ su/main/amplitudes/sugain.c - fixed a but in the AGC function seen on GPR data b
 
 su/lib/getSPSfile.c - replaced // comments with  /* comments */ owing to
 			a problem on CENTOS version 7.
-
 Fortran/Vzest/vzestf.f - changed (about line 1119) to
         	character*120 fnames(2) from fnames(3)
 		Thanks to Fernando Roxo da Motta

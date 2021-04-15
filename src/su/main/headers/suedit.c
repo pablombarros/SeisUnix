@@ -345,7 +345,8 @@ void editkey(void)
 	/* char userin[] is "!    keyword  = keyval" */
 
 	/* Strip the '!' and any leading spaces from buffer */
-	for (keyword = userin + 1; isspace((int)(*keyword)); keyword++);
+	for (keyword = userin + 1; isspace((int)(*keyword)); keyword++)
+		;
 
 	/* Set keyval to start of val */
  	if (NULL == (keyval = strchr(keyword, '=') + 1)) {

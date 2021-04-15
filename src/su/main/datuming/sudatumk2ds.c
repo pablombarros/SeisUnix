@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.                       */
 
-/* SUDATUMK2DS: $Revision: 1.7 $ ; $Date: 2011/11/16 17:45:18 $	*/
+/* SUDATUMK2DS: $Revision: 1.8 $ ; $Date: 2021/04/15 00:44:23 $	*/
 
 #include "su.h"
 #include "segy.h"
@@ -767,7 +767,7 @@ nangl           array of angles that the normal form with the vertical
 
 	for(ix=0; ix<nx; ++ix){
 		xi = fx+ix*dx-x0;
-		ar = abs(xi)/dr;
+		ar = fabsf(xi)/dr;
 		jr = (int)ar;
 		sr = ar-jr;
 		sr0 = 1.0-sr;

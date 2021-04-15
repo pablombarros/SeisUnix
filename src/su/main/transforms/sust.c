@@ -80,7 +80,6 @@ main(int argc, char **argv)
 
 	float **vgr;		/* S-transform data  array		*/
 	float dt;		/* sample spacing			*/
-	float df;		/* freqyency sampling 			*/
 	float nyq;		/* nyquist frequency			*/
 	int nt;			/* number of points on input trace	*/
 	int nfft;		/* number of points for fft trace	*/
