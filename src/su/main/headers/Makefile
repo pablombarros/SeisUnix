@@ -25,6 +25,7 @@ PROGS =			\
 	$B/suedit	\
 	$B/sugethw	\
 	$B/sugeom	\
+	$B/sugeomcsv	\
 	$B/suhtmath	\
 	$B/sukeycount	\
 	$B/sulcthw	\
@@ -35,6 +36,7 @@ PROGS =			\
 	$B/susehw	\
 	$B/sushw	\
 	$B/sustrip	\
+	$B/sutoolcsv	\
 	$B/sutrcount	\
 	$B/suutm	\
 	$B/suxedit	
