@@ -46,7 +46,7 @@ given to CWP in 2008.
 #include "header.h"
 
 
-segy tr;
+/* segy tr; */
 
 segy **fput_gather(FILE *fp, segy **rec,int *nt, int *ntr)
 /***********************************************************************

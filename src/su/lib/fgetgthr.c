@@ -61,7 +61,7 @@ Author: Potash Corporation Sascatchewan, Balasz Nemeth
 given to CWP in 2008.
 ***********************************************************************/
 
-segy tr;
+/* segy tr; */
 
 segy **fget_gather(FILE *fp, cwp_String *key,cwp_String *type,Value *n_val,
 			int *nt,int *ntr, float *dt,int *first)
@@ -85,6 +85,8 @@ Author: Potash Corporation Sascatchewan, Balasz Nemeth
 given to CWP in 2008.
 ***********************************************************************/
 {
+ 	segy tr; 
+
 	int nsegy;
 	FILE *tracefp=NULL;
 	FILE *headerfp=NULL;
@@ -176,7 +178,6 @@ given to CWP in 2008.
 	return(rec);	
 }
 
-segy tr;
 
 segy **get_gather(cwp_String *key,cwp_String *type,Value *n_val,
 			int *nt,int *ntr, float *dt,int *first)
@@ -199,6 +200,7 @@ Author: Potash Corporation Sascatchewan, Balasz Nemeth
 given to CWP in 2008.
 ***********************************************************************/
 {
+	 segy tr;
 	int nsegy;
 	FILE *tracefp=NULL;
 	FILE *headerfp=NULL;
