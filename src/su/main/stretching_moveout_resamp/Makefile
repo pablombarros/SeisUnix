@@ -13,6 +13,7 @@ PROGS =			\
 	$B/suilog	\
 	$B/sulog	\
 	$B/sunmo	\
+	$B/sunmocsv	\
 	$B/sunmo_a	\
 	$B/sureduce	\
 	$B/suresamp	\
