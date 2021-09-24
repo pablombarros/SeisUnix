@@ -18,6 +18,9 @@ INCLUDE = 	$I/segy.h	\
 		$I/bheader.h   \
 		$I/bhdr.h    \
 		$I/sugeom.h    \
+		$I/readkfile.h \
+		$I/gridread.h  \
+		$I/gridxy.h    \
 		$I/su_xdr.h
 
 INSTALL	: header.h hdr.h mkxdrhdrsub mkxdrbhdrsub $(INCLUDE) ../lib/xdrhdrsub.c ../lib/xdrbhdrsub.c 
