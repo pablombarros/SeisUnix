@@ -330,7 +330,5 @@ main(int argc, char **argv)
 		puttr(&tr);
 
 	} while (gettr(&tr));
-
-
 	return(CWP_Exit());
 }
