@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
   float abso;  /* damping value for absorbing boundaries */
   float dx;    /* grid spacing in horizontal direction */
   float dz;    /* grid spacing in vertical direction */
-  float dt;    /* time step size or sample rate */
+  float dt;    /* time step size or time sampling interval */
   float dt0;   
   float dtsnap; /* time increment between snapshots */
   float dtsnap0;

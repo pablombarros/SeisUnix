@@ -3,7 +3,7 @@
 echo "Hares and Lynx with time, high carrying capacity"
 # hares, lynx over time
 voltlotka h=.1 stepmax=1000  x0=500 y0=25 |
-xgraph n=1000 nplot=2 d1=0.1 label1="years" label2="numbers of hares and lynxes" width=1000 height=500 f1=1845 style=normal x2beg=0 title="Snowshoe Hare and Canadian Lynx with time, K=1000000" &
+xgraph n=1000,1000 nplot=2 d1=0.1 label1="years" label2="numbers of hares and lynxes" width=1000 height=500 f1=1845 style=normal x2beg=0 title="Snowshoe Hare and Canadian Lynx with time, K=1000000" &
 
 
 echo "Hares versus Lynx"

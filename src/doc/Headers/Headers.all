@@ -114,6 +114,8 @@ SWAPBHED - SWAP the BYTES in a SEGY Binary tape HEaDer file
 In CWPROOT/src/su/main/datuming:
 SUDATUMFD - 2D zero-offset Finite Difference acoustic wave-equation	
 SUDATUMK2DR - Kirchhoff datuming of receivers for 2D prestack data	
+SUDATUMK2DR - Kirchhoff datuming of receivers for 2D prestack data	
+SUDATUMK2DS - Kirchhoff datuming of sources for 2D prestack data	
 SUDATUMK2DS - Kirchhoff datuming of sources for 2D prestack data	
  SUKDMDCR - 2.5D datuming of receivers for prestack, common source    
  SUKDMDCS - 2.5D datuming of sources for prestack common receiver 	
@@ -131,6 +133,7 @@ SUDMOFKCW - converted-wave DMO via F-K domain (log-stretch) method for
 SUDMOTIVZ - DMO for Transeversely Isotropic V(Z) media for common-offset
 SUDMOTX - DMO via T-X domain (Kirchhoff) method for common-offset gathers
 SUDMOVZ - DMO for V(Z) media for common-offset gathers		
+SUDMOVZ - DMO for V(Z) media for common-offset gathers		
 SUTIHALEDMO - TI Hale Dip MoveOut (based on Hale's PhD thesis)	
 
 In CWPROOT/src/su/main/filters:
@@ -147,6 +150,7 @@ SULFAF -  Low frequency array forming					",
 SUMEDIAN - MEDIAN filter about a user-defined polygonal curve with	
 SUPHASE - PHASE manipulation by linear transformation			
 SUSMGAUSS2 --- SMOOTH a uniformly sampled 2d array of velocities	
+SUSVDFILT - SVD (Eigen) filter					
 SUSVDFILT - SVD (Eigen) filter					
 SUTVBAND - time-variant bandpass filter (sine-squared taper)  
 

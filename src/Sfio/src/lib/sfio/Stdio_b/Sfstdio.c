@@ -399,7 +399,9 @@ int main()
 	printf("/* Linux7.2 requires __FILE in wchar.h - we fake it here */\n");
 	printf("#include	\"FEATURE/sfio\"\n");
 	printf("#if _typ___FILE\n");
-	printf("typedef FILE	*__FILE;\n");
+	printf("#if CWP_RED_HAT_7_3\n");
+/*	printf("typedef FILE	*__FILE;\n"); */
+	printf("#endif\n\n");
 	printf("#endif\n\n");
 
 	/* now get what we need from sfio */

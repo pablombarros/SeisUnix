@@ -6,7 +6,9 @@
  Required Parameters: none					
  Optional Parameters:						
  normalize=1		normalize S,I by N; =0 don't normalize	
- scale=0		don't scale; =1 scale output S,I,R by N	
+ scale=0		don't scale output			
+			=1 scale output S,I,R by N		
+			=2 scale output S,I,R by s0		
  N=1000		total population			
  s0=N			initial number of susceptibles		
  i0=1			initial number of infectives		
@@ -81,7 +83,8 @@
   Normalized by N, with scaling of the output by N:		
   sird_epidemic h=1 scale=1 i0=10 stepmax=200 k=.3333 b=.5 N=7.9e6 mode=SIR |
       xgraph n=200 nplot=3 d1=1 style=normal &			
-
+ 
+ Related programs: sir_epidemic, seir_epidemic			", 
 
 
  References:

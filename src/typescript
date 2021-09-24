@@ -1,0 +1,1030 @@
+Script started on Wed Sep 15 12:49:07 2021
+1 Johns-iMac.local> make sfremake
+cd ./Sfio; /Applications/Xcode.app/Contents/Developer/usr/bin/make remake
+/Applications/Xcode.app/Contents/Developer/usr/bin/make clean 
+cd ./src/lib/vthread; /Applications/Xcode.app/Contents/Developer/usr/bin/make clean
+(rm ast_common.h vtclose.o vtextern.o vtkill.o vtmtxclose.o vtmtxclrlock.o vtmtxlock.o vtmtxopen.o vtmtxtrylock.o vtmtxunlock.o vtonce.o vtopen.o vtrun.o vtself.o vtset.o vtwait.o libvthread.a FEATURE/*; exit 0) >/dev/null 2>&1
+cd ./src/lib/sfio     ; /Applications/Xcode.app/Contents/Developer/usr/bin/make clean
+(rm -rf FEATURE sfclose.o sfclrlock.o sfcvt.o sfdisc.o sfdlen.o sfexcept.o sfextern.o sffilbuf.o sfflsbuf.o sfprints.o sfgetd.o sfgetl.o sfgetr.o sfgetu.o sfllen.o sfmode.o sfmove.o sfnew.o sfnotify.o sfnputc.o sfopen.o sfpkrd.o sfpool.o sfpopen.o sfprintf.o sfputd.o sfputl.o sfputr.o sfputu.o sfrd.o sfread.o sfscanf.o sfseek.o sfset.o sfsetbuf.o sfsetfd.o sfsize.o sfsk.o sfstack.o sfsync.o sftable.o sftell.o sftmp.o sfungetc.o sfvprintf.o sfvscanf.o sfwr.o sfwrite.o sfexit.o sfpurge.o sfpoll.o sfreserve.o sfswap.o sfraise.o sfmutex.o sfgetm.o sfputm.o sfresize.o sffrexp.o _sfclrerr.o _sfdlen.o _sfeof.o _sferror.o _sffileno.o _sfgetc.o _sfgetl.o _sfgetl2.o _sfgetu.o _sfgetu2.o _sfllen.o _sfopen.o _sfputc.o _sfputd.o _sfputl.o _sfputm.o _sfputu.o _sfslen.o _sfstacked.o _sfulen.o _sfvalue.o ast_common.h Makefile.state; exit 0) >/dev/null 2>&1
+(rm libsfio.a libstdio.a libsfio-mt.a libstdio-mt.a; exit 0) >/dev/null 2>&1
+cd Stdio_s; /Applications/Xcode.app/Contents/Developer/usr/bin/make -f Makefile SHELL="/bin/sh" clean
+(rm stdfgetc.o stdfprintf.o stdfputc.o stdfscanf.o stdgetc.o stdgets.o stdgetw.o stdfdopen.o stdprintf.o stdputc.o stdputw.o stdscanf.o stdsprintf.o stdsetvbuf.o stdfopen.o stdfreopen.o stdpopen.o stdtmpfile.o stdfwrite.o stdfread.o stdfflush.o; exit 0) >/dev/null 2>&1
+cd Stdio_b; /Applications/Xcode.app/Contents/Developer/usr/bin/make -f Makefile SHELL="/bin/sh" clean
+(rm doprnt.o doscan.o fclose.o fdopen.o fflush.o fgetc.o fgets.o filbuf.o flsbuf.o fopen.o fprintf.o fputc.o fputs.o fread.o freopen.o fscanf.o fseek.o ftell.o fwrite.o getc.o getchar.o gets.o getw.o pclose.o popen.o printf.o putc.o putchar.o puts.o putw.o rewind.o scanf.o setbuf.o setbuffer.o setlinebuf.o setvbuf.o sprintf.o sscanf.o stdextern.o stdstream.o tmpfile.o ungetc.o vfprintf.o vfscanf.o vprintf.o vscanf.o vsprintf.o vsscanf.o fileno.o feof.o ferror.o clearerr.o fpurge.o fsetpos.o fgetpos.o cleanup.o vsnprintf.o snprintf.o flockfile.o ftrylockfile.o funlockfile.o perror.o Sfstdgen sfstdhdr.h; exit 0) >/dev/null 2>&1
+(rm libstdio.a libstdio-mt.a sfstdio.h; exit 0) >/dev/null 2>&1
+cd Sfio_dc; /Applications/Xcode.app/Contents/Developer/usr/bin/make -f Makefile SHELL="/bin/sh" clean
+(rm sfdcdio.o sfdcdos.o sfdcfilter.o sfdclzw.o sfdcseekable.o sfdcslow.o sfdcsubstream.o sfdctee.o sfdcunion.o sfdcgzip.o; exit 0) >/dev/null 2>&1
+cd ./main    ; /Applications/Xcode.app/Contents/Developer/usr/bin/make clean
+rm -f INSTALL a.out junk* JUNK* core
+/Applications/Xcode.app/Contents/Developer/usr/bin/make
+cd ./src/lib/vthread; /Applications/Xcode.app/Contents/Developer/usr/bin/make install
+../../../bin/iffe - set cc cc -O  : \
+                run features/common > ast_common.h
+../../../bin/iffe set cc cc -O  : run features/vthread
+cc -c -O -I.  vtclose.c
+cc -c -O -I.  vtextern.c
+cc -c -O -I.  vtkill.c
+cc -c -O -I.  vtmtxclose.c
+cc -c -O -I.  vtmtxclrlock.c
+cc -c -O -I.  vtmtxlock.c
+cc -c -O -I.  vtmtxopen.c
+cc -c -O -I.  vtmtxtrylock.c
+cc -c -O -I.  vtmtxunlock.c
+cc -c -O -I.  vtonce.c
+cc -c -O -I.  vtopen.c
+cc -c -O -I.  vtrun.c
+cc -c -O -I.  vtself.c
+cc -c -O -I.  vtset.c
+cc -c -O -I.  vtwait.c
+ar cr libvthread.a vtclose.o vtextern.o vtkill.o vtmtxclose.o vtmtxclrlock.o vtmtxlock.o vtmtxopen.o vtmtxtrylock.o vtmtxunlock.o vtonce.o vtopen.o vtrun.o vtself.o vtset.o vtwait.o
+(ranlib libvthread.a; exit 0) >/dev/null 2>&1
+cp vthread.h ast_common.h ../../../include;
+cp libvthread.a ../../../lib;
+(ranlib ../../../lib/libvthread.a; exit 0) >/dev/null 2>&1
+cd ./src/lib/sfio; /Applications/Xcode.app/Contents/Developer/usr/bin/make install
+echo""; echo "BUILDING UNI-THREADED libsfio.a"
+
+BUILDING UNI-THREADED libsfio.a
+/bin/sh ./Makestate.sh unithreaded
+/Applications/Xcode.app/Contents/Developer/usr/bin/make LIBTYPE="-Dvt_threaded=0" SHELL="/bin/sh" CC="cc" \
+                CCMODE="-O" CXFLAGS="" install_unithreaded
+../../../bin/iffe set cc cc -I. -P -O -Dvt_threaded=0  : run features/common
+(rm ast_common.h; ln FEATURE/common ast_common.h; exit 0) >/dev/null 2>&1
+../../../bin/iffe set cc cc -I. -P -O -Dvt_threaded=0  : run features/float
+../../../bin/iffe set cc cc -I. -P -O -Dvt_threaded=0  : run features/sfio
+../../../bin/iffe - set cc cc -I. -P -O -Dvt_threaded=0  : run features/stdio_lcl > \
+                FEATURE/stdio.lcl
+../../../bin/iffe set cc cc -I. -P -O -Dvt_threaded=0  : run features/iffeio
+../../../bin/iffe set cc cc -I. -P -O -Dvt_threaded=0  : run features/sfinit.c
+./John54741.c:9:1: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
+main()
+^
+1 warning generated.
+../../../bin/iffe set cc cc -I. -P -O -Dvt_threaded=0  : run features/mmap
+cc -c -I. -P -O -Dvt_threaded=0  sfclose.c
+cc -c -I. -P -O -Dvt_threaded=0  sfclrlock.c
+cc -c -I. -P -O -Dvt_threaded=0  sfcvt.c
+cc -c -I. -P -O -Dvt_threaded=0  sfdisc.c
+cc -c -I. -P -O -Dvt_threaded=0  sfdlen.c
+cc -c -I. -P -O -Dvt_threaded=0  sfexcept.c
+cc -c -I. -P -O -Dvt_threaded=0  sfextern.c
+cc -c -I. -P -O -Dvt_threaded=0  sffilbuf.c
+cc -c -I. -P -O -Dvt_threaded=0  sfflsbuf.c
+cc -c -I. -P -O -Dvt_threaded=0  sfprints.c
+cc -c -I. -P -O -Dvt_threaded=0  sfgetd.c
+cc -c -I. -P -O -Dvt_threaded=0  sfgetl.c
+cc -c -I. -P -O -Dvt_threaded=0  sfgetr.c
+cc -c -I. -P -O -Dvt_threaded=0  sfgetu.c
+cc -c -I. -P -O -Dvt_threaded=0  sfllen.c
+cc -c -I. -P -O -Dvt_threaded=0  sfmode.c
+cc -c -I. -P -O -Dvt_threaded=0  sfmove.c
+cc -c -I. -P -O -Dvt_threaded=0  sfnew.c
+cc -c -I. -P -O -Dvt_threaded=0  sfnotify.c
+cc -c -I. -P -O -Dvt_threaded=0  sfnputc.c
+cc -c -I. -P -O -Dvt_threaded=0  sfopen.c
+cc -c -I. -P -O -Dvt_threaded=0  sfpkrd.c
+cc -c -I. -P -O -Dvt_threaded=0  sfpool.c
+cc -c -I. -P -O -Dvt_threaded=0  sfpopen.c
+cc -c -I. -P -O -Dvt_threaded=0  sfprintf.c
+cc -c -I. -P -O -Dvt_threaded=0  sfputd.c
+cc -c -I. -P -O -Dvt_threaded=0  sfputl.c
+cc -c -I. -P -O -Dvt_threaded=0  sfputr.c
+cc -c -I. -P -O -Dvt_threaded=0  sfputu.c
+cc -c -I. -P -O -Dvt_threaded=0  sfrd.c
+cc -c -I. -P -O -Dvt_threaded=0  sfread.c
+cc -c -I. -P -O -Dvt_threaded=0  sfscanf.c
+cc -c -I. -P -O -Dvt_threaded=0  sfseek.c
+cc -c -I. -P -O -Dvt_threaded=0  sfset.c
+cc -c -I. -P -O -Dvt_threaded=0  sfsetbuf.c
+sfsetbuf.c:48:14: warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
+                if(astsfio = getenv("_AST_SFIO_OPTIONS"))
+                   ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sfsetbuf.c:48:14: note: place parentheses around the assignment to silence this warning
+                if(astsfio = getenv("_AST_SFIO_OPTIONS"))
+                           ^
+                   (                                    )
+sfsetbuf.c:48:14: note: use '==' to turn this assignment into an equality comparison
+                if(astsfio = getenv("_AST_SFIO_OPTIONS"))
+                           ^
+                           ==
+sfsetbuf.c:51:6: warning: expression result unused [-Wunused-value]
+                                        *astsfio++;
+                                        ^~~~~~~~~~
+2 warnings generated.
+cc -c -I. -P -O -Dvt_threaded=0  sfsetfd.c
+cc -c -I. -P -O -Dvt_threaded=0  sfsize.c
+cc -c -I. -P -O -Dvt_threaded=0  sfsk.c
+cc -c -I. -P -O -Dvt_threaded=0  sfstack.c
+cc -c -I. -P -O -Dvt_threaded=0  sfsync.c
+cc -c -I. -P -O -Dvt_threaded=0  sftable.c
+cc -c -I. -P -O -Dvt_threaded=0  sftell.c
+cc -c -I. -P -O -Dvt_threaded=0  sftmp.c
+cc -c -I. -P -O -Dvt_threaded=0  sfungetc.c
+cc -c -I. -P -O -Dvt_threaded=0  sfvprintf.c
+cc -c -I. -P -O -Dvt_threaded=0  sfvscanf.c
+cc -c -I. -P -O -Dvt_threaded=0  sfwr.c
+cc -c -I. -P -O -Dvt_threaded=0  sfwrite.c
+cc -c -I. -P -O -Dvt_threaded=0  sfexit.c
+cc -c -I. -P -O -Dvt_threaded=0  sfpurge.c
+cc -c -I. -P -O -Dvt_threaded=0  sfpoll.c
+cc -c -I. -P -O -Dvt_threaded=0  sfreserve.c
+cc -c -I. -P -O -Dvt_threaded=0  sfswap.c
+cc -c -I. -P -O -Dvt_threaded=0  sfraise.c
+cc -c -I. -P -O -Dvt_threaded=0  sfmutex.c
+cc -c -I. -P -O -Dvt_threaded=0  sfgetm.c
+cc -c -I. -P -O -Dvt_threaded=0  sfputm.c
+cc -c -I. -P -O -Dvt_threaded=0  sfresize.c
+cc -c -I. -P -O -Dvt_threaded=0  sffrexp.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfclrerr.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfdlen.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfeof.c
+cc -c -I. -P -O -Dvt_threaded=0  _sferror.c
+cc -c -I. -P -O -Dvt_threaded=0  _sffileno.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfgetc.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfgetl.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfgetl2.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfgetu.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfgetu2.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfllen.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfopen.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfputc.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfputd.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfputl.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfputm.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfputu.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfslen.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfstacked.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfulen.c
+cc -c -I. -P -O -Dvt_threaded=0  _sfvalue.c
+cd Stdio_s; /Applications/Xcode.app/Contents/Developer/usr/bin/make -f Makefile LIBTYPE="-Dvt_threaded=0" SHELL="/bin/sh" \
+                CC="cc" CCMODE="-O" CXFLAGS=""
+cc -c -I. -I.. -O -Dvt_threaded=0  stdfgetc.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdfprintf.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdfputc.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdfscanf.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdgetc.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdgets.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdgetw.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdfdopen.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdprintf.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdputc.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdputw.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdscanf.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdsprintf.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdsetvbuf.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdfopen.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdfreopen.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdpopen.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdtmpfile.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdfwrite.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdfread.c
+cc -c -I. -I.. -O -Dvt_threaded=0  stdfflush.c
+cd Sfio_dc; /Applications/Xcode.app/Contents/Developer/usr/bin/make -f Makefile LIBTYPE="-Dvt_threaded=0" SHELL="/bin/sh" \
+                CC="cc" CCMODE="-O" CXFLAGS=""
+cc -c -I. -I.. -O -Dvt_threaded=0  sfdcdio.c
+cc -c -I. -I.. -O -Dvt_threaded=0  sfdcdos.c
+sfdcdos.c:152:18: warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
+                if(dp->maptable=(struct map*)malloc((MINMAP+1)*sizeof(struct map)))
+                   ~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sfdcdos.c:152:18: note: place parentheses around the assignment to silence this warning
+                if(dp->maptable=(struct map*)malloc((MINMAP+1)*sizeof(struct map)))
+                               ^
+                   (                                                              )
+sfdcdos.c:152:18: note: use '==' to turn this assignment into an equality comparison
+                if(dp->maptable=(struct map*)malloc((MINMAP+1)*sizeof(struct map)))
+                               ^
+                               ==
+1 warning generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  sfdcfilter.c
+cc -c -I. -I.. -O -Dvt_threaded=0  sfdclzw.c
+cc -c -I. -I.. -O -Dvt_threaded=0  sfdcseekable.c
+sfdcseekable.c:129:8: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
+static skexcept(Sfio_t* f, int type, Void_t* data, Sfdisc_t* disc)
+~~~~~~ ^
+1 warning generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  sfdcslow.c
+cc -c -I. -I.. -O -Dvt_threaded=0  sfdcsubstream.c
+sfdcsubstream.c:136:8: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
+static streamexcept(Sfio_t* f, int type, Void_t* data, Sfdisc_t* disc)
+~~~~~~ ^
+1 warning generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  sfdctee.c
+cc -c -I. -I.. -O -Dvt_threaded=0  sfdcunion.c
+sfdcunion.c:127:8: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
+static unexcept(Sfio_t* f, int type, Void_t* data, Sfdisc_t* disc)
+~~~~~~ ^
+1 warning generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  sfdcgzip.c
+sfdcgzip.c:67:20: warning: incompatible pointer types passing 'Gz_t *' (aka 'struct gzFile_s **') to parameter of type 'gzFile' (aka 'struct gzFile_s *'); dereference with * [-Wincompatible-pointer-types]
+                        if (r = gzclose(gz->gz) ? -1 : 0)
+                                        ^~~~~~
+                                        *
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/zlib.h:1644:43: note: passing argument to parameter 'file' here
+ZEXTERN int ZEXPORT    gzclose OF((gzFile file));
+                                          ^
+sfdcgzip.c:67:10: warning: using the result of an assignment as a condition without parentheses [-Wparentheses]
+                        if (r = gzclose(gz->gz) ? -1 : 0)
+                            ~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+sfdcgzip.c:67:10: note: place parentheses around the assignment to silence this warning
+                        if (r = gzclose(gz->gz) ? -1 : 0)
+                              ^
+                            (                           )
+sfdcgzip.c:67:10: note: use '==' to turn this assignment into an equality comparison
+                        if (r = gzclose(gz->gz) ? -1 : 0)
+                              ^
+                              ==
+sfdcgzip.c:96:16: warning: incompatible pointer types passing 'Gz_t *' (aka 'struct gzFile_s **') to parameter of type 'gzFile' (aka 'struct gzFile_s *'); dereference with * [-Wincompatible-pointer-types]
+        return gzread(gz->gz, buf, size);
+                      ^~~~~~
+                      *
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/zlib.h:1402:39: note: passing argument to parameter 'file' here
+ZEXTERN int ZEXPORT gzread OF((gzFile file, voidp buf, unsigned len));
+                                      ^
+sfdcgzip.c:115:18: warning: incompatible pointer types passing 'Gz_t *' (aka 'struct gzFile_s **') to parameter of type 'gzFile' (aka 'struct gzFile_s *'); dereference with * [-Wincompatible-pointer-types]
+        return (gzwrite(gz->gz, (void*)buf, size) == size) ? size : -1;
+                        ^~~~~~
+                        *
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/zlib.h:1459:40: note: passing argument to parameter 'file' here
+ZEXTERN int ZEXPORT gzwrite OF((gzFile file,
+                                       ^
+sfdcgzip.c:173:53: warning: incompatible pointer types assigning to 'Gz_t *' (aka 'struct gzFile_s **') from 'gzFile' (aka 'struct gzFile_s *') [-Wincompatible-pointer-types]
+        if (sfdisc(sp, &gz->disc) != &gz->disc || !(gz->gz = gzdopen(sffileno(sp), mode)))
+                                                           ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+5 warnings generated.
+ar cr libsfio.a sfclose.o sfclrlock.o sfcvt.o sfdisc.o sfdlen.o sfexcept.o sfextern.o sffilbuf.o sfflsbuf.o sfprints.o sfgetd.o sfgetl.o sfgetr.o sfgetu.o sfllen.o sfmode.o sfmove.o sfnew.o sfnotify.o sfnputc.o sfopen.o sfpkrd.o sfpool.o sfpopen.o sfprintf.o sfputd.o sfputl.o sfputr.o sfputu.o sfrd.o sfread.o sfscanf.o sfseek.o sfset.o sfsetbuf.o sfsetfd.o sfsize.o sfsk.o sfstack.o sfsync.o sftable.o sftell.o sftmp.o sfungetc.o sfvprintf.o sfvscanf.o sfwr.o sfwrite.o sfexit.o sfpurge.o sfpoll.o sfreserve.o sfswap.o sfraise.o sfmutex.o sfgetm.o sfputm.o sfresize.o sffrexp.o _sfclrerr.o _sfdlen.o _sfeof.o _sferror.o _sffileno.o _sfgetc.o _sfgetl.o _sfgetl2.o _sfgetu.o _sfgetu2.o _sfllen.o _sfopen.o _sfputc.o _sfputd.o _sfputl.o _sfputm.o _sfputu.o _sfslen.o _sfstacked.o _sfulen.o _sfvalue.o Stdio_s/stdfgetc.o Stdio_s/stdfprintf.o Stdio_s/stdfputc.o Stdio_s/stdfscanf.o Stdio_s/stdgetc.o Stdio_s/stdgets.o Stdio_s/stdgetw.o Stdio_s/stdfdopen.o Stdio_s/stdprintf.o Stdio_s/stdputc.o Stdio_s/stdputw.o Stdio_s/stdscanf.o Stdio_s/stdsprintf.o Stdio_s/stdsetvbuf.o Stdio_s/stdtmpfile.o Stdio_s/stdfopen.o Stdio_s/stdpopen.o Stdio_s/stdfreopen.o Stdio_s/stdfwrite.o Stdio_s/stdfread.o Stdio_s/stdfflush.o Sfio_dc/sfdcdio.o Sfio_dc/sfdcdos.o Sfio_dc/sfdcfilter.o Sfio_dc/sfdclzw.o Sfio_dc/sfdcseekable.o Sfio_dc/sfdcslow.o Sfio_dc/sfdcsubstream.o Sfio_dc/sfdctee.o Sfio_dc/sfdcunion.o
+(ranlib libsfio.a; exit 0) >/dev/null 2>&1
+cd Stdio_b; /Applications/Xcode.app/Contents/Developer/usr/bin/make -f Makefile LIBTYPE="-Dvt_threaded=0" SHELL="/bin/sh" \
+                CC="cc" CCMODE="-O" CXFLAGS="" libstdio.a
+echo ""; echo "BUILDING UNI-THREADED libstdio.a";
+
+BUILDING UNI-THREADED libstdio.a
+cd ..; ../../../bin/iffe set cc cc -O  : run features/stdio
+./Sfstdhdr.sh cc -I. -I.. -O -Dvt_threaded=0 
+cc -I. -I.. -O -Dvt_threaded=0  Sfstdio.c -o Sfstdgen
+In file included from Sfstdio.c:6:
+In file included from ./sfstdhdr.h:4:
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:67:13: warning: pointer is missing a nullability type specifier (_Nonnull, _Nullable, or _Null_unspecified) [-Wnullability-completeness]
+extern FILE *__stdinp;
+            ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:67:13: note: insert '_Nullable' if the pointer may be null
+extern FILE *__stdinp;
+            ^
+              _Nullable 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:67:13: note: insert '_Nonnull' if the pointer should never be null
+extern FILE *__stdinp;
+            ^
+              _Nonnull 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:386:41: warning: pointer is missing a nullability type specifier (_Nonnull, _Nullable, or _Null_unspecified) [-Wnullability-completeness]
+                 int (* _Nullable)(void *, const char *, int),
+                                        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:386:41: note: insert '_Nullable' if the pointer may be null
+                 int (* _Nullable)(void *, const char *, int),
+                                        ^
+                                         _Nullable
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:386:41: note: insert '_Nonnull' if the pointer should never be null
+                 int (* _Nullable)(void *, const char *, int),
+                                        ^
+                                         _Nonnull
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:386:55: warning: pointer is missing a nullability type specifier (_Nonnull, _Nullable, or _Null_unspecified) [-Wnullability-completeness]
+                 int (* _Nullable)(void *, const char *, int),
+                                                      ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:386:55: note: insert '_Nullable' if the pointer may be null
+                 int (* _Nullable)(void *, const char *, int),
+                                                      ^
+                                                       _Nullable
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:386:55: note: insert '_Nonnull' if the pointer should never be null
+                 int (* _Nullable)(void *, const char *, int),
+                                                      ^
+                                                       _Nonnull
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:387:44: warning: pointer is missing a nullability type specifier (_Nonnull, _Nullable, or _Null_unspecified) [-Wnullability-completeness]
+                 fpos_t (* _Nullable)(void *, fpos_t, int),
+                                           ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:387:44: note: insert '_Nullable' if the pointer may be null
+                 fpos_t (* _Nullable)(void *, fpos_t, int),
+                                           ^
+                                            _Nullable
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:387:44: note: insert '_Nonnull' if the pointer should never be null
+                 fpos_t (* _Nullable)(void *, fpos_t, int),
+                                           ^
+                                            _Nonnull
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:388:41: warning: pointer is missing a nullability type specifier (_Nonnull, _Nullable, or _Null_unspecified) [-Wnullability-completeness]
+                 int (* _Nullable)(void *));
+                                        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:388:41: note: insert '_Nullable' if the pointer may be null
+                 int (* _Nullable)(void *));
+                                        ^
+                                         _Nullable
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:388:41: note: insert '_Nonnull' if the pointer should never be null
+                 int (* _Nullable)(void *));
+                                        ^
+                                         _Nonnull
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:384:6: warning: pointer is missing a nullability type specifier (_Nonnull, _Nullable, or _Null_unspecified) [-Wnullability-completeness]
+FILE    *funopen(const void *,
+        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:384:6: note: insert '_Nullable' if the pointer may be null
+FILE    *funopen(const void *,
+        ^
+          _Nullable 
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/stdio.h:384:6: note: insert '_Nonnull' if the pointer should never be null
+FILE    *funopen(const void *,
+        ^
+          _Nonnull 
+6 warnings generated.
+./Sfstdgen > sfstdio.h
+(rm Sfstdgen sfstdhdr.h doprnt.o doscan.o fclose.o fdopen.o fflush.o fgetc.o fgets.o filbuf.o flsbuf.o fopen.o fprintf.o fputc.o fputs.o fread.o freopen.o fscanf.o fseek.o ftell.o fwrite.o getc.o getchar.o gets.o getw.o pclose.o popen.o printf.o putc.o putchar.o puts.o putw.o rewind.o scanf.o setbuf.o setbuffer.o setlinebuf.o setvbuf.o sprintf.o sscanf.o stdextern.o stdstream.o tmpfile.o ungetc.o vfprintf.o vfscanf.o vprintf.o vscanf.o vsprintf.o vsscanf.o fileno.o feof.o ferror.o clearerr.o fpurge.o fsetpos.o fgetpos.o cleanup.o vsnprintf.o snprintf.o flockfile.o ftrylockfile.o funlockfile.o perror.o libstdio.a libstdio-mt.a; exit 0) >/dev/null 2>&1
+cc -c -I. -I.. -O -Dvt_threaded=0  doprnt.c
+In file included from doprnt.c:2:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  doscan.c
+In file included from doscan.c:2:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fclose.c
+In file included from fclose.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fdopen.c
+In file included from fdopen.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fflush.c
+In file included from fflush.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fgetc.c
+In file included from fgetc.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fgets.c
+In file included from fgets.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  filbuf.c
+In file included from filbuf.c:2:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  flsbuf.c
+In file included from flsbuf.c:2:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fopen.c
+In file included from fopen.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fprintf.c
+In file included from fprintf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fputc.c
+In file included from fputc.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fputs.c
+In file included from fputs.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fread.c
+In file included from fread.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  freopen.c
+In file included from freopen.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fscanf.c
+In file included from fscanf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fseek.c
+In file included from fseek.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  ftell.c
+In file included from ftell.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fwrite.c
+In file included from fwrite.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  getc.c
+In file included from getc.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  getchar.c
+In file included from getchar.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  gets.c
+In file included from gets.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  getw.c
+In file included from getw.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  pclose.c
+In file included from pclose.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  popen.c
+In file included from popen.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  printf.c
+In file included from printf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  putc.c
+In file included from putc.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  putchar.c
+In file included from putchar.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  puts.c
+In file included from puts.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  putw.c
+In file included from putw.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  rewind.c
+In file included from rewind.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  scanf.c
+In file included from scanf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  setbuf.c
+In file included from setbuf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  setbuffer.c
+In file included from setbuffer.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  setlinebuf.c
+In file included from setlinebuf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  setvbuf.c
+In file included from setvbuf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  sprintf.c
+In file included from sprintf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  sscanf.c
+In file included from sscanf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  stdextern.c
+In file included from stdextern.c:2:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  stdstream.c
+In file included from stdstream.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  tmpfile.c
+In file included from tmpfile.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  ungetc.c
+In file included from ungetc.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  vfprintf.c
+In file included from vfprintf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  vfscanf.c
+In file included from vfscanf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  vprintf.c
+In file included from vprintf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  vscanf.c
+In file included from vscanf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  vsprintf.c
+In file included from vsprintf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  vsscanf.c
+In file included from vsscanf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fileno.c
+In file included from fileno.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  feof.c
+In file included from feof.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  ferror.c
+In file included from ferror.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  clearerr.c
+In file included from clearerr.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fpurge.c
+In file included from fpurge.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fsetpos.c
+In file included from fsetpos.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  fgetpos.c
+In file included from fgetpos.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  cleanup.c
+In file included from cleanup.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  vsnprintf.c
+In file included from vsnprintf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  snprintf.c
+In file included from snprintf.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  flockfile.c
+In file included from flockfile.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  ftrylockfile.c
+In file included from ftrylockfile.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  funlockfile.c
+In file included from funlockfile.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+cc -c -I. -I.. -O -Dvt_threaded=0  perror.c
+In file included from perror.c:1:
+./sfstdio.h:102:15: warning: incompatible redeclaration of library function 'fopen' [-Wincompatible-library-redeclaration]
+extern FILE*            fopen _ARG_((char*, const char*));
+                        ^
+./sfstdio.h:102:15: note: 'fopen' is a builtin with type 'FILE *(const char *, const char *)' (aka 'struct _std_s *(const char *, const char *)')
+./sfstdio.h:141:13: warning: incompatible redeclaration of library function 'vsscanf' [-Wincompatible-library-redeclaration]
+extern int              vsscanf _ARG_((char*, const char* , va_list));
+                        ^
+./sfstdio.h:141:13: note: 'vsscanf' is a builtin with type 'int (const char *restrict, const char *restrict, struct __va_list_tag *)'
+2 warnings generated.
+ar cr libstdio.a doprnt.o doscan.o fclose.o fdopen.o fflush.o fgetc.o fgets.o filbuf.o flsbuf.o fopen.o fprintf.o fputc.o fputs.o fread.o freopen.o fscanf.o fseek.o ftell.o fwrite.o getc.o getchar.o gets.o getw.o pclose.o popen.o printf.o putc.o putchar.o puts.o putw.o rewind.o scanf.o setbuf.o setbuffer.o setlinebuf.o setvbuf.o sprintf.o sscanf.o stdextern.o stdstream.o tmpfile.o ungetc.o vfprintf.o vfscanf.o vprintf.o vscanf.o vsprintf.o vsscanf.o fileno.o feof.o ferror.o clearerr.o fpurge.o fsetpos.o fgetpos.o cleanup.o vsnprintf.o snprintf.o flockfile.o ftrylockfile.o funlockfile.o perror.o
+(ranlib libstdio.a; exit 0) >/dev/null 2>&1
+cp ast_common.h sfio.h sfio_s.h sfio_t.h Stdio_s/stdio.h Sfio_dc/sfdisc.h \
+                ../../../include
+cp libsfio.a ../../../lib
+(ranlib ../../../lib/libsfio.a; exit 0) >/dev/null 2>&1
+cp Stdio_b/libstdio.a ../../../lib
+(ranlib ../../../lib/libstdio.a; exit 0) >/dev/null 2>&1
+cd ./main; /Applications/Xcode.app/Contents/Developer/usr/bin/make 
+2 Johns-iMac.local> 
+2 Johns-iMac.local> exit
+exit
+
+Script done on Wed Sep 15 12:56:47 2021

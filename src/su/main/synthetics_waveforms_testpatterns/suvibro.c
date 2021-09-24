@@ -178,7 +178,7 @@ Input:
 fs	start frequency 
 fe	end frequency 
 T	duration in sec 
-dt	sample rate in sec 
+dt	time sampling interval in sec 
 phz	initial phase
 
 Output:
@@ -215,7 +215,7 @@ freq	array of start and end frequencies for each segment
 time	array of time lenghts for each segment
 isegm	total number of segments in a sweep
 T	duration in sec 
-dt	sample rate in sec 
+dt	time sampling interval in sec 
 phz	initial phase
 
 Output:
@@ -263,7 +263,7 @@ Input:
 fs	start frequency of a sweep
 fe	end frequency of a sweep
 T	 duration in sec 
-dt	sample rate in sec 
+dt	time sampling interval in sec 
 swconst	sweep constant (boost)
 phz	initial phase
 
@@ -306,7 +306,7 @@ Input:
 fs	start frequency of a sweep
 fe	end frequency of a sweep
 T	 duration in sec 
-dt	sample rate in sec 
+dt	time sampling interval in sec 
 swconst	sweep constant (boost)
 phz	initial phase
 
@@ -346,7 +346,7 @@ Input:
 fs	start frequency of a sweep
 fe	end frequency of a sweep
 T	 duration in sec 
-dt	sample rate in sec 
+dt	time sampling interval in sec 
 swconst	sweep constant (boost)
 phz	initial phase
 
@@ -385,7 +385,7 @@ t1	start taper in sec
 t2	end taper in sec
 tap_type  type of taper to apply: 1 linear, 2 sine, 3 cosine
 T	 sweep duration in sec
-dt	sample rate in sec
+dt	time sampling interval in sec
  
 Output:
 tr	array of tapered samples

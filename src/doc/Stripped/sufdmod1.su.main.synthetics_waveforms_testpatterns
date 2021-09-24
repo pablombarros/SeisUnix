@@ -185,14 +185,14 @@ int main (int argc, char **argv)
 
 	/* read velocity file
 	if (*velfile != '\0' ) {
-		if ((velocityfp=fopen(velfile,"r"))=='\0') err("cannot open velfile=%s ",velfile);
+		if ((velocityfp=fopen(velfile,"r"))==NULL) err("cannot open velfile=%s ",velfile);
 	}
 	if (efread (rv, sizeof(float), nz, velocityfp)!=nz) 
 	   err("cannot read %d velocity values ", nz);
 
 	/* read density file  and linearly inderpolate on corrrect location
 	if (*dfile != '\0') {
-		if ((densityfp=fopen(dfile,"r"))=='\0') err("cannot open dfile=%s ",dfile);
+		if ((densityfp=fopen(dfile,"r"))==NULL) err("cannot open dfile=%s ",dfile);
 		if (fread(rd,sizeof(float), nz, densityfp)!=nz) err("error reading dfile %s",dfile);
 		fclose(densityfp);
 	}

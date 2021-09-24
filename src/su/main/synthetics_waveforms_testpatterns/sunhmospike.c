@@ -17,7 +17,7 @@ char *sdoc[] = {
 " Optional parameters:							",
 "	nt=300	  number of time samples				",
 "	ntr=20	  number of traces					",
-"	dt=0.001	time sample rate in seconds			",
+"	dt=0.001	time sampling interval in seconds		",
 "	offref=2000	reference offset				",
 "									",
 "	gopt=		1 = parabolic transform model			",

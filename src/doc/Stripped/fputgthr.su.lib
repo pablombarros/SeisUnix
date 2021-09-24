@@ -29,7 +29,7 @@ include "segy.h"
 include "header.h"
 
 
-segy tr;
+ segy tr;
 
 segy **fput_gather(FILE *fp, segy **rec,int *nt, int *ntr)
 fput_gather - put a gather to a file

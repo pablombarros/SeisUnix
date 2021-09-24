@@ -21,6 +21,7 @@ OBJS=	stdfgetc.o stdfprintf.o stdfputc.o stdfscanf.o stdgetc.o stdgets.o \
 	stdsprintf.o stdsetvbuf.o stdfopen.o stdfreopen.o stdpopen.o stdtmpfile.o \
 	stdfwrite.o stdfread.o stdfflush.o
 
+
 .c.o:
 	$(CC) -c $(CCFLAGS) $*.c
 

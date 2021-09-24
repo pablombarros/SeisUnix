@@ -19,7 +19,7 @@ char *sdoc[] = {
 " Optional parameters:						",
 "	nt=64 		number of time samples			",
 "	ntr=32		number of traces			",
-" 	dt=0.004 	time sample rate in seconds		",
+" 	dt=0.004 	time sampling interval in seconds	",
 " 	offset=400 	offset					",
 "	nspk=4		number of spikes			",
 "	ix1= ntr/4	trace number (from left) for spike #1	",

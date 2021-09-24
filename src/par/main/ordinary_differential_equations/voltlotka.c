@@ -46,7 +46,7 @@ char *sdoc[] = {
 " The output consists of unformated C-style binary floats, of	",
 " either pairs or triplets as specified by the \"mode\" paramerter.",
 "								",
-" Modified Volterra-Lotka equations: 					",
+" Modified Volterra-Lotka equations: 				",
 " dx/dt = a*x*(1 - x/K) - b*x*y					",
 " dy/dt = -c*y + p*x*y						",
 "								",
