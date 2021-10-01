@@ -11,6 +11,7 @@ PROGS =			\
 	$B/dzdv		\
 	$B/rayt2d	\
 	$B/rayt2dan	\
+	$B/rayt2dtopo	\
 	$B/wkbj
 
 INSTALL:	$(PROGS)
