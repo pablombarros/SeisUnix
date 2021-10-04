@@ -14,8 +14,10 @@ if you have questions, or if you want to supply bug fixes or new SU code.
 Ongoing issues: The GNU people have separated the tirpc library and include
 files from the main part of libgcc. These are now in a developers' package
 on many systems called libtirpc.a. The TRPC materials are used for the XDR
-part of the installation. GCC 2.32 seems to have the locations of the
-include files in the wrong place. New users can set 
+part of the installation. There seem to be two stages of this change. The
+first stage left the RPC include files in the old location. Releases 
+GCC 2.32 seems to have the locations of the
+include files in new location. New users can set 
 XDRFLAG =  -DSUXDR
 to
 XDRFLAG =
@@ -26,10 +28,11 @@ data made with XDR versus data made without XDR.
 Fixes:
 A number of // C++ style comments have now been changed to /*... */ style
 comments. This used to be just a warning, but now actually breaks the code
-under GCC 2.32 and a number of other compiler warnings have been silenced.
+under GCC 2.32. This and a number of other compiler warnings have been silenced.
 
 Many thanks to Dominique Rousset for working on this.
 
+The last tmpnam calls were removed from suedit.c and suxedit.c
 
 What is new in the SU package:
 
@@ -54,13 +57,25 @@ par/main/velocity_model_building
 par/main/velocity_perturbation
 par/main/wavelet_transform
 
+New:
+par/main/ray_theory/rayt2dtopo - a version of RAYT2D with topography
+                                  Thanks to Trino Salinas
 
 New:
+		Tools for 3D geometry by Andre Latour:
+su/main/headers/sutoolcsv.c - Tools for Comma Separated Values and 
+                                fixed text files. 
+                sugeomcsv.c - 3D/2D land/OBotm geometry from Comma 
+                                Separated or fixed text. 
+                subincsv.c -  3D Grid Resolve and output and assign
+                                traces to cdps (cells)
+
 su/main/transforms/sust.c
 	SUST -  Outputs a time-frequency representation of seismic data via
            	the Stockwell transform (S- transform)
             Thanks to Adnand Bitri (note that the Stockwell here is
               is R. G. Stockwell, not me)
+
 su/main/noise/sugroll.c
 	SUGROLL - Ground roll supression using Karhunen-Loeve transform
 	    Thanks to Adnand Bitri
@@ -69,10 +84,13 @@ su/main/stretching_moveout_resamp/sudlmo.c
 	SUDLMO -- Dynamic Linear Move Out Correction for Surface Waves 
 	    Thanks to Adnand Bitri
 	
-ramac2su - converts RAMAC GPR files to su format with a nominal geometry
-		Thanks to: Hervé Perrou,d  12/2000and Dominique Rousset,  2019 
-                of the Universith of Pau
-configs/Makefile.config_Linux_Ubuntu
+su/shell/ramac2su.sh - converts RAMAC GPR files to su format with a 
+        nominal geometry
+	Thanks to: Hervé Perrou,d  12/2000and Dominique Rousset,  2019 
+              of the Universith of Pau
+
+configs/Makefile.config_Linux_Ubuntu_20.04
+        Makefile.config_Linux_Ubuntu
         Makefile.config_Mac_OSX_Mojave
         Makefile.config_Linux_Fedora_32
         Makefile.config_Linux_ARCH

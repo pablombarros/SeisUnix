@@ -83,8 +83,8 @@ char tracefile[BUFSIZ];	/* filename for the file of traces	*/
 char headerfile[BUFSIZ];/* filename for the file of headers	*/
 FILE *tracefp;		/* fp for trace storage file		*/
 FILE *headerfp;		/* fp for header storage file		*/
-static char bandoutfile[L_tmpnam];  /* output file for sufilter	*/
 static FILE *bandoutfp;		    /* fp for output file	*/
+char bandoutfile[BUFSIZ];  /* output file for sufilter	*/
 
 
 segy tr;
@@ -237,7 +237,7 @@ main(int argc, char **argv)
 
 		/* Prepare temporary files to hold traces */
 		bandinfp  = etmpfile();
-		bandoutfp = efopen(tmpnam(bandoutfile), "w+");
+		bandoutfp = efopen(temporary_filename(bandoutfile), "w+");
 
 		/* Paste headers on noise traces and put in tmpfile */
 		rewind(headerfp);

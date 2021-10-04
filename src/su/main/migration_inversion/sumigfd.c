@@ -17,7 +17,7 @@ char *sdoc[] = {
 "   sumigfd <infile >outfile vfile= [optional parameters]		",
 "									",
 " Required Parameters:							",
-" nz=		number of depth sapmles					",
+" nz=		number of depth samples					",
 " dz=		depth sampling interval					",
 " vfile=	name of file containing velocities			",
 " 		(see Notes below concerning format of this file)	",

@@ -17,7 +17,7 @@ char *sdoc[] = {
 " sumigpspi <infile >outfile vfile= [optional parameters]               ",
 "                                                                       ", 
 " Required Parameters:							",
-" nz=		number of depth sapmles					",
+" nz=		number of depth samples					",
 " dz=		depth sampling interval					",
 " vfile=	name of file containing velocities			",
 "		(Please see Notes below concerning the format of vfile)	",
