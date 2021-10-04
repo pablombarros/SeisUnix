@@ -1,3 +1,9 @@
+/* Copyright (c) Colorado School of Mines, 2021.*/
+/* All rights reserved.                       */
+
+/* gridread: $Revision: 1.1 $ ; $Date: 2021/10/03 23:13:30 $        */
+
+
 #include "su.h"
 #include "readkfile.h"
 #include "gridread.h"
@@ -26,6 +32,11 @@ void gridread(FILE *fpR, double *gvals, int *errwarn2) {
   cwp_String forms[999];   
   double dfield[999];
   cwp_String gnams[999];   
+ 
+  int i=0;
+  int j=0;
+  int n=0;
+  int m=0;
 
 /* if *errwarn2 input 0, do not print (still return error code)   */
 
@@ -57,15 +68,15 @@ void gridread(FILE *fpR, double *gvals, int *errwarn2) {
   *errwarn2 = errwarn;
   if(errwarn>0) return; 
 
-  for (int n=0; n<numcases; n++) {
-    for (int m=0; m<strlen(names[n]); m++) {
+  for (n=0; n<numcases; n++) {
+    for (m=0; m<strlen(names[n]); m++) {
       names[n][m] = tolower(names[n][m]);
     }
   }    
 
   int numgnams = 18;
 
-  for(int i=1; i<numgnams; i++) {
+  for(i=1; i<numgnams; i++) {
     gvals[i] = -1.1e308;
     gnams[i] = ealloc1(7,1); 
   }
@@ -88,10 +99,10 @@ void gridread(FILE *fpR, double *gvals, int *errwarn2) {
   strcpy(gnams[16],"grid_sb");
   strcpy(gnams[17],"grid_cb");
 
-  for(int i=2; i<12; i++) {    /* read-in corners A,B,C and cell widths */ 
+  for(i=2; i<12; i++) {    /* read-in corners A,B,C and cell widths */ 
     if(i==8 || i==9) continue; /* do not read-in corner D  */
     if(!getpardouble(gnams[i],gvals+i)) { 
-      for(int j=0; j<numcases; j++) { 
+      for(j=0; j<numcases; j++) { 
         if(strcmp(names[j],gnams[i]) == 0) gvals[i] = dfield[j]; 
       }
       if(gvals[i] < -1.e308) {
@@ -125,8 +136,9 @@ void gridcommand(int *enough) {
 
   cwp_String gnams[18];   
   int numgnams = 18;
+  int i=0;
 
-  for(int i=1; i<numgnams; i++) gnams[i] = ealloc1(7,1); 
+  for(i=1; i<numgnams; i++) gnams[i] = ealloc1(7,1); 
 
   strcpy(gnams[1],"grid_lf");
   strcpy(gnams[2],"grid_xa");
@@ -150,7 +162,7 @@ void gridcommand(int *enough) {
 
   double gval;
   int nfound = 0;
-  for(int i=2; i<12; i++) {    /* need corners A,B,C and cell widths      */ 
+  for(i=2; i<12; i++) {    /* need corners A,B,C and cell widths      */ 
     if(i==8 || i==9) continue; /* do not need corner D (or anything else) */
     if(getpardouble(gnams[i],&gval)) nfound++;
   } 

@@ -495,9 +495,9 @@ main(int argc, char **argv)
 	epclose(pipefp);
 	if (verbose) warn("header file closed successfully");
 
-        checkpars();
 
         if (!getparshort( "nextended" ,&nextended ))
+        checkpars();
 	nextended = *((short *) (((unsigned char *)&tapebh) + 304));
 
 	if (endian == 0) swap_short_2((short *) &nextended);

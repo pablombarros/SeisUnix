@@ -1,7 +1,7 @@
-/* Copyright (c) Colorado School of Mines, 2011.*/
+/* Copyright (c) Colorado School of Mines, 2021.*/
 /* All rights reserved.                       */
 
-/* SUNMOCSV: $Revision: 1.01 $ ; $Date: 2021/08/28 00:00:01 $		*/
+/* SUNMOCSV: $Revision: 1.1 $ ; $Date: 2021/10/04 00:56:30 $		*/
  
 #include "su.h"
 #include "segy.h" 
@@ -211,6 +211,8 @@ main(int argc, char **argv)
         cwp_String Rname=NULL;  /* text file name for values            */
         FILE *fpR=NULL;         /* file pointer for Rname input file    */
         double gvals[999];      /* to contain the grid definition       */
+
+	int n=0;
 	
 	/* hook up getpar */
 	initargs(argc, argv);
@@ -304,13 +306,13 @@ main(int argc, char **argv)
         RecInfo = ealloc1(ncdp,sizeof(struct VelInfo)); 
 
         int *tinf = ealloc1int(ncdp*3);
-        for(int n=0; n<ncdp; n++) RecInfo[n].kinf = tinf + n*3;
+        for(n=0; n<ncdp; n++) RecInfo[n].kinf = tinf + n*3;
 
         float *tvel = ealloc1float(ncdp*nt);
-        for(int n=0; n<ncdp; n++) RecInfo[n].ovv = tvel + n*nt;
+        for(n=0; n<ncdp; n++) RecInfo[n].ovv = tvel + n*nt;
 
         guy.kinf = ealloc1int(3);
-//      guy.ovv  = ealloc1float(nt); 
+/*      guy.ovv  = ealloc1float(nt);  */
 
         int ierr = 0;
         if(is3d==1 && icheck>0) 
@@ -637,8 +639,10 @@ static void binterpovv(int nt, struct VelInfo *RecInfo,
                        int kigi, int *mgi, int mgi_tot, int igimin, int igimax,
                        int kigc, int *mgc, int mgc_tot, int igcmin, int igcmax, float * ovvt) {
 
+  int jt=0;
+
   if(mgi_tot==1 && mgc_tot==1) {
-    for (int jt=0; jt<nt; ++jt) ovvt[jt] = RecInfo[0].ovv[jt];
+    for (jt=0; jt<nt; ++jt) ovvt[jt] = RecInfo[0].ovv[jt];
     return;
   }
 
@@ -657,7 +661,7 @@ static void binterpovv(int nt, struct VelInfo *RecInfo,
 
   if(mgc_tot==1) {
     float wi = ((float)(mgi[mgix]-kigi)) / ((float)(mgi[mgix]-mgi[mgix-1]));
-    for (int jt=0; jt<nt; ++jt) ovvt[jt] = wi*RecInfo[mgix-1].ovv[jt] + (1.0-wi)*RecInfo[mgix].ovv[jt];  
+    for (jt=0; jt<nt; ++jt) ovvt[jt] = wi*RecInfo[mgix-1].ovv[jt] + (1.0-wi)*RecInfo[mgix].ovv[jt];  
     return;
   }
 
@@ -676,7 +680,7 @@ static void binterpovv(int nt, struct VelInfo *RecInfo,
 
   if(mgi_tot==1) { /* andre, weight might be applied backwards */
     float wc = ((float)(mgc[mgcx]-kigc)) / ((float)(mgc[mgcx]-mgc[mgcx-1]));
-    for (int jt=0; jt<nt; ++jt) ovvt[jt] = wc*RecInfo[mgcx-1].ovv[jt] + (1.0-wc)*RecInfo[mgcx].ovv[jt];  
+    for (jt=0; jt<nt; ++jt) ovvt[jt] = wc*RecInfo[mgcx-1].ovv[jt] + (1.0-wc)*RecInfo[mgcx].ovv[jt];  
     return;
   }
 
@@ -686,7 +690,7 @@ static void binterpovv(int nt, struct VelInfo *RecInfo,
   int ndxc = ndxi   + mgi_tot;
 
 
-  for (int jt=0; jt<nt; ++jt) {
+  for (jt=0; jt<nt; ++jt) {
     ovvt[jt] =  wc      * (wi*RecInfo[ndxi].ovv[jt] + (1.0-wi)*RecInfo[ndxi+1].ovv[jt])  
              + (1.0-wc) * (wi*RecInfo[ndxc].ovv[jt] + (1.0-wi)*RecInfo[ndxc+1].ovv[jt]);
   }

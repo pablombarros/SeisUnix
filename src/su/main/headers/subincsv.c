@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2021.*/
 /* All rights reserved.                       */
 
-/* SUBINCSV: $Revision: 1.00 $ ; $Date: 2021/08/15 00:09:00 $         */
+/* SUBINCSV: $Revision: 1.1 $ ; $Date: 2021/10/03 23:44:55 $         */
 
 #include <stdio.h>
 #include <string.h>
@@ -320,6 +320,10 @@ int main(int argc, char **argv) {
   double gvals[999];
 
   int nproct = 0; 
+  int i=0;
+  int j=0;
+  int n=0;
+  int m=0;
 
 /* Initialize */
   initargs(argc, argv);
@@ -380,8 +384,8 @@ int main(int argc, char **argv) {
     else if(errwarn>0) err("K-file read error: returned with some unrecognized error code.");
     else if(errwarn==-1) warn("K-file read warning: at least 1 all-blank field, assumed zero for all.");
 
-    for (int n=0; n<numcases; n++) {
-      for (int m=0; m<strlen(names[n]); m++) {
+    for (n=0; n<numcases; n++) {
+      for (m=0; m<strlen(names[n]); m++) {
         names[n][m] = tolower(names[n][m]);
       }
     }    
@@ -399,7 +403,7 @@ int main(int argc, char **argv) {
 
   if(bintype==-1) {
     gvals[0] = -1.;
-    for(int j=0; j<numcases; j++) { 
+    for(j=0; j<numcases; j++) { 
       if(strcmp(names[j],gnams[0]) == 0) gvals[0] = dfield[j]; 
     }
     if(gvals[0] > 0.) bintype = (int) (gvals[0] + 0.1);
@@ -424,7 +428,7 @@ int main(int argc, char **argv) {
 
     numgnams = 18;
 
-    for(int i=1; i<numgnams; i++) {
+    for(i=1; i<numgnams; i++) {
       gvals[i] = -1.1e308;
       gnams[i] = ealloc1(7,1); 
     }
@@ -447,10 +451,10 @@ int main(int argc, char **argv) {
     strcpy(gnams[16],"grid_sb");
     strcpy(gnams[17],"grid_cb");
 
-    for(int i=2; i<12; i++) {    /* read-in corners A,B,C and cell widths */ 
+    for(i=2; i<12; i++) {    /* read-in corners A,B,C and cell widths */ 
       if(i==8 || i==9) continue; /* do not read-in corner D  */
       if(!getpardouble(gnams[i],gvals+i)) { 
-        for(int j=0; j<numcases; j++) { 
+        for(j=0; j<numcases; j++) { 
           if(strcmp(names[j],gnams[i]) == 0) gvals[i] = dfield[j]; 
         }
         if(gvals[i] < -1.e308) {
@@ -486,7 +490,7 @@ int main(int argc, char **argv) {
 
     numgnams = 5;
 
-    for(int i=1; i<numgnams; i++) {
+    for(i=1; i<numgnams; i++) {
       gvals[i] = -1.1e308;
       gnams[i] = ealloc1(9,1); 
     }
@@ -496,9 +500,9 @@ int main(int argc, char **argv) {
     strcpy(gnams[3],"point_csz"); /* cdp number of source zero        */
     strcpy(gnams[4],"point_csu"); /* cdps per one source point unit   */
 
-    for(int i=1; i<5; i++) {     
+    for(i=1; i<5; i++) {     
       if(!getpardouble(gnams[i],gvals+i)) { 
-        for(int j=0; j<numcases; j++) { 
+        for(j=0; j<numcases; j++) { 
           if(strcmp(names[j],gnams[i]) == 0) gvals[i] = dfield[j];  
         }
         if(gvals[i] < -1.e308) {
@@ -506,7 +510,7 @@ int main(int argc, char **argv) {
           err("**** Error: bintype=%d and parameter %s not found.",bintype,gnams[i]); 
         }
       }
-    } /* end of  for(int i=1; i<5; i++) { */
+    } /* end of  for(i=1; i<5; i++) { */
 
   } /* end of  if(bintype==20) { */
 
@@ -520,10 +524,10 @@ int main(int argc, char **argv) {
 
 /* Update/add whatever names/values are used by whatever options.             */
 
-    for(int i=0; i<numgnams; i++) { 
+    for(i=0; i<numgnams; i++) { 
 
       int ifound = 0;
-      for(int j=0; j<numcases; j++) { /* reset it, if already in input K-file */ 
+      for(j=0; j<numcases; j++) { /* reset it, if already in input K-file */ 
         if(strcmp(names[j],gnams[i]) == 0) {
           dfield[j] = gvals[i];  
           ifound = 1;
@@ -539,7 +543,7 @@ int main(int argc, char **argv) {
         numcasesout++;
       }
 
-    } /* end of  for(int i=0; i<numgnams; i++) { */
+    } /* end of  for(i=0; i<numgnams; i++) { */
 
     writekfile(fpW,names,forms,dfield,numcasesout,&errwarn);
     if(errwarn>0) err("K-file write error: returned with an unrecognized error code.");
@@ -791,7 +795,7 @@ int GetCase(char* cbuf) {
 /* --------------------------- */
 double fromhead(segy tr, int k) {
 
-       double dval;
+       double dval=0.0;
 
        switch (k) {
    

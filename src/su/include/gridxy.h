@@ -1,3 +1,8 @@
+/* Copyright (c) Colorado School of Mines, 2021.*/
+/* All rights reserved.                       */
+
+/* GRIDXY.H: $Revision: 1.1 $ ; $Date: 2021/10/03 23:17:54 $        */
+
 
 void gridset(double *gvals, int *errwarn) ; 
 void gridrawxycdpic(double *gvals,double dx,double dy,int *icdp,int *igi,int *igc) ;

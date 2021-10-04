@@ -1,0 +1,58 @@
+
+sunmocsv: gridicrawxy:     corner A raw  XYs= 338800.00000000000000000000 5540700.00000000000000000000 
+
+sunmocsv: gridrawxygridxy: corner A grid XYs= 0.00000000000000000000 0.00000000000000000000 
+
+sunmocsv: gridicgridxy:    corner A grid XYs= 0.00000000000000000000 0.00000000000000000000 
+
+sunmocsv: gridgridxyrawxy: corner A raw  XYs= 338800.00000000000000000000 5540700.00000000000000000000 
+
+sunmocsv: gridrawxycdpic:          corner A cdp,igi,igc = 1 1 1 
+
+sunmocsv: gridcdpic and gridiccdp: corner A cdp,igi,igc = 1 1 1 
+
+sunmocsv: gridicrawxy:     corner B raw  XYs= 340299.16736046870937570930 5538101.44324185419827699661 
+
+sunmocsv: gridrawxygridxy: corner B grid XYs= 2999.99999999997862687451 0.00000000000000000000 
+
+sunmocsv: gridicgridxy:    corner B grid XYs= 3000.00000000000000000000 0.00000000000000000000 
+
+sunmocsv: gridgridxyrawxy: corner B raw  XYs= 340299.16736046870937570930 5538101.44324185419827699661 
+
+sunmocsv: gridrawxycdpic:          corner B cdp,igi,igc = 121 121 1 
+
+sunmocsv: gridcdpic and gridiccdp: corner B cdp,igi,igc = 121 121 1 
+
+sunmocsv: gridicrawxy:     corner C raw  XYs= 339752.80414465343346819282 5541249.69469883851706981659 
+
+sunmocsv: gridrawxygridxy: corner C grid XYs= -0.00000000000517275112 1099.99999999996384758560 
+
+sunmocsv: gridicgridxy:    corner C grid XYs= 0.00000000000000000000 1100.00000000000000000000 
+
+sunmocsv: gridgridxyrawxy: corner C raw  XYs= 339752.80414465343346819282 5541249.69469883851706981659 
+
+sunmocsv: gridrawxycdpic:          corner C cdp,igi,igc = 2663 1 23 
+
+sunmocsv: gridcdpic and gridiccdp: corner C cdp,igi,igc = 2663 1 23 
+
+sunmocsv: gridicrawxy:     corner D raw  XYs= 341251.97150512214284390211 5538651.13794069271534681320 
+
+sunmocsv: gridrawxygridxy: corner D grid XYs= 2999.99999999997362465365 1099.99999999996362021193 
+
+sunmocsv: gridicgridxy:    corner D grid XYs= 3000.00000000000000000000 1100.00000000000000000000 
+
+sunmocsv: gridgridxyrawxy: corner D raw  XYs= 341251.97150512214284390211 5538651.13794069271534681320 
+
+sunmocsv: gridrawxycdpic:          corner D cdp,igi,igc = 2783 121 23 
+
+sunmocsv: gridcdpic and gridiccdp: corner D cdp,igi,igc = 2783 121 23 
+
+sunmocsv: Velocity location information follows: G,cdp,igi,igc,  xgrid,ygrid,  xworld,yworld
+
+sunmocsv: G,           1,           1,           1,  0,0,  338800,5540700
+
+sunmocsv: G,         121,         121,           1,  3000,0,  340299.16736046870938,5538101.4432418541983
+
+sunmocsv: G,        2663,           1,          23,  0,1100,  339752.80414465343347,5541249.6946988385171
+
+sunmocsv: G,        2783,         121,          23,  3000,1100,  341251.97150512214284,5538651.1379406927153

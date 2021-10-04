@@ -4,9 +4,6 @@
 
 # Remove files created by sugeomcsp tests     
 
-rm -f fakex.su fakexs.su fakexsr.su fakexsrf.su fakexsrfn.su 
-rm -f fakeallx.su fakeallxs.su fakeallxsr.su fakeallxsrn.su  
-rm -f fakexsrfns.su fakexsrfns2.su fakexsrfnss.su fakexsrazimuth.su
-rm -f fakeRESETz2.su fakexsrfnsimple2d.su fakeduplicates.su
+rm -f  *.su
 
 exit 0

@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2021.*/
 /* All rights reserved.                       */
 
-/* SUTOOLCSV: $Revision: 1.00 $ ; $Date: 2021/05/15 00:09:00 $        */
+/* SUTOOLCSV: $Revision: 1.1 $ ; $Date: 2021/10/03 23:47:18 $        */
 
 #include <stdio.h>
 #include <string.h>
@@ -752,6 +752,13 @@ int main(int argc, char **argv) {
    int *pflag = NULL;
    double *pvalu = NULL;     
 
+   int i=0;
+   int j=0;
+   int k=0;
+   int ineed=0;
+   int n=0;
+   int m=0;
+
    /* Initialize */
    initargs(argc, argv);
    requestdoc(1);
@@ -797,7 +804,7 @@ int main(int argc, char **argv) {
    char *rtype;
    if(countparval("rtype") > 0) {
      getparstring("rtype", &rtype);
-     for (int n=0; n<strlen(rtype); n++) rtype[n] = tolower(rtype[n]);
+     for (n=0; n<strlen(rtype); n++) rtype[n] = tolower(rtype[n]);
      if(strlen(rtype)==3 && strcmp(rtype,"csv") == 0) irtype = 1;
      else if(strlen(rtype)==5 && strcmp(rtype,"fixed") == 0) irtype = 0;
      else err("**** Error: rtype= option not recognized.");
@@ -834,8 +841,8 @@ int main(int argc, char **argv) {
    int num_names = countparval("names");
    if(num_names>0) {
      getparstringarray("names",names);
-     for (int n=0; n<num_names; n++) {
-       for (int m=0; m<strlen(names[n]); m++) {
+     for (n=0; n<num_names; n++) {
+       for (m=0; m<strlen(names[n]); m++) {
          names[n][m] = tolower(names[n][m]);
        }
      }
@@ -857,7 +864,7 @@ int main(int argc, char **argv) {
    char *wtype;
    if(countparval("wtype") > 0) {
      getparstring("wtype",&wtype); 
-     for (int n=0; n<strlen(wtype); n++) wtype[n] = tolower(wtype[n]);
+     for (n=0; n<strlen(wtype); n++) wtype[n] = tolower(wtype[n]);
      if(strlen(wtype)==3 && strcmp(wtype,"csv") == 0) iwtype = 1;
      else if(strlen(wtype)==7 && strcmp(wtype,"csvchop") == 0) {
        iwtype = 1;
@@ -907,8 +914,8 @@ int main(int argc, char **argv) {
      pvalu = calloc(num_pross,sizeof(double));
      if(pvalu == NULL) err("**** Unable to allocate memory.");
 
-     for (int n=0; n<num_pross; n++) {
-       for (int m=0; m<strlen(pross[n]); m++) {
+     for (n=0; n<num_pross; n++) {
+       for (m=0; m<strlen(pross[n]); m++) {
          pross[n][m] = tolower(pross[n][m]);
        }
      }
@@ -972,7 +979,7 @@ int main(int argc, char **argv) {
 /* Remove all blanks and tabs because tparse is not designed to handle them.      */
 
        int tsize = 0;
-       for(int n=0; n<maxtext; n++) { /*   linux \n            windows \r */
+       for(n=0; n<maxtext; n++) { /*   linux \n            windows \r */
          if(textraw[n] == '\0' || textraw[n] == '\n' || textraw[n] == '\r') break;
          if(textraw[n] != ' ' && textraw[n] != '\t') {
            textbeg[tsize] = textraw[n];
@@ -981,7 +988,7 @@ int main(int argc, char **argv) {
        }
 
        if(lenid==0) { /* note the id itself is case-sensitive. */
-         for(int n=0; n<10; n++) textbeg[n] = tolower(textbeg[n]);
+         for(n=0; n<10; n++) textbeg[n] = tolower(textbeg[n]);
          if(strncmp(textbeg,"c_su_setid",10) == 0) {
            char *ids[99];
            int nids;
@@ -992,7 +999,7 @@ int main(int argc, char **argv) {
          }   
        }   
 
-       for(int n=0; n<sizeof(textbeg); n++) textbeg[n] = tolower(textbeg[n]);
+       for(n=0; n<sizeof(textbeg); n++) textbeg[n] = tolower(textbeg[n]);
        if(strncmp(textbeg,"c_su_match",10) == 0) num_c_su_match++;
        if(strncmp(textbeg,"c_su_setid",10) == 0) num_c_su_setid++;
        if(strncmp(textbeg,"c_su_names",10) == 0) num_c_su_names++;
@@ -1004,7 +1011,7 @@ int main(int argc, char **argv) {
            textbeg[tsize] = '\0'; 
            tparse(textbeg, ',', match, &num_found) ; 
            num_to_sort_by = num_found;
-           for (int j=1; j<num_found; j++) { 
+           for (j=1; j<num_found; j++) { 
              if(strncmp(match[j],"null",4) == 0) {
                num_to_sort_by = j;
                break;
@@ -1115,22 +1122,22 @@ int main(int argc, char **argv) {
 /* Resolve setid options.  */
 
    if(lenid>3 && Rid[0]=='"' && Rid[lenid-1]=='"') {
-     for(int n=0; n<lenid-1; n++) Rid[n] = Rid[n+1];
+     for(n=0; n<lenid-1; n++) Rid[n] = Rid[n+1];
      lenid -= 2;
    }
    else {
-     for(int n=0; n<lenid; n++) Rid[n] = toupper(Rid[n]);
+     for(n=0; n<lenid; n++) Rid[n] = toupper(Rid[n]);
    }
 
    int isetid = 1;
    if(lenid==3) {
      char text3[3]; 
-     for(int n=0; n<3; n++) text3[n] = tolower(Rid[n]);
+     for(n=0; n<3; n++) text3[n] = tolower(Rid[n]);
      if(strncmp(text3,"any",3) == 0) lenid = 0;       
    }
    else if(lenid==4) {
      char text4[4]; 
-     for(int n=0; n<4; n++) text4[n] = tolower(Rid[n]);
+     for(n=0; n<4; n++) text4[n] = tolower(Rid[n]);
      if(strncmp(text4,"none",4) == 0) {
        lenid = 0;  
        isetid = 0;  
@@ -1768,7 +1775,7 @@ int main(int argc, char **argv) {
 
    int all_forms = num_forms;
    num_forms = 0;
-   for (int n=0; n<all_forms; n++) {
+   for (n=0; n<all_forms; n++) {
      if(strncmp(forms[n],"c_su_more",9) != 0) {
        forms[num_forms] = forms[n];
        form2[num_forms] = ealloc1(strlen(forms[n]),1); 
@@ -1781,7 +1788,7 @@ int main(int argc, char **argv) {
 
    int all_names = num_names;
    num_names = 0;
-   for (int n=0; n<all_names; n++) {
+   for (n=0; n<all_names; n++) {
      if(strncmp(names[n],"c_su_more",9) != 0) {
        names[num_names] = names[n];
        name2[num_names] = ealloc1(strlen(names[n]),1); 
@@ -1793,7 +1800,7 @@ int main(int argc, char **argv) {
 /* user option to use the last format for remainder */
 
    int lform = strlen(forms[num_forms-1]);
-   for (int n=num_forms; n<num_names; n++) { 
+   for (n=num_forms; n<num_names; n++) { 
      forms[n] = ealloc1(lform,1);
      strcpy(forms[n],forms[num_forms-1]);
      form2[n] = ealloc1(lform,1);
@@ -1812,7 +1819,7 @@ int main(int argc, char **argv) {
    int incomma = 0;
    int extra_parts = 0;
    int maxtrail = 0;
-   for (int n=0; n<num_names; n++) {
+   for (n=0; n<num_names; n++) {
 
      cwp_String nparts[99]; /* really only 4 needed (currently) */
      int num_parts;
@@ -1859,7 +1866,7 @@ int main(int argc, char **argv) {
        if(num_parts==2 || num_parts==4) extra_parts++;
      }
 
-   } /* end of   for (int n=0; n<num_names; n++) {      */
+   } /* end of   for (n=0; n<num_names; n++) {      */
 
    int lerr = 0;
    if(incomma==1 && irtype==0) {
@@ -1883,7 +1890,7 @@ int main(int argc, char **argv) {
 
 /* substitute the actual match= key name for match1 and matche1 type specification */ 
 
-   for (int n=0; n<num_names; n++) {
+   for (n=0; n<num_names; n++) {
      if(strncmp(names[n],"null",4) != 0) {
 
        if(strcmp(names[n],"match1") == 0 && num_to_sort_by>0) names[n] = match[0];
@@ -1909,7 +1916,7 @@ int main(int argc, char **argv) {
          warn("**** Error: Name  %s  could not be substituted from match= list.",names[n]);
        }
 
-       for (int m=n+1; m<num_names; m++) {
+       for (m=n+1; m<num_names; m++) {
          if(strcmp(names[n],names[m]) == 0 && strcmp(namex[n],namex[m]) == 0) {  
            lerr = 1;
            warn("**** Error: Name  %s  exists at least twice in the names list.",names[n]);
@@ -1934,14 +1941,14 @@ int main(int argc, char **argv) {
 
 /* Get key cases for switch.  */
 
-   for(int i=0; i<num_to_sort_by;i++) { 
+   for(i=0; i<num_to_sort_by;i++) { 
      kcase[i] = GetCase(match[i]);
      if(kcase[i]<1) err("**** Error: a match name not recognized (or not allowed). %s",match[i]);
    }
 
 /* ----------------------------------------------------- */
 
-   for (int n=0; n<num_pross; n++) {
+   for (n=0; n<num_pross; n++) {
 
      cwp_String nparts[99]; /* really only 4 needed (currently) */
      int num_parts;
@@ -1992,10 +1999,10 @@ int main(int argc, char **argv) {
      else {
        err("**** Error: Your process= list has an option that is not recognized.");
      }
-   } /* end of   for (int n=0; n<num_pross; n++) {      */
+   } /* end of   for (n=0; n<num_pross; n++) {      */
 
    int numcases = 0;
-   for(int i=0; i<num_names;i++) { 
+   for(i=0; i<num_names;i++) { 
 
      int iamcase = GetCase(names[i]);
      if(iamcase < 0) { /* name not recognized (and not null either) */
@@ -2043,12 +2050,12 @@ int main(int argc, char **argv) {
   
 /* Find the name with _cf _ct _ci and the name with _rf _rt appendices. */
 
-   for(int i=0; i<10; i++) mapx[i] = -1;
+   for(i=0; i<10; i++) mapx[i] = -1;
 
    int kerr = 0;
 
    if(extra_parts==5) {
-     for(int i=0; i<numcases;i++) { 
+     for(i=0; i<numcases;i++) { 
        if(strcmp(namex[i],"cf") == 0) {  
          if(mapx[0] != -1) {
            kerr = 1;
@@ -2115,7 +2122,7 @@ int main(int argc, char **argv) {
      }
 
 /* andre, leave this in for now */
-     for(int k=0; k<num_to_sort_by; k++) { /* will need the value from input header */ 
+     for(k=0; k<num_to_sort_by; k++) { /* will need the value from input header */ 
        if(strcmp(names[mapx[0]],match[k]) == 0) {
          mapx[5] = k;
          mapx[6] = kcase[k]; /* need this if this is a create run  */
@@ -2130,9 +2137,9 @@ int main(int argc, char **argv) {
 /* Avoid precision issues by also storing sort fields as long long int. */
 /* And then use them to sort/search.                                    */
 
-   for(int k=0; k<num_to_sort_by; k++) {
+   for(k=0; k<num_to_sort_by; k++) {
      int ifound = 0;
-     for(int n=0; n<numcases; n++) { /* non-null fields end-up in sequence at dfield[]     */
+     for(n=0; n<numcases; n++) { /* non-null fields end-up in sequence at dfield[]     */
        if(ncase[n] == kcase[k]) {    /* fortunately, each name is unique case (as of now). */
          ktol[k] = n;                /* store the number where it ends-up in dfield[]      */
          ifound = 1; 
@@ -2148,8 +2155,8 @@ int main(int argc, char **argv) {
 /* cycle over null cases. This could be eliminated but it would require yet      */
 /* another indexing array, so it is unlikely to be faster than the null cycling. */
 
-   for(int n=0; n<numcases; n++) { 
-     for(int k=0; k<num_to_sort_by; k++) {
+   for(n=0; n<numcases; n++) { 
+     for(k=0; k<num_to_sort_by; k++) {
        if(ncase[n] == kcase[k]) ncase[n] = 0;
      }
    }
@@ -2183,13 +2190,13 @@ int main(int argc, char **argv) {
    if(dinput == NULL) {
      err("**** Unable to allocate memory for data fields per record.");
    }
-   for(int n=0; n<numR; n++) RecInfo[n].dfield = dinput + n*numcases;
+   for(n=0; n<numR; n++) RecInfo[n].dfield = dinput + n*numcases;
 
    long long int *linput = calloc(numR*num_to_sort_by,sizeof(long long int));
    if(linput == NULL) {
      err("**** Unable to allocate memory for access fields per record.");
    }
-   for(int n=0; n<numR; n++) RecInfo[n].lfield = linput + n*num_to_sort_by;
+   for(n=0; n<numR; n++) RecInfo[n].lfield = linput + n*num_to_sort_by;
  
 /* Allocate for the record for use with bhigh function. */
 
@@ -2222,7 +2229,7 @@ int main(int argc, char **argv) {
      }
      strcpy(textraw,"C_SU_MATCH"); 
      mspot = 9; /* deliberately bypassing the null, here and elsewhere */
-     for(int i=0; i<num_to_sort_by; i++) { 
+     for(i=0; i<num_to_sort_by; i++) { 
        mspot++;
        textraw[mspot] = ',';
        mleng = strlen(match[i]);
@@ -2297,7 +2304,7 @@ int main(int argc, char **argv) {
        strcpy(textraw,"C_SU_ID,");
      }
 
-     for(int i=ibeg; i<iend; i++) { 
+     for(i=ibeg; i<iend; i++) { 
        mleng = strlen(form2[i]);
        if(iwtype==0 && mspot+mleng+1>iwidth) { /* fixed format   */
          textraw[mspot-1] = ' '; /* get rid of end comma on previous record */
@@ -2313,7 +2320,7 @@ int main(int argc, char **argv) {
        mspot += mleng;
        textraw[mspot] = ',';
        mspot++;
-     } /* end of  for(int i=ibeg; i<iend; i++) { */ 
+     } /* end of  for(i=ibeg; i<iend; i++) { */ 
      if(iwtype==0) textraw[mspot-1] = ' ';
      else {
        textraw[mspot-1] = '\n';
@@ -2345,7 +2352,7 @@ int main(int argc, char **argv) {
        strcpy(textraw,"C_SU_ID,");
      }
 
-     for(int i=ibeg; i<iend; i++) { 
+     for(i=ibeg; i<iend; i++) { 
        mleng = strlen(name2[i]);
        if(iwtype==0 && mspot+mleng+1>iwidth) { /* fixed format   */
          textraw[mspot-1] = ' '; /* get rid of end comma on previous record */
@@ -2361,7 +2368,7 @@ int main(int argc, char **argv) {
        mspot += mleng;
        textraw[mspot] = ',';
        mspot++;
-     } /* end of  for(int i=ibeg; i<iend; i++) { */ 
+     } /* end of  for(i=ibeg; i<iend; i++) { */ 
      if(iwtype==0) textraw[mspot-1] = ' ';
      else {
        textraw[mspot-1] = '\n';
@@ -2395,7 +2402,7 @@ int main(int argc, char **argv) {
    while (fgets(textraw, maxtext, fpR) != NULL) { /*read a line*/
      ncount++;
      if(ncount>=nicerecord) {
-       for(int n=0; n<10; n++) textfront[n] = tolower(textraw[n]);
+       for(n=0; n<10; n++) textfront[n] = tolower(textraw[n]);
        if(strncmp(textfront,"c_su",4) == 0 || nextrow==1) {
          nextrow = 0; 
          if(strncmp(textfront,"c_su_names",10) == 0 || 
@@ -2410,11 +2417,11 @@ int main(int argc, char **argv) {
  
              if(irtype == 0) {      /* input is fixed format */
 
-               for (int n=0; n<num_pross; n++) {   
+               for (n=0; n<num_pross; n++) {   
                  strncpy(textbeg,textraw+plead[n]-1,ptrail[n]-plead[n]+1);
                  if(pflag[n]==2 || pflag[n]==3) { /* trim or trimz*/
                    int mlead  = 0;
-                   for (int m=0; m<ptrail[n]-plead[n]+1; m++) {
+                   for (m=0; m<ptrail[n]-plead[n]+1; m++) {
                      if(textbeg[m] == '1' || textbeg[m] == '2' || textbeg[m] == '3' ||
                         textbeg[m] == '4' || textbeg[m] == '5' || textbeg[m] == '6' ||
                         textbeg[m] == '7' || textbeg[m] == '8' || textbeg[m] == '9' ||
@@ -2426,7 +2433,7 @@ int main(int argc, char **argv) {
                      else textbeg[m] = ' ';
                    }
                    int mtrail = ptrail[n]-plead[n];
-                   for (int m=ptrail[n]-plead[n]; m>=0; m--) {
+                   for (m=ptrail[n]-plead[n]; m>=0; m--) {
                      if(textbeg[m] == '0' || textbeg[m] == '1' || textbeg[m] == '2' ||
                         textbeg[m] == '3' || textbeg[m] == '4' || textbeg[m] == '5' ||
                         textbeg[m] == '6' || textbeg[m] == '7' || textbeg[m] == '8' ||
@@ -2437,7 +2444,7 @@ int main(int argc, char **argv) {
                      else textbeg[m] = ' ';
                    }
                    if(pflag[n]==3) {
-                     for (int m=mlead; m<mtrail; m++) { /* redundant check of mlead, usually */
+                     for (m=mlead; m<mtrail; m++) { /* redundant check of mlead, usually */
                        if(!(textbeg[m] == '0' || textbeg[m] == '1' || textbeg[m] == '2' ||
                             textbeg[m] == '3' || textbeg[m] == '4' || textbeg[m] == '5' ||
                             textbeg[m] == '6' || textbeg[m] == '7' || textbeg[m] == '8' ||
@@ -2454,7 +2461,7 @@ int main(int argc, char **argv) {
                      else dv = dv * pvalu[n];
                      sprintf(textraw2,"%.20f",dv); /* write it with lots of precison, then shift */
                      int j = 101;                  /* it to grab whatever fits in lead to trail  */
-                     for (int m=0; m<101; m++) {
+                     for (m=0; m<101; m++) {
                        if(textraw2[m] != ' ') {
                          j = m;
                          break;
@@ -2463,20 +2470,20 @@ int main(int argc, char **argv) {
                      strncpy(textraw+plead[n]-1,textraw2+j,ptrail[n]-plead[n]+1);
                    }
                    else { /* it is not a number */
-                     for (int m=plead[n]-1; m<ptrail[n]; m++) textraw[m] = ' ';
+                     for (m=plead[n]-1; m<ptrail[n]; m++) textraw[m] = ' ';
                      textraw[ptrail[n]-1] = '*';
                    }
                  }
                  else if(pflag[n]==0) { /* zero */
-                   for (int m=plead[n]-1; m<ptrail[n]; m++) textraw[m] = '0';
+                   for (m=plead[n]-1; m<ptrail[n]; m++) textraw[m] = '0';
                  }
                  else if(pflag[n]==1) { /* blank */
-                   for (int m=plead[n]-1; m<ptrail[n]; m++) textraw[m] = ' ';
+                   for (m=plead[n]-1; m<ptrail[n]; m++) textraw[m] = ' ';
                  }
-               } /* end of  for (int n=0; n<num_pross; n++) {   */
+               } /* end of  for (n=0; n<num_pross; n++) {   */
 
                int icomma = 0;
-               for(int ineed=0; ineed<numcases; ineed++) { 
+               for(ineed=0; ineed<numcases; ineed++) { 
                  if(itrail[ineed] >= lenraw) {
                    lenerr++;
                    if(lenerr<4) {
@@ -2501,12 +2508,12 @@ int main(int argc, char **argv) {
                if(lenid>0) {
                  strcpy(textraw2,Rid);
                  textraw2[lenid] = ','; /* always comma for output */
-                 for(int n=0; n<last; n++) textraw2[n+lenid+1] = textraw[n];
+                 for(n=0; n<last; n++) textraw2[n+lenid+1] = textraw[n];
                  textraw2[last+lenid  ] = '\n';
                  textraw2[last+lenid+1] = '\0';
                }
                else {
-                 for(int n=0; n<last; n++) textraw2[n] = textraw[n];
+                 for(n=0; n<last; n++) textraw2[n] = textraw[n];
                  textraw2[last-1] = '\n';
                  textraw2[last]   = '\0';
                }
@@ -2521,7 +2528,7 @@ int main(int argc, char **argv) {
                     RecInfo[count].dfield, nspot, numcases,
                     ncount, &comerr,&morerr,&numerr,&nblank);
 
-             for(int j=0; j<numcases; j++) { 
+             for(j=0; j<numcases; j++) { 
                if(RecInfo[count].dfield[j]<1.e308) { /* already counted as an error */
                  if(RecInfo[count].dfield[j]>valmx[j] || 0.-RecInfo[count].dfield[j]>valmx[j]) {
                    lrgerr = lrgerr + 1;
@@ -2553,17 +2560,17 @@ int main(int argc, char **argv) {
                  RecInfo[count].dfield[mapx[3]] = rtr;
                  RecInfo[count].dfield[mapx[4]] = rfr;
                }
-               if(abs(RecInfo[count].dfield[mapx[0]] - RecInfo[count].dfield[mapx[1]]) < dtolh*2.) {
+               if(fabs(RecInfo[count].dfield[mapx[0]] - RecInfo[count].dfield[mapx[1]]) < dtolh*2.) {
                  RecInfo[count].dfield[mapx[2]] = 1.;
                }
                else {
-                 RecInfo[count].dfield[mapx[2]] = abs(cir);
+                 RecInfo[count].dfield[mapx[2]] = fabs(cir);
                }
              }
 
 /* Round-off and copy to lfield (used by qsort). */
 
-             for(int k=0; k<num_to_sort_by; k++) {
+             for(k=0; k<num_to_sort_by; k++) {
                RecInfo[count].lfield[k] = longt(RecInfo[count].dfield[ktol[k]],dtolh,dtol);
              }
 
@@ -2609,7 +2616,7 @@ int main(int argc, char **argv) {
                memset(textraw2,' ',iwidth);
                textraw2[iwidth] = '\n';
                strncpy(textraw2,Rid,lenid);
-               for(int ineed=0; ineed<numcases; ineed++) { 
+               for(ineed=0; ineed<numcases; ineed++) { 
                  sprintf(textbeg,forms[ineed],RecInfo[count].dfield[ineed]);
                  int mfill = strlen(textbeg);
                  if(itrail[ineed]-mfill+1<ilead[ineed]) {
@@ -2625,7 +2632,7 @@ int main(int argc, char **argv) {
              else { /* iwtype = csv. Insert commas and output */
                strncpy(textraw2,Rid,lenid);
                int mhere = lenid;
-               for(int ineed=0; ineed<numcases; ineed++) { /* nspot not used, why add comma for no value? */ 
+               for(ineed=0; ineed<numcases; ineed++) { /* nspot not used, why add comma for no value? */ 
                  if(RecInfo[count].dfield[ineed]<1.e308) {
                    sprintf(textbeg,forms[ineed],RecInfo[count].dfield[ineed]);
                    int mfill = strlen(textbeg);
@@ -2726,7 +2733,7 @@ int main(int argc, char **argv) {
      int npsegs = 0;
      double rpinc = 0.;
 
-     for(int n=1; n<=numR; n++) { 
+     for(n=1; n<=numR; n++) { 
 
        if (n==numR || compOther(RecInfo+ntop,RecInfo+n) != 0) { 
 
@@ -2742,7 +2749,7 @@ int main(int argc, char **argv) {
          int nchan = 0;
          int nsegs = 0;
 
-         for(int m=ntop; m<n; m++) { 
+         for(m=ntop; m<n; m++) { 
 
            long long int mcf = longt(RecInfo[m].dfield[mapx[0]],dtolh,dtol);
            long long int mct = longt(RecInfo[m].dfield[mapx[1]],dtolh,dtol);
@@ -2752,7 +2759,7 @@ int main(int argc, char **argv) {
            nsegs++;
 
            double rinc = (RecInfo[m].dfield[mapx[3]] - RecInfo[m].dfield[mapx[4]]) / ((mct - mcf) / mci + 1);
-           if(ntop>0 && l5same==0 && abs(rinc-rpinc) > dtolh*2.) { 
+           if(ntop>0 && l5same==0 && fabs(rinc-rpinc) > dtolh*2.) { 
              l5same = 1;
              l5verr = l5verr + 1;
              if(l5verr<4) {
@@ -2814,7 +2821,7 @@ int main(int argc, char **argv) {
              }
            } 
 
-           for(int i=m+1; i<n-1; i++) {
+           for(i=m+1; i<n-1; i++) {
              long long int icf = longt(RecInfo[i].dfield[mapx[0]],dtolh,dtol);
              long long int ici = longt(RecInfo[i].dfield[mapx[2]],dtolh,dtol);  
              if(icf > mct) break;     /* Current -from- greater than the other -to-*/ 
@@ -2851,9 +2858,9 @@ int main(int argc, char **argv) {
                }
              }
 
-           } /* end of  for(int i=m+1; i<n-1; i++) { */
+           } /* end of  for(i=m+1; i<n-1; i++) { */
 
-         } /* end of  for(int m=ntop; m<n; m++) {  */
+         } /* end of  for(m=ntop; m<n; m++) {  */
 
          if(ntop>0 && l4same==0 && nchan != npchan) {
            l4same = 1;
@@ -2890,7 +2897,7 @@ int main(int argc, char **argv) {
 
        } /* end of  if (compOther(RecInfo+ntop,RecInfo+n) != 0 || n==numR-1) */
 
-     } /* end of  for(int n=1; n<numR; n++) {  */
+     } /* end of  for(n=1; n<numR; n++) {  */
 
      if(lapover>0) warn("Total Overlapping-channel-ranges in layouts:        %d (very unusual)",lapover);
      if(l2verr>0) warn("Total Different-increments-in-overlapping layout:   %d (will error-halt SUGEOMCSV)",l2verr);
@@ -2906,7 +2913,7 @@ int main(int argc, char **argv) {
    else {
 
      int l7verr = 0;
-     for(int n=1; n<numR; n++) { 
+     for(n=1; n<numR; n++) { 
        if(compSort(RecInfo+n,RecInfo+n-1) == 0) { /* check for duplicate records */ 
          l7verr = l7verr + 1;
          if(l7verr<4) {
@@ -2954,7 +2961,7 @@ int main(int argc, char **argv) {
        int kd = 0;
        int kc = -1;
 
-       for(int n=0; n<numR; n++) { 
+       for(n=0; n<numR; n++) { 
 
          if(num_to_sort_by==2) {
            jn = (int) (RecInfo[n].lfield[0]/dtol + 0.5); 
@@ -2981,7 +2988,7 @@ int main(int argc, char **argv) {
          jp = jn;
          kp = kn;
 
-       } /* end of  for(int n=0; n<numR; n++) { */
+       } /* end of  for(n=0; n<numR; n++) { */
 
        if(num_to_sort_by==2) {
          warn("Note: There are: %d sets of %s values (lines?).",jc,match[0]);
@@ -3015,7 +3022,7 @@ int countRec(FILE *rfile, char *textraw, int maxtext, char *Rid, int lenid, int 
 /*  This function reads the *rfile looking for lines with */     
 /*  1st field == Rid.   The file must be already opened   */
 /*  and will be repositioned at start point at exit.      */
-
+   int n=0;
    int count = 0;
    int ncount = 0;
    int nextrow = 0;
@@ -3024,7 +3031,7 @@ int countRec(FILE *rfile, char *textraw, int maxtext, char *Rid, int lenid, int 
    while (fgets(textraw, maxtext, rfile) != NULL) { /* read a line */
      ncount++;
      if(ncount>=nicerecord) {
-       for(int n=0; n<10; n++) textfront[n] = tolower(textraw[n]);
+       for(n=0; n<10; n++) textfront[n] = tolower(textraw[n]);
        if(strncmp(textfront,"c_su",4) == 0 || nextrow==1) {
          nextrow = 0;
          if(strncmp(textfront,"c_su_names",10) == 0 || 
@@ -3046,12 +3053,14 @@ void getCSV(char *textraw, char *textbeg, int maxtext, char rdel,
             double *dfield, int *nspot, int numcases,   
             int ncount, int *comerr,int *morerr,int *numerr,int *nblank) {
 
+  int n=0;
+  int m=0;
   int nbeg = -1;
   int nfield = 0;
-  int ineed  = 0;
+  int ineed =0;
   int igot;
   double dval;
-  for(int n=0; n<maxtext; n++) {                         /* linux \n            windows \r */
+  for(n=0; n<maxtext; n++) {                         /* linux \n            windows \r */
     if(textraw[n] == rdel || textraw[n] == '\0' || textraw[n] == '\n' || textraw[n] == '\r') {
       if(nfield == nspot[ineed]) {
         dval = 1.1e308; 
@@ -3060,7 +3069,7 @@ void getCSV(char *textraw, char *textbeg, int maxtext, char rdel,
           strncpy(textbeg,textraw+nbeg+1,n-nbeg-1);
           textbeg[n-nbeg-1] = '\0'; /* so sscanf knows where to stop */
           int ib = -1;
-          for (int m=0; m<n-nbeg-1; m++) {
+          for (m=0; m<n-nbeg-1; m++) {
             if(textbeg[m] != ' ') {
               nb = m;
               if(ib>-1) {
@@ -3223,11 +3232,13 @@ long long int longt (double dvalue, double dtolh, double dtol) {
 /* Specify compare function for qsort and my bhigh function.  */
 
 int compSort (const void * q1, const void * q2) {
+  
+  int n=0;
 
   struct PointInfo* p1 = (struct PointInfo*) q1;
   struct PointInfo* p2 = (struct PointInfo*) q2;
 
-  for(int n=0; n<num_to_sort_by; n++) {  
+  for(n=0; n<num_to_sort_by; n++) {  
     if(p1->lfield[n] < p2->lfield[n]) return (-1);
     if(p1->lfield[n] > p2->lfield[n]) return (1);
   }
@@ -3241,6 +3252,7 @@ int compSort (const void * q1, const void * q2) {
 
 int compOther (const void * q1, const void * q2) {
 
+  int n=0;
   struct PointInfo* p1 = (struct PointInfo*) q1;
   struct PointInfo* p2 = (struct PointInfo*) q2;
 
@@ -3248,7 +3260,7 @@ int compOther (const void * q1, const void * q2) {
 /* nice for interpolation options since they work with   */
 /* last match= and expect previous match= to be equal    */
 
-  for(int n=0; n<num_of_others; n++) {  
+  for(n=0; n<num_of_others; n++) {  
     if(p1->lfield[n] < p2->lfield[n]) return (-1);
     if(p1->lfield[n] > p2->lfield[n]) return (1);
   }
@@ -3287,9 +3299,10 @@ int bhigh(struct PointInfo *all, int last, struct PointInfo* guy) {
 /* --------------------------- */
 /* expects a string with no blanks and no tabs \t   */
 void tparse(char *tbuf, char d, char **fields, int *numfields) { 
+  int n=0;
   int nbeg = -1;
   *numfields = 0;
-  for(int n=0; ; n++) {
+  for(n=0; ; n++) {
     if(tbuf[n] == d || tbuf[n] == '\0') {
       if(n-nbeg-1 > 0) {
         fields[*numfields] = ealloc1(n-nbeg-1,1);

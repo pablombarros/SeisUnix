@@ -4,9 +4,7 @@
 
 # Remove files created by subincsp tests     
 
-rm -f k1.csv k2.csv faketfnb.su faketfnb2.su fakeEFG.su 
-rm -f fakeEGF.su fakeFEH.su fakeFHE.su fakeGEH.su fakeGHE.su 
-rm -f fakeHFG.su fakeHGF.su faketfb.su faketfbs.su faketfbss.su
-rm -f fakepoststack.su fakeallxsrnp.su
+rm -f k1.csv k2.csv
+rm -f *.su
 
 exit 0

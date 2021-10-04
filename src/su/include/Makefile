@@ -18,8 +18,8 @@ INCLUDE = 	$I/segy.h	\
 		$I/bheader.h   \
 		$I/bhdr.h    \
 		$I/sugeom.h    \
-		$I/readkfile.h \
-		$I/gridread.h  \
+		$I/readkfile.h    \
+		$I/gridread.h    \
 		$I/gridxy.h    \
 		$I/su_xdr.h
 

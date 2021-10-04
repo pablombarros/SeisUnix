@@ -57,7 +57,9 @@ FILE *tty;		/* /dev/tty is used to read user input	*/
 char userin[BUFSIZ];	/* buffer user requests			*/
 int nt;			/* number of sample points on traces	*/
 FILE *infp;		/* file pointer for trace file		*/
-char tmpwig[L_tmpnam];	/* file for trace plots			*/
+/* char tmpwig[L_tmpnam]; */	/* file for trace plots			*/
+char directory[BUFSIZ];	/* file for trace plots			*/
+
 
 char *help[] = {
 "					",
@@ -397,7 +399,8 @@ void edxplot(int mode)
 
 
 	/* Prepare temporary file to hold traces to be plotted */
-	tmpfp = efopen(tmpnam(tmpwig), "w+");
+	/* tmpfp = efopen(tmpnam(tmpwig), "w+"); */
+	tmpfp = efopen(temporary_filename(directory), "w+");
 
 
 	/* Parse request and subtract 1 for internal trace numbers */
@@ -429,16 +432,16 @@ void edxplot(int mode)
         switch( mode ){
 
            case 0:
-	      sprintf(cmd, "(suximage perc=99 <%s ;sleep 10;rm %s)&", tmpwig ,tmpwig);
+	      sprintf(cmd, "(suximage perc=99 <%s ;sleep 10;rm %s)&", directory ,directory);
               break;
            case 1:
-	      sprintf(cmd, "(suxwigb <%s perc=99;sleep 10;rm %s)  &", tmpwig ,tmpwig);
+	      sprintf(cmd, "(suxwigb <%s perc=99;sleep 10;rm %s)  &", directory ,directory);
               break;
            case 2:
-	      sprintf(cmd, "(suspecfx <%s | suximage legend=1 cmap=hue perc=99;sleep 10;rm %s )&", tmpwig ,tmpwig);
+	      sprintf(cmd, "(suspecfx <%s | suximage legend=1 cmap=hue perc=99;sleep 10;rm %s )&", directory ,directory);
               break;
            case 3:
-              sprintf(cmd ,"(<%s %s ;sleep 10;rm %s)&" ,tmpwig ,user,tmpwig );
+              sprintf(cmd ,"(<%s %s ;sleep 10;rm %s)&" ,directory ,user,directory );
               break;
         }
 

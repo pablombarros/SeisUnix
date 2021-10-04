@@ -20,6 +20,6 @@
 #
   sugethw <faketfnb.su key=sx,sy,gx,gy,offset,cdp,igi,igc
 #
-  subincsv <faketfn.su >faketfnb2.su rfile=k1.csv  
+  subincsv <faketfn.su >faketfnb_out.su rfile=k1.csv  
 #
-  sugethw <faketfnb2.su key=sx,sy,gx,gy,offset,cdp,igi,igc
+  sugethw <faketfnb_out.su key=sx,sy,gx,gy,offset,cdp,igi,igc

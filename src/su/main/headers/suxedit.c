@@ -52,7 +52,7 @@ FILE *tty;		/* /dev/tty is used to read user input	*/
 char userin[BUFSIZ];	/* buffer user requests			*/
 int nt;			/* number of sample points on traces	*/
 FILE *infp;		/* file descriptor of trace file	*/
-char tmpwig[L_tmpnam];	/* file for trace plots			*/
+char directory[BUFSIZ]; /* file for trace plots			*/
 
 /* tabulate help message as an array of strings */
 char *help[] = {
@@ -337,7 +337,8 @@ void editkey(void)
 
 	/* Strip the '!' and any leading spaces from buffer */
 /* suxedit.c:339: warning: subscript has type `char' */
-	for (keyword = userin + 1; isspace((int)(*keyword)); keyword++);
+	for (keyword = userin + 1; isspace((int)(*keyword)); keyword++)
+	;
 
 	/* Set keyval to start of val */
  	if (NULL == (keyval = strchr(keyword, '=') + 1)) {
@@ -389,7 +390,7 @@ void wigplot(void)
 
 
 	/* Prepare temporary file to hold traces to be plotted */
-	wigfp = efopen(tmpnam(tmpwig), "w+");
+	wigfp = efopen(temporary_filename(directory), "w+");
 
 
 
@@ -422,12 +423,12 @@ void wigplot(void)
 
 	/* Set up system call to suxwigb */
 	rewind(wigfp);
-	sprintf(cmd, "suxwigb <%s %s", tmpwig, disp_opts);
+	sprintf(cmd, "suxwigb <%s %s", directory, disp_opts);
 	system(cmd);
 
 	/* Clean up temp file */
 	efclose(wigfp);
-	eremove(tmpwig);
+	eremove(directory);
 
 	/* Prepare for next user request */
 	userwait();	/* prompt and pause till user presses return  */
@@ -445,19 +446,20 @@ void ftwigplot(void)
 
 
 	/* Prepare temporary file to hold fft trace to be plotted */
-	fftfp = efopen(tmpnam(tmpwig), "w+");
+	/* fftfp = efopen(tmpnam(tmpwig), "w+"); */
+	fftfp = efopen(temporary_filename(directory), "w+");
 	tr.ntr = 0;
 
 	fputtr(fftfp, &tr);
 
 	/* Set up system call for suspecfx */
 	rewind(fftfp);
-	sprintf(cmd, "suspecfx <%s | suxwigb", tmpwig);
+	sprintf(cmd, "suspecfx <%s | suxwigb", directory);
 	system(cmd);
 
 	/* Clean up temp file */
 	efclose(fftfp);
-	eremove(tmpwig);
+	eremove(directory);
 
 	/* Prepare for next user request */
 	userwait();	/* prompt and pause till user presses return  */

@@ -1,3 +1,14 @@
+/* Copyright (c) Colorado School of Mines, 2021.*/
+/* All rights reserved.                       */
+
+/* su.h - include file for SU programs
+ *
+ * $Author: john $
+ * $Source: /usr/local/cwp/src/su/lib/RCS/gridxy.c,v $
+ * $Revision: 1.1 $ ; $Date: 2021/10/03 23:10:04 $
+ */
+
+
 /*  #include "segy.h" */
 
 #include "su.h"
