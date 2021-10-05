@@ -4,12 +4,16 @@
 #
   echo "----------------------------------------------------------------------------"
   echo "---  in this example, subincsv reads 2d points definition from command line "
-  echo "---  parameters and updates cdp key.                                        "
+  echo "---  parameters and updates cdp key. It also creates a k2.csv file with     "
+  echo "---  the point parameters.                                                  "
   echo "----------------------------------------------------------------------------"
-
 #
-# Note that input traces were produced by demos/Geom3D/Sugeomcsv/Sugeomcsv_create_simple2d
+  subincsv <fake0xsr.su >fake0xsrp.su bintype=20 point_crz=100 point_cru=2 point_csz=100 point_csu=2 wfile=k2.csv  
 #
-  subincsv <fakeallxsrn.su >fakeallxsrnp.su bintype=20 point_crz=100 point_cru=2 point_csz=100 point_csu=2 wfile=k2.csv  
+  sugethw <fake0xsrp.su key=offset,grnlof,gaps,cdp
 #
-  sugethw <fakeallxsrnp.su key=offset,grnlof,gaps,cdp
+  echo "----------------------------------------------------------------------------"
+  echo "---  in this example, subincsv reads 2d points definition from command line "
+  echo "---  parameters and updates cdp key. It also creates a k2.csv file with     "
+  echo "---  the point parameters.                                                  "
+  echo "----------------------------------------------------------------------------"
