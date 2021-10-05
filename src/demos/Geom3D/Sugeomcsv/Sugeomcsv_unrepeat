@@ -8,15 +8,28 @@
   echo "                                                                           "
   echo "---------------------------------------------------------------------------"
 #
-# To get an idea of what the unrepeat option does, run:
+# To get an idea of what the unrepeat option does, create traces from the following SPS2 X-file:
+# (no need to put spikes= here unless you want to, it just makes the trace file bigger):
+#
+  sugeomcsv rfile=l2xallFLDR_RESET.txt setid=x match=sps2 names=sps2 create=all >fakeRESETz.su unrepeat=1
+  echo " -                                                                    "
+  echo " -------------------------------------------------------------------- "
+  echo " --- that was the first run of sugeomcsv (using the create option)--- "
+#
+# To get an idea of what the unrepeat option does, just use sugeomcsv without the unrepeat option  
+# and try to merge the same information to the created trace file: 
 #
   sugeomcsv rfile=l2xallFLDR_RESET.txt setid=x match=sps2 names=sps2 <fakeRESETz.su >fakeRESETz2.su
 #
-  echo " --- that was the first run of sugeomcsv --- "
+  echo " -                                                                    "
+  echo " -------------------------------------------------------------------- "
+  echo " --- that was the second run of sugeomcsv (not using unrepeat option)--- "
 #
   sugeomcsv rfile=l2xallFLDR_RESET.txt setid=x match=sps2 names=sps2 <fakeRESETz.su >fakeRESETz2.su unrepeat=1
 #
-  echo " --- that was the second run of sugeomcsv (using unrepeat=1 option)--- "
+  echo " -                                                                    "
+  echo " -------------------------------------------------------------------- "
+  echo " --- that was the third run of sugeomcsv (using unrepeat=1 option)--- "
 #
 # Note that the fldr values in l2xallFLDR_RESET.txt are 7,8,9,7,8,9,10, and 11 
 # which means the field people chose to re-start fldr numbering at 7. 

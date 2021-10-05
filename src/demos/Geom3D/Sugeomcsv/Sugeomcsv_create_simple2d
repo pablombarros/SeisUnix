@@ -59,7 +59,7 @@
 #
 # In order not to fool myself in further testing, I then zeroed many of the key values in the fake dataset:
 #
-  sugeomcsv rfile=l2z.csv setid=z match=igi names=c_su_id,igi,grnofr,grnlof,grnors,gaps,sstat,sdel,sut,swdep,sx,sy,selev,gstat,gdel,gut,gwdep,gx,gy,gelev,offset,cdp <fakexsrfn.su >fakexsrfnsimple2d.su
+  sugeomcsv rfile=l2z.csv setid=z match=igi names=c_su_id,igi,grnofr,grnlof,grnors,gaps,sstat,sdel,sut,swdep,sx,sy,selev,gstat,gdel,gut,gwdep,gx,gy,gelev,offset,cdp <fakexsrfn.su >fakesimple2d.su
 # rm -f fakexsrfn.su 
 #
 # Note that I used match=igi because I know that igi still contains 0 in headers

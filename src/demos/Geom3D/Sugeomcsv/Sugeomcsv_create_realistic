@@ -15,10 +15,9 @@
   echo "                                                                            "
   echo "----------------------------------------------------------------------------"
 #
-# This is how I created the datasets I used in my tests. 
-# Except I changed the create=100 to create=all in next line.
+# Create traces from the values in SPS2 X-file (plus spikes)
 #
-  sugeomcsv rfile=l2xall.txt setid=x match=sps2 names=sps2 >fakex.su create=100 spikes=4,0.01,200,1000,208,1200,500,-2000,800,1600,1000,0
+  sugeomcsv rfile=l2xall.txt setid=x match=sps2 names=sps2 >fakex.su create=all spikes=4,0.01,200,1000,208,1200,500,-2000,800,1600,1000,0
 #
   sugeomcsv rfile=l2sall.txt setid=s match=sps2 names=sps2 <fakex.su >fakexs.su
 # rm -f fakex.su 
@@ -58,10 +57,11 @@
 #
 #--------
 #
-# In order not to fool myself in further testing, I then zeroed many of the key values in the fake dataset:
+# In order not to fool yourself in further testing, zero-out most of the header key values in the fake dataset:
+# (but the seismic amplitudes correspond to the geometry that is getting zeroed-out)
 #
-# sugeomcsv rfile=l2z.csv setid=z match=igi names=c_su_id,igi,grnofr,grnlof,grnors,gaps,sstat,sdel,sut,swdep,sx,sy,selev,gstat,gdel,gut,gwdep,gx,gy,gelev,offset,cdp <fakexsrfn.su >fakexsrfnz.su
-# rm -f fakexsrfn.su 
+  sugeomcsv rfile=l2z.csv setid=z match=igi names=c_su_id,igi,grnofr,grnlof,grnors,gaps,sstat,sdel,sut,swdep,sx,sy,selev,gstat,gdel,gut,gwdep,gx,gy,gelev,offset,cdp <fakexsrfn.su >fakeall.su
+# rm -f fakeall.su 
 #
 # Note that I used match=igi because I know that igi still contains 0 in headers
 # (you do not actually have to zero anything, it depends what your intentions are).
