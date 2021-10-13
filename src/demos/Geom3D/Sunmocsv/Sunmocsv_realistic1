@@ -14,9 +14,6 @@
 # inverse option in sunmo, as follows: 
 # sunmo <fakexsrf.su >fakexsrfn.su invert=1 tnmo=0,190,450,800 vnmo=1800,3500,4000,5000
 #
-# This can be seen in ../Sugeomcsv/Sugeomcsv_create_realistic which was used to create
-# the traces for input here.
-#
 # Now, put 3d grid cell numbers to cdp key (as seen in ../Subincsv/Subincsv_example3).
 #
   subincsv <fakexsrfn.su >fakexsrfng.su rfile=kEFG.csv 

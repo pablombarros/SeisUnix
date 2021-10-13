@@ -21,8 +21,10 @@
   echo "                                                                            "
   echo "----------------------------------------------------------------------------"
 #
-# Note that the input traces were produced by using the create option
-# of sugeomcsv as done in demos/Geom3D/Sugeomcsv/Sugeomcsv_create_realistic
+# Note that the input traces are NOT inverse-NMOed because we would just have 
+# to run forward-NMO here.                                                       
+#
+# sunmo <fakexsrf.su >fakexsrfn.su tnmo=0,190,450,800 vnmo=1800,3500,4000,5000
 #
 subincsv <fakexsrf.su >faketfb.su rfile=kEFG.csv 
 #
