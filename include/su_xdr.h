@@ -12,8 +12,9 @@
 #include <rpc/xdr.h>
 #endif
 */
+
 #ifdef SUXDR
-#ifndef T_RPC_H
+#ifndef SUTRPC
 #include <rpc/types.h>
 #include <rpc/xdr.h>
 #else

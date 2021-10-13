@@ -32,25 +32,25 @@ sunmo >susyn.fo025 inver=1
 # take difference between model data and offset continued data
 suop2 susyn.co025.geom susyn.fo025 op=diff >susyn.diff
 
-suxmovie <susyn.co025 label1="Time [s]" label2="Trace #" \
+suximage <susyn.co025 label1="Time [s]" label2="Trace #" \
 	d1num=.2 d2num=10  n1=501 n2=100 d1=.004 \
 	d2=1 f1=0 f2=1 clip=30.  title="Common-offset 25m" \
 	-geometry ${WIDTH}x${HEIGHT}+${WIDTHOFF1}+${HEIGHTOFF1} \
 	perc=99.5 &
 
-suxmovie <susyn.co175  \
+suximage <susyn.co175  \
         label1="Time [s]" label2="Trace #" d1num=.2 d2num=10 \
 	n1=501 n2=100 d1=.004 d2=1 f1=0 f2=1 clip=30. \
 	-geometry ${WIDTH}x${HEIGHT}+${WIDTHOFF2}+${HEIGHTOFF1} \
 	title="Common-offset 175m"  perc=99.5 &
 
-suxmovie <susyn.fo025 \
+suximage <susyn.fo025 \
 	label1="Time [s]" label2="Trace #" d1num=.2 d2num=10 \
 	n1=501 n2=100 d1=.004 d2=1 f1=0 f2=1 clip=30. \
 	-geometry ${WIDTH}x${HEIGHT}+${WIDTHOFF1}+${HEIGHTOFF2} \
 	title="Extrapolated-offset 25m"  perc=99.5 &
 
-suxmovie <susyn.diff \
+suximage <susyn.diff \
         label1="Time [s]" label2="Trace #"  d1num=.2 d2num=10 \
 	n1=501 n2=100 d1=.004 d2=1 f1=0 f2=1 clip=30. \
 	-geometry ${WIDTH}x${HEIGHT}+${WIDTHOFF2}+${HEIGHTOFF2} \
