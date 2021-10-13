@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.                       */
 
-/* SUMUTECSV: $Revision: 1.01 $ ; $Date: 2021/09/28 00:00:01 $		*/
+/* SUMUTECSV: $Revision: 1.2 $ ; $Date: 2021/10/13 03:57:26 $		*/
  
 #include "su.h"
 #include "segy.h" 
@@ -574,7 +574,7 @@ main(int argc, char **argv)
                 /* get value of key and convert to float */
                 gethval(&tr, index, &val);
                 fval = vtof(type,val);
-                if (iabsoff==1) fval = abs(fval);
+                if (iabsoff==1) fval = fabsf(fval);
 
                 if(ncdp<2) { /* if just one mute function, we MUST call linterpmute directly. */ 
                         linterpmute(fval,RecInfo[0].offs,RecInfo[0].tims,RecInfo[0].nto,mgtextr,&t);
