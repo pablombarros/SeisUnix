@@ -34,11 +34,11 @@ The demo shows an application of the code on one
 overcorrected event at two CDP locations. To run the demo
 execute the following shell scripts.
 
-Susynlvfti  -- to generate test data
-Rayt2dan    -- to generate traveltime tables for migration
-Sukdmig2d   -- to migrate the data.
+Susynlvfti.sh  -- to generate test data
+Rayt2dan.sh    -- to generate traveltime tables for migration
+Sukdmig2d.sh   -- to migrate the data.
 
-Surelanan   -- to begin the interactive demo for residual moveout
+Surelanan.sh   -- to begin the interactive demo for residual moveout
                picking
 
 

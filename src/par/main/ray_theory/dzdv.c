@@ -18,7 +18,6 @@ char *sdoc[]={
 " infile=	input of common image gathers with primary amplitude	",
 " afile=	input of common image gathers with extra amplitude	",
 " dfile=	output of imaged depths in common image gathers 	",
-" outfile=	output of dz/dv at the imaged points			",
 " nx= 	        number of migrated traces 				",
 " nz=	        number of points in migrated traces 			",
 " dx=		horizontal spacing of migrated trace 			",
@@ -33,6 +32,7 @@ char *sdoc[]={
 "	z	z-value of a common image point	at zero offset		",
 "	r	r-parameter in a common image gather			",
 " 									",
+" outfile	output of dz/dv at the imaged points			",
 " Optional Parameters:							",
 " nxw, nzw=0		window widths along x- and z-directions in 	",
 "			which points are contributed in solving dz/dv. 	",
@@ -57,10 +57,11 @@ main (int argc, char **argv)
 {
 	int ix,nx,iz,nz,ncip,icdp,noff,ioff,jx,nxw,nzw,ixl,ixh,izl,izh;
 	float fx,dx,fz,dz,fnum,fden,offs,doff,off0,z2,temp1;
-	float ***g0, ***g;
-	float *rat, *xcip, *zcip, *rcip, temp[3], *x, *z0, *z, *r;
+	float ***g0=NULL, ***g=NULL;
+	float *rat=NULL, *xcip=NULL, *zcip=NULL, *rcip=NULL;
+	float temp[3], *x=NULL, *z0=NULL, *z=NULL, *r=NULL;
 	char *afile="", *dfile="";
-	FILE *infp=stdin, *outfp=stdout, *afp, *dfp;
+	FILE *infp=stdin, *outfp=stdout, *afp=NULL, *dfp=NULL;
 
 	/* hook up getpar to handle the parameters */
 	initargs(argc,argv);

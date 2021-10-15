@@ -2,7 +2,7 @@
 
 # Plot Synthetic data 
 
-suximage < kd.data  perc=99 d2=3 \
+suximage < kd.data.su  perc=99 d2=3 \
 	label1="Depth (m)" label2="Midpoint (m)"  \
 	xbox=680 \
 	title="Test Migration" &

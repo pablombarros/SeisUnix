@@ -5,18 +5,18 @@ perturbation.  The package consists of five directories.
 
 1. This step is to generate synthetic data for the demo. For field data
    the user would skip this step and proceed with step 2.
-Synvxz 	   to generate common offset synthetic data gathers;
+Synvxz.sh  to generate common offset synthetic data gathers;
 Xmod       view the synthetic data (X-windows output)
 PSmod      view the synthetic data (PostScript output)
 
 2. Use a velocity model guess to migrate the input seismic data.
-Unif2      to compute the v(x,z) velocity profile, and
+Unif2.sh   to compute the v(x,z) velocity profile, and
            velocity derivative dVdv(x,z)
 
 3.
-Rayt2d 	   to generate tables of traveltime, traveltime derivatives
+Rayt2d.sh  to generate tables of traveltime, traveltime derivatives
 	   and cosin of emergence angle
-Sukdmig2d  to migrate the synthetic seismograms to produce two outputs
+Sukdmig2d.sh  to migrate the synthetic seismograms to produce two outputs
            of prestack migrated data. One is with the primary amplitude
            and the other one with an extra amplitude that is a product
            of the primary amplitude and the depth derivative.
@@ -26,7 +26,7 @@ Xmig	   Show the results of migrations. Leave this plot on your
 4. Perform a velocity estimation based on residual moveout by Zhenyue Liu's
    perturbation method.
 
-Surelan	  compute residual-moveout semblance for cdp gathers
+Surelan.sh  compute residual-moveout semblance for cdp gathers
 
 The value to be picked is represented by the small high located near the
 coordinates (390, -0.1)  in the (depth,r-parameter) space represented
@@ -36,25 +36,30 @@ on the center of the peak  and type:  sq   to save the value.
 The shell script will prompt you to make additional, similar picks,
 for each common shot inversion panel.
 
-Run the next two shell scripts to generate the necessary velocity
-perturbation value called: dlambda
+5.  Run the next two shell scripts to generate the necessary velocity
+    perturbation value called: dlambda
 
-Dzdv	  determine depth derivative with respect to velocity 
-Velpert   estimate velocity parameter perturbation 
+Dzdv.sh  determine depth derivative with respect to velocity 
+Velpert.sh   estimate velocity parameter perturbation 
 
-For the demo, this value of dlambda should be approximately 380.
+6.  For the demo, this value of dlambda should be approximately 380.
 
-Add the value of dlambda to the velocity used in Unif2
-repeat steps 2, 3, and 4. This has been done for you via Unif2.1
+Add the value of dlambda to the velocity used in Unif2.sh
+repeat steps 2, 3, and 4. See Unif2_modified.sh for an example.
 
-To proceed with the next step of the demo, run:
+7.  To proceed with the next step of the demo, run:
 
-Unif2.1		
-Rayt2d
-Sukdmig2d
-Xmig
+Unif2_modified.sh    - the version of Unif2.sh with velocity modified.	
 
-As before and then run
+Rayt2d.sh     - repeat traveltime file constructions using the updated 
+                velocity
+
+Sukdmig2d.sh  - run the Kirchhoff migration
+
+Xmig    - View the migrated data
+
+You can repeat steps 5 through 7 to further update the velocity function.
+
 
 Reference: 
 Liu, Z. 1995, "Migration Velocity Analysis", Ph.D. Thesis, Colorado

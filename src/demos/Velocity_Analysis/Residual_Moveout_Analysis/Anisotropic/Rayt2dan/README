@@ -15,7 +15,7 @@ on the surface.
 
 Type:
 
-Rayt2dan  -- demo for rayt2dan
+Rayt2dan.sh  -- demo for rayt2dan
 Clean.sh  -- clean up after running the demo
 
 The output on the screen allows the user to

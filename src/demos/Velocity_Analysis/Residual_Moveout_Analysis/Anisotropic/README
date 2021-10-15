@@ -21,7 +21,7 @@ on the surface.
 
 Type:
 
-Rayt2dan  -- demo for rayt2dan
+Rayt2dan.sh  -- demo for rayt2dan
 Clean.sh  -- clean up after running the demo
 
 The output on the screen allows the user to
@@ -57,14 +57,14 @@ factorized v(x,z) medium with linear gradients in
 vertical velocity. To run the demo, type:
 
 Synlv          to create the test dataset
-Rayt2dan       to perform the ray tracing for the migration
-Sukdmig2d      to perform the migration
-Surelanan      to begin the residual moveout analysis
+Rayt2dan.sh       to perform the ray tracing for the migration
+Sukdmig2d.sh      to perform the migration
+Surelanan.sh      to begin the residual moveout analysis
 
 to determine the residual moveout at different cdp 
 locations. Then use 
 
-Velpertan      to compute parameter updates. 
+Velpertan.sh      to compute parameter updates. 
 
 
 To minimize the residual moveout
@@ -108,7 +108,7 @@ of the Rayt2d script reproduced here:
 
 
 The user would then repeat the procedure beginning
-by running Rayt2dan, Sukdmig2d, Surelanan, and Velpertan, until
+by running Rayt2dan.sh, Sukdmig2d.sh, Surelanan.sh, and Velpertan.sh, until
 the user is satisfied that the migrated image gathers are flat.
 
 For this particular demo, three iterations of this procedure should
@@ -152,11 +152,11 @@ The demo shows an application of the code on one
 overcorrected event at two CDP locations. To run the demo
 execute the following shell scripts.
 
-Susynlvfti  -- to generate test data
-Rayt2dan    -- to generate traveltime tables for migration
-Sukdmig2d   -- to migrate the data.
+Susynlvfti.sh  -- to generate test data
+Rayt2dan.sh    -- to generate traveltime tables for migration
+Sukdmig2d.sh   -- to migrate the data.
 
-Surelanan   -- to begin the interactive demo for residual moveout
+Surelanan.sh   -- to begin the interactive demo for residual moveout
                picking
 
 

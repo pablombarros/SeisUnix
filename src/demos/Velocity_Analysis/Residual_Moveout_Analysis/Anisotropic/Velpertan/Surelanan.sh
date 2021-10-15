@@ -85,7 +85,7 @@ do
 			mpicks=mpicks.$cdp.$R blank=.7 key=d2 labelsize=30 titlesize=30
 		pause
 
-		echo -n "Picks OK? (y/n) " >/dev/tty
+		/bin/echo -n "Picks OK? (y/n) " >/dev/tty
 		read response
 		case $response in
 		n*) ok=false ;;

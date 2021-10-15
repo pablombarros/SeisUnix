@@ -7,7 +7,7 @@
 #set -x
 
 ## Set parameters
-input=kd.data
+input=kd.data.su
 rpicks=res.p1
 cdpmin=800
 cdpmax=2000
@@ -32,16 +32,18 @@ do
 	do
 		echo "Starting Residual moveout analysis for cip $cdp"
 		suwind <$input key=cdp min=$cdp max=$cdp count=$fold |
+		suxwigb title="cdp=$cdp" xbox=10 label1="time (s) " \
+			label2="offset" key=offset &
+		suwind <$input key=cdp min=$cdp max=$cdp count=$fold |
 		surelan nr=$nr dr=$dr fr=$fr |
-		suximage bclip=0.95 wclip=0.0 f2=$fr d2=$dr \
-			label1="Depth (m)" label2="r-parameter " \
+		suximage bclip=0.95 wclip=0.0 f2=$fr d2=$dr cmap=hsv2 \
+			label1="Depth (m)" label2="r-parameter " xbox=600 \
 			title="r-parameter Scan for CIP $cdp" \
-			grid1=solid grid2=solid cmap=rainbow \
 			mpicks=mpicks.$cdp blank=.7
 
 		pause
 
-		echo -n "Picks OK? (y/n) " >/dev/tty
+		/bin/echo -n "Picks OK? (y/n) " >/dev/tty
 		read response
 		case $response in
 		n*) ok=false ;;
@@ -64,7 +66,7 @@ echo "Editing pick files ..."
 cdp=$cdpmin
 while [ $cdp -le $cdpmax ]
 do
-	echo -n "cip=$cdp," >temp
+	/bin/echo -n "cip=$cdp," >temp
 	cat temp mpicks.$cdp>>$rpicks
 	cdp=`bc -l <<END
 		$cdp + $dcdp

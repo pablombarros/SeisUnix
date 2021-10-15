@@ -25,14 +25,14 @@ factorized v(x,z) medium with linear gradients in
 vertical velocity. To run the demo, type:
 
 Synlv          to create the test dataset
-Rayt2dan       to perform the ray tracing for the migration
-Sukdmig2d      to perform the migration
-Surelanan      to begin the residual moveout analysis
+Rayt2dan.sh    to perform the ray tracing for the migration
+Sukdmig2d.sh   to perform the migration
+Surelanan.sh   to begin the residual moveout analysis
 
 to determine the residual moveout at different cdp 
 locations. Then use 
 
-Velpertan      to compute parameter updates. 
+Velpertan.sh      to compute parameter updates. 
 
 
 To minimize the residual moveout
@@ -43,11 +43,11 @@ d_VP0=0.000000e+00 d_kz=2.578647e-01 d_kx=7.929953e-02 d_epsilon=3.494340e-01 d_
 
 The procedure would follow by adding each of these values to
 the corresponding value in the input to rayt2dan in the shell
-script Rayt2dan. 
+script Rayt2dan.sh. 
 
 The values of d_VP0, d_kz, d_kx, d_epsilon, d_delta are added
 to the parameters that are input into unif2 in the portion
-of the Rayt2d script reproduced here:
+of the Rayt2dan.sh script reproduced here:
 
 ...
  # Create parameter files for raytracing.
@@ -76,7 +76,7 @@ of the Rayt2d script reproduced here:
 
 
 The user would then repeat the procedure beginning
-by running Rayt2dan, Sukdmig2d, Surelanan, and Velpertan, until
+by running Rayt2dan.sh, Sukdmig2d.sh, Surelanan.sh, and Velpertan.sh, until
 the user is satisfied that the migrated image gathers are flat.
 
 For this particular demo, three iterations of this procedure should
