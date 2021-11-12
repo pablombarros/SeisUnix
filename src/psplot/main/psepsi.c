@@ -36,7 +36,7 @@ extern int lpreview;
 int main (int argc, char **argv)
 {
 	int llx,lly,urx,ury,i,bboxfound=0,pbwritten=0;
-	char line[MAXLINE],line2[MAXLINE],*pbname;
+	char line[MAXLINE],line2[MAXLINE],pbname[BUFSIZ],*pbnamefp=NULL;
 	FILE *gsfp,*infp,*pbfp;
 
 	/* initialize getpar (unnecessary now, since no parameters to get) */
@@ -72,7 +72,8 @@ int main (int argc, char **argv)
 	if (!bboxfound) err("input EPS(?) does not have a BoundingBox!");
 
 	/* create temporary file to hold preview bitmap */
-	if ((pbfp=fopen(pbname=tmpnam(NULL),"w+"))==NULL)
+	pbnamefp = temporary_filename(pbname);	
+	if ((pbfp=fopen(pbnamefp,"w+"))==NULL)
 		err("cannot create temporary file for preview bitmap!");
 	setbuf(pbfp,NULL);
 

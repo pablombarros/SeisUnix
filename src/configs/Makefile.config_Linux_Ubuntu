@@ -32,7 +32,16 @@ include $(CWPROOT)/src/Rules/opengl.rules
 #-----------------------------------------------------------------------
 
 LINEHDRFLAG = 
+
+# if the include files  are under  /usr/include/rpc use this for XDR
+# whether or not you had to install libtrpc.a
 XDRFLAG =  -DSUXDR
+
+# else if you had to install libtirpc and the rpc include files are under
+# /usr/include/tirpc/rpc use this one 
+#XDRFLAG =  -DSUXDR -DSUTIRPC
+
+# Most systems are LITTLE_ENDIAN these days
 ENDIANFLAG = -DCWP_LITTLE_ENDIAN
 LARGE_FILE_FLAG = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 

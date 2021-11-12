@@ -398,6 +398,7 @@ int main(int argc, char **argv)
 				icount++;
 				tro.tracl = icount;
 				tro.tracr = ix+1;
+/*
 				if( choose==0) {
 					tro.f2=1000.*( pmin+ ix* dp)*
 						gofx( igopt, offref,
@@ -405,6 +406,18 @@ int main(int argc, char **argv)
 					tro.d2=1000.*dp*gofx( igopt, offref,
 							     intercept_off,
 							     depthref);
+				}
+*/
+				if( choose==0) {
+					tro.f2=1000.*( pmin)*
+						gofx( igopt, offref,
+						     intercept_off, depthref);
+					tro.d2=1000.*dp*gofx( igopt, offref,
+							     intercept_off,
+							     depthref);
+				} else if (choose==4) {
+					tro.f2=0.0;
+					tro.d2=0.0;
 				}
 				puttr(&tro);
 			}

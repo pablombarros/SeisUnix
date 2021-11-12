@@ -78,7 +78,7 @@ char *sdoc[] = {
 " axescolor=black        color of axes					",
 " gridcolor=black        color of grid					",
 " axeswidth=1            width (in points) of axes			",
-" ticwidth=axeswidth     width (in points) of tic marks		",
+" ticwidth=axeswidth     width (in points) of tic marks			",
 " gridwidth=axeswidth    width (in points) of grid lines		",
 " style=normal           normal (axis 1 horizontal, axis 2 vertical) or	",
 "                        seismic (axis 1 vertical, axis 2 horizontal)	",
@@ -401,6 +401,7 @@ int main (int argc, char **argv)
 	if(!getparfloat("axeswidth",&axeswidth)) axeswidth=1;
 	if (!getparfloat("ticwidth",&ticwidth)) ticwidth=axeswidth;
 	if(!getparfloat("gridwidth",&gridwidth)) gridwidth =axeswidth;;
+
 
         checkpars();
 

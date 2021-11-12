@@ -142,6 +142,7 @@ int main (int argc, char **argv)
 		*scolor="none",*ccolor[NCMAX];
 	FILE *infp=stdin;
 
+
 	/* initialize getpar */
 	initargs(argc,argv);
 	requestdoc(1);

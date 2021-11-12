@@ -223,6 +223,7 @@ main (int argc, char **argv)
 	cwp_Bool is_curve = cwp_false;
 	float bckgr; /* E.T. */
 
+
 	/* initialize getpar */
 	initargs(argc,argv);
 	requestdoc(1);
@@ -619,6 +620,7 @@ main (int argc, char **argv)
 	  }
 	  lf=lbeg;ld=(lend-lbeg)/(ln-1);
 	  if (!(getparfloat("ldnum",&ldnum)))	ldnum=0.0;
+
 
          checkpars();
 

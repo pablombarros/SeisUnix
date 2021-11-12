@@ -357,6 +357,7 @@ int main (int argc, char **argv)
 	p2beg = (x2end>=x2beg)?-xcur:xcur;
 	p2end = (x2end>=x2beg)?xcur:-xcur;
 
+
         checkpars();
 
 	/* adjust x1beg and x1end to fall on sampled values */

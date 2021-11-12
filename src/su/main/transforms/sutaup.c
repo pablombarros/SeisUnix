@@ -199,8 +199,14 @@ main(int argc, char **argv)
                         tr.tracr = 1+itr;
                         tr.dt=(int)(dt*1000000.0);
                         tr.ns=nt;
-                        tr.d2 = dp;
-                        tr.f2 = pmin;
+			/* set d2 and f2 header fields */
+			if (option==1 || option==2) { /* forward transform */
+                        	tr.d2 = dp;
+                        	tr.f2 = pmin;
+			} else { /* inverse transform */
+                        	tr.d2 = 0.0;
+                        	tr.f2 = 0.0;
+			}
             
 			for (it=0; it<nt; it++) 
 				tr.data[it]=out_traces[itr][it];
