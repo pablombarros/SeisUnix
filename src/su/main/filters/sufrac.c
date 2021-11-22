@@ -70,7 +70,7 @@ main(int argc, char **argv)
 	float arg;		/* argument of power 			*/
 	float phasefac;		/* phase factor	 			*/
 	float phase;		/* phase shift = phasefac*PI		*/
-	complex exparg;		/* cwp_cexp(I arg)				*/
+	complex exparg;		/* cwp_cexp(I arg)			*/
 	register float *rt;	/* real trace				*/
 	register complex *ct;	/* complex transformed trace		*/
 	complex *filt;		/* complex power	 		*/

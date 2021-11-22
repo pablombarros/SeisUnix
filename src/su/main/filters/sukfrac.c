@@ -123,7 +123,7 @@ int main(int argc, char **argv)
 	float sign;		/* sign of transform			*/
 	float phasefac;		/* phase factor				*/
 	float phase;		/* phase=phasefac*PI			*/
-	complex exparg;		/* cwp_cexp(I arg)				*/
+	complex exparg;		/* cwp_cexp(I arg)			*/
 
 	cwp_Bool is_angle=cwp_false;	/* is angle set 		*/
 	float angle=0.0;	/* angle for directional derivative	*/

@@ -12,6 +12,7 @@ PROGS =			\
 	$B/sulfaf	\
 	$B/subfilt	\
 	$B/sudipfilt	\
+	$B/sudeghost	\
 	$B/succfilt	\
 	$B/sufilter	\
 	$B/sufrac	\

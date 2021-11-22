@@ -33,6 +33,7 @@ char *sdoc[] = {
 " interoff=0.     intercept offset to which tau-p times are associated	",
 " pmin=-200       minimum moveout in ms on reference offset		",
 " pmax=400        maximum moveout in ms on reference offset		",
+" anderson=1	  p values in ms, =0 pvalues in horizontal slowness	",
 " dp=16           moveout increment in ms on reference offset		",
 " pmula=80        moveout in ms on reference offset where multiples begin",
 "                     at maximum time					",
@@ -187,16 +188,19 @@ int main(int argc, char **argv)
 	int ltaper;
 	int cdpindex;
 	int offindex;
+	int anderson;
 	int iend;
 	int ieod;
 	float offref;
 	float depthref;
 	float intercept_off;
 	float pmin;
+	float pminorig;
 	float pmax;
 	float pmula;
 	float pmulb;
 	float dp;
+	float dporig;
 	float dt;
 	float freq1;
 	float freq2;
@@ -248,6 +252,8 @@ int main(int argc, char **argv)
 	if (!getparfloat("prewhite",&prewhite)) prewhite=0.1;
 	if (!getparint("ltaper",&ltaper)) ltaper=7;
 
+	if (!getparint("anderson",&anderson)) anderson=1;
+
 
         checkpars();
 
@@ -260,6 +266,9 @@ int main(int argc, char **argv)
 	dp/=fac;
 	pmula/=fac;
 	pmulb/=fac;
+
+	pminorig=pmin;
+	dporig=dp;
 	ipa=( pmula -  pmin)/ dp;
 	ipb=( pmulb -  pmin)/ dp;
 	np=1+( pmax -  pmin)/ dp;
@@ -398,23 +407,20 @@ int main(int argc, char **argv)
 				icount++;
 				tro.tracl = icount;
 				tro.tracr = ix+1;
-/*
+
 				if( choose==0) {
-					tro.f2=1000.*( pmin+ ix* dp)*
-						gofx( igopt, offref,
+					if (anderson==1) {
+						tro.f2=1000.*( pmin+ ix* dp)*
+							gofx( igopt, offref,
 						     intercept_off, depthref);
-					tro.d2=1000.*dp*gofx( igopt, offref,
+						tro.d2=1000.*dp*gofx( igopt, offref,
 							     intercept_off,
 							     depthref);
-				}
-*/
-				if( choose==0) {
-					tro.f2=1000.*( pmin)*
-						gofx( igopt, offref,
-						     intercept_off, depthref);
-					tro.d2=1000.*dp*gofx( igopt, offref,
-							     intercept_off,
-							     depthref);
+					} else if (anderson==0) {
+						tro.f2 = pminorig;
+						tro.d2 = dporig;
+					}
+				
 				} else if (choose==4) {
 					tro.f2=0.0;
 					tro.d2=0.0;
