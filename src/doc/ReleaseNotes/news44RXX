@@ -62,6 +62,8 @@ par/main/ray_theory/rayt2dtopo - a version of RAYT2D with topography
                                   Thanks to Trino Salinas
 
 New:
+su/main/filters/sudeghost.c - Deghosting based on Masoomzahdeh, et al. (2014)
+
 		Tools for 3D geometry by Andre Latour:
 su/main/headers/sutoolcsv.c - Tools for Comma Separated Values and 
                                 fixed text files. 

@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2021.*/
 /* All rights reserved.                       */
 
-/* SUDEGHOST: $Revision: 1.1 $ ; $Date: 2021/11/22 20:57:02 $        */
+/* SUDEGHOST: $Revision: 1.23 $ ; $Date: 2011/11/12 00:09:00 $        */
 
 
 #include "su.h"
@@ -20,12 +20,11 @@ char *sdoc[] = {
 "									",
 " Optional parameters:							",
 "	v=1500.0		speed of sound in the top layer		",
-"	r=0.5			surface reflectivity 0 < r < .5		",
+"	r=0.5			surface reflectivity 0 < r < .7		",
 "       dt= (from header)       time sampling interval (sec)        	",
 "	verbose=0		=1 for advisory messages, =2 debugging	",
 "	deghost=1		deghosting filter; =0 ghosting filter	",
-"				for modeling				",
-"									",
+" 				for modeling				",
 " Notes:								",
 " The input data are assumed to be shot gathers with no missing traces.	",
 "									",
@@ -188,7 +187,7 @@ main(int argc, char **argv)
                 /* Load traces back in, recall filter had nfft factor */
                 for (i = 0; i < nt; ++i)  tr.data[i] = rt[i];
 
-		if (verbose) warn(" tr.f2 = %f  tr.d2 = %f",tr.f2,tr.d2);
+		if (verbose) warn("nyq = %f tr.f2 = %f  tr.d2 = %f",nyq,tr.f2,tr.d2);
                 puttr(&tr);
         } while (gettr(&tr));
 
@@ -208,8 +207,8 @@ r		absolute value of surface reflectivity
 v		water velocity or velocity of top layer
 h		depth of source or receiver
 p               horizontal slowness
-dt		time sampling interval
-nfft		number of points in the fft
+nfft		number size of the fft
+dt		time sampling interval in seconds
 
 Output:
 filter		array[nfft] filter values
@@ -252,50 +251,49 @@ Author:  CWP: John Stockwell   2021
 #define PIBY2   1.57079632679490
 #define TWOPI           2.0 * PI
 {
-        int icount;		/* loop counting variables              */
-        int nf;                 /* number of frequencies (incl Nyq)     */
-        float onfft;            /* reciprocal of nfft                   */
-
-	float omega=0.0;	/* angular frequency 			*/
-	float domega;		/* increment in angular frequency 	*/
+        int ifreq;		/* loop counting variables              */
 	float real;		/* real part				*/
 	float imag;		/* imaginary part			*/
 	float denom;		/* denominator				*/
 	float twowaytt;		/* two way traveltime			*/
-	
+	float onfft;		/* 1.0/nfft 				*/
+	float omega;		/* angular frequency 			*/
+	float nf;		/* number of frequencies 		*/
+	float df;		/* increment in frequency 		*/
 
-	/* compute number of frequencies and increment of angular frequency */
+	
+	/* set sizes and increments */
         nf = nfft/2 + 1;
         onfft = 1.0 / nfft;
-	domega = TWOPI * onfft / dt;
-
+	df = onfft / dt;
+	
 	/* Build filter */
-	for (icount = 0; icount < nf ; ++icount) {
+	for (ifreq = 0; ifreq < nf ; ++ifreq) {
 		float vvpp=v*v*p*p;
+		float f = ifreq * df;
 
 		/* the  pv > 1.0 is forbidden */
 		if (vvpp>1) vvpp=1.0;
 
 		/* compute quantities that constitute the filter */
-		omega = icount*domega;
-
+		omega = TWOPI * f;
 		twowaytt = 2*h*sqrt(1 - vvpp)/v;
 		real = 1 - r*cos(omega*twowaytt);
 		imag = r*sin(omega*twowaytt);
 		denom = real*real + imag*imag;
 
 		if (verbose==2) /* debugging */
-			warn("p = %f vvpp = %f real = %f imag = %f denom = %f twowaytt = %f",p,vvpp,real,imag,denom,twowaytt);
+			warn("f = %f df = %f omega = %f twowaytt = %f dt = %f ",f,df,omega,twowaytt,dt);
 
 		if (deghost==1){ /* deghosting filter */
 		
-			filter[icount].r = onfft * real/denom; 
-			filter[icount].i = onfft * imag/denom;
+			filter[ifreq].r = onfft * real/denom; 
+			filter[ifreq].i = onfft * imag/denom;
 
 		} else if (deghost==0) { /* ghosting filter for modeling */
 	
-			filter[icount].r = onfft * real; 
-			filter[icount].i = -onfft * imag;
+			filter[ifreq].r = onfft * real; 
+			filter[ifreq].i = -onfft * imag;
 		}
 	}
 
