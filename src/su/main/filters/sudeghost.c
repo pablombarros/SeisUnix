@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2021.*/
 /* All rights reserved.                       */
 
-/* SUDEGHOST: $Revision: 1.23 $ ; $Date: 2011/11/12 00:09:00 $        */
+/* SUDEGHOST: $Revision: 1.4 $ ; $Date: 2021/11/26 21:43:07 $        */
 
 
 #include "su.h"
@@ -46,11 +46,17 @@ char *sdoc[] = {
 " min offset=-636 max offset -3237 					",
 "									",
 " suradon < input choose=0 igopt=3 interoff=-262 offref=-3237 		",
-"     pmin=-400 pmax=2000 dp=20 cdpkey=ep anderson=0  |			",
+"     pmin=-400 pmax=2000 dp=10 f1=90 f2=125 cdpkey=ep anderson=0  |	",
 "     sudeghost h=10 r=.5 deghost=1 |					",
 " suradon choose=4 igopt=3 interoff=-262 offref=-3237			", 
-"    pmin=-400 pmax=2000 dp=20 cdpkey=ep anderson=0  > output		",
+"   pmin=-400 pmax=2000 dp=10  f1=90 f2=125 cdpkey=ep anderson=0  > output",
 " 									",
+" Caveats:								",
+" The value of r is the reflectivity of the sea surface, which may be   ",
+" both dependent on frequency and on the angle of incidence. The program",
+" may be unstable if r > .6 is chosen.					",
+" 									",
+" Smaller values of dp may be needed to retain high frequencies		",
 NULL};
 
 /* Credits:
