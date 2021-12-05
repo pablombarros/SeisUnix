@@ -5,7 +5,7 @@
 
 # these items identify the date/release of the codes
 DATE="29 Oct 2019"
-RELEASE="44R18"
+RELEASE="44R23"
 
 # home address
 ADDRESS="john.19071969@gmail.com"

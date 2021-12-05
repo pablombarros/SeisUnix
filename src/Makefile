@@ -62,12 +62,12 @@ xminstall: xmcwp_
 mglinstall: mglstuff
 
 # automatic mail message (ask once)
-LICENSE_44R18_ACCEPTED	:
+LICENSE_44R23_ACCEPTED	:
 	@./license.sh
 	@touch $@
 
 # automatic mail message (ask once)
-MAILHOME_44R18	:
+MAILHOME_44R23	:
 	@./mailhome.sh
 	@touch $@
 

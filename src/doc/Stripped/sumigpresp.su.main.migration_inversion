@@ -6,7 +6,7 @@
  Required Parameters:							
  nxo=	   number of total horizontal output samples			
  nxshot=	number of shot gathers to be migrated			
- nz=	    number of depth sapmles					
+ nz=	    number of depth samples					
  dx=	    horizontal sampling interval				
  dz=	    depth sampling interval					
  vfile=	 velocity profile, it must be binary format.		

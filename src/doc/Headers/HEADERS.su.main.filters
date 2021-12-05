@@ -1,5 +1,6 @@
 SUBFILT - apply Butterworth bandpass filter 			
 SUCCFILT -  FX domain Correlation Coefficient FILTER			
+SUDEGHOST - applies a DEGHOSTING filter in (t,x) or (tau,p) data	
 SUDIPFILT - DIP--or better--SLOPE Filter in f-k domain	
 SUFILTER - applies a zero-phase, sine-squared tapered filter		
 SUFRAC -- take general (fractional) time derivative or integral of	

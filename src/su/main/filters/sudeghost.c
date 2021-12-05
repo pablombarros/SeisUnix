@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2021.*/
 /* All rights reserved.                       */
 
-/* SUDEGHOST: $Revision: 1.4 $ ; $Date: 2021/11/26 21:43:07 $        */
+/* SUDEGHOST: $Revision: 1.7 $ ; $Date: 2021/12/05 05:44:41 $        */
 
 
 #include "su.h"
@@ -20,7 +20,8 @@ char *sdoc[] = {
 "									",
 " Optional parameters:							",
 "	v=1500.0		speed of sound in the top layer		",
-"	r=0.5			surface reflectivity 0 < r < .7		",
+"	r=0.5			surface reflectivity 0 < r < .8		",
+"	lambert=1 		Lambert's cosine law obliquity factor	",
 "       dt= (from header)       time sampling interval (sec)        	",
 "	verbose=0		=1 for advisory messages, =2 debugging	",
 "	deghost=1		deghosting filter; =0 ghosting filter	",
@@ -33,7 +34,7 @@ char *sdoc[] = {
 " incident and the ghost delay time is 2h/v.				",
 "									",
 " If the input data are in the (tau,p) domain, then it is assumed that  ",
-" f2=\'first p value\' and d1=\'increment in p\' and the ghost delay time",
+" f2=\'first p value\' and d2=\'increment in p\' and the ghost delay time",
 " is assumed to be (2h/v) sqrt{1 - v^2 p^2}, addressing the angular	",
 " dependence of the ghost delay. 					",
 "									",
@@ -54,9 +55,12 @@ char *sdoc[] = {
 " Caveats:								",
 " The value of r is the reflectivity of the sea surface, which may be   ",
 " both dependent on frequency and on the angle of incidence. The program",
-" may be unstable if r > .6 is chosen.					",
+" may be unstable if r > .8 is chosen.					",
 " 									",
 " Smaller values of dp may be needed to retain high frequencies		",
+" 									",
+" For lambert=1 a cosine obliquity law is chosen. Frequency dependence  ",
+" of reflectivity is not addressed.		 			",
 NULL};
 
 /* Credits:
@@ -73,7 +77,7 @@ NULL};
 /**************** end self doc ***********************************/
 
 /* Prototype of function used internally */
-void deGhostingFilter(int deghost, int verbose,
+void deGhostingFilter(int lambert, int deghost, int verbose,
 			float r, float h, float v, float p,
 			 int nfft, float dt, complex *filter);
 
@@ -110,6 +114,7 @@ main(int argc, char **argv)
 	float fp=0.0;		/* first horizontal slowness 		*/
 	float dp=0.0;		/* increment in horizontal slowness 	*/
 	int deghost=1;		/* =1 deghost ; =0 add ghosts		*/
+	int lambert=1;		/* =1 r cos(theta) ; =0 r		*/
 	
         
         /* Initialize */
@@ -154,6 +159,7 @@ main(int argc, char **argv)
 	if (!getparfloat("r", &r))			r=0.5;
 	if (!getparfloat("v", &v))			v=1500.0;
 	if (!getparint("deghost",&deghost))		deghost=1;
+	if (!getparint("lambert",&lambert))		lambert=1;
 
         /* Set up FFT parameters */
         nfft = npfaro(nt, LOOKFAC * nt);
@@ -179,7 +185,8 @@ main(int argc, char **argv)
 		p = ntr*dp + fp;
 
 		/* Build the deghosting filter */
-		deGhostingFilter(deghost,verbose,r,h,v,p,nfft,dt,filter);
+		deGhostingFilter(lambert,deghost,verbose,
+					r,h,v,p,nfft,dt,filter);
 
                 /* Load trace into rt (zero-padded) */
                 memcpy((void *) rt, (const void *) tr.data, nt*FSIZE);
@@ -193,7 +200,7 @@ main(int argc, char **argv)
                 /* Load traces back in, recall filter had nfft factor */
                 for (i = 0; i < nt; ++i)  tr.data[i] = rt[i];
 
-		if (verbose) warn("nyq = %f tr.f2 = %f  tr.d2 = %f",nyq,tr.f2,tr.d2);
+		if (verbose) warn("r = %f nyq = %f tr.f2 = %f  tr.d2 = %f",r,nyq,tr.f2,tr.d2);
                 puttr(&tr);
         } while (gettr(&tr));
 
@@ -201,13 +208,14 @@ main(int argc, char **argv)
 }
 
 
-void deGhostingFilter(int deghost, int verbose,
+void deGhostingFilter(int lambert, int deghost, int verbose,
 			float r, float h, float v, float p,
 			int nfft, float dt, complex *filter)
 /*************************************************************************
 DEGHOSTING filter applied in the (t,x) or (tau,p) domain
 **************************************************************************
 Input:
+lambert		=1 r cos(theta) ; =0  r
 deghost		=1 deghost ; =0 add ghosts for modeling
 r		absolute value of surface reflectivity
 v		water velocity or velocity of top layer
@@ -229,7 +237,8 @@ implying that the deghosting operator is the inverse
 
 G^(-1) (\omega,p) = 1/{1 - r(\omega,p)exp(i omega (2h/v)sqrt{1 - v^2 p^2 )}
 
-In this version we assume r is a constant 0<r<1.
+If lambert=1 then Lambert's cosine amplitude obliquity law is assumed. For
+lambert=0, then  r is a constant 0 < r < 1.0
 
 The filter may be further simplified by writing the complex exponentials as
 exp(i phi) = cos(phi) + i sin(phi), and multiplying the numerator and 
@@ -266,6 +275,7 @@ Author:  CWP: John Stockwell   2021
 	float omega;		/* angular frequency 			*/
 	float nf;		/* number of frequencies 		*/
 	float df;		/* increment in frequency 		*/
+	float amp=0.0;		/* amplitude				*/
 
 	
 	/* set sizes and increments */
@@ -281,15 +291,22 @@ Author:  CWP: John Stockwell   2021
 		/* the  pv > 1.0 is forbidden */
 		if (vvpp>1) vvpp=1.0;
 
+		/* scale the amplitude by cos(theta) for lambert=1 */
+		if (lambert==1) {
+			amp = r*sqrt(1 - vvpp); 
+		} else if (lambert==0) {
+			amp = r;
+		}
+
 		/* compute quantities that constitute the filter */
 		omega = TWOPI * f;
 		twowaytt = 2*h*sqrt(1 - vvpp)/v;
-		real = 1 - r*cos(omega*twowaytt);
-		imag = r*sin(omega*twowaytt);
+		real = 1 - amp*cos(omega*twowaytt);
+		imag = amp*sin(omega*twowaytt);
 		denom = real*real + imag*imag;
 
 		if (verbose==2) /* debugging */
-			warn("f = %f df = %f omega = %f twowaytt = %f dt = %f ",f,df,omega,twowaytt,dt);
+			warn("amp = %f lambert = %d deghost = %d f = %f df = %f omega = %f twowaytt = %f dt = %f ",amp,lambert,deghost,f,df,omega,twowaytt,dt);
 
 		if (deghost==1){ /* deghosting filter */
 		

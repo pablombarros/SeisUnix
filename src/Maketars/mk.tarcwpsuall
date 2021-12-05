@@ -12,7 +12,7 @@ BIN=$(ROOT)/bin
 MKTARS=$(SRC)/Maketars
 SCRATCH=/Users/john/scratch/john/Temp
 TARDIR=$(MKTARS)/Tarfiles
-RELEASE=44R22
+RELEASE=44R23
 TARNAME=Free/cwp_su_all_$(RELEASE).tgz
 
 # TMPDIR is the directory where we put the files in a single standalone tree

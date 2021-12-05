@@ -20,6 +20,7 @@
  interoff=0.     intercept offset to which tau-p times are associated	
  pmin=-200       minimum moveout in ms on reference offset		
  pmax=400        maximum moveout in ms on reference offset		
+ anderson=1	  p values in ms, =0 pvalues in horizontal slowness	
  dp=16           moveout increment in ms on reference offset		
  pmula=80        moveout in ms on reference offset where multiples begin
                      at maximum time					

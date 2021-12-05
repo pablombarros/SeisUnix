@@ -3,7 +3,8 @@ Seismic Unix distributions and other information may be found at
 
 https://wiki.seismic-unix.org
 Installation tip. If you get error messages regarding the XDR materials
-you may need to install libtirpc from your Linux distribution.
+you may need to install either librpc or libtirpc from your Linux distribution.
+Compile time flags are now provided for either case.
 
 John Stockwell retired from the Colorado School of Mines effective
 1 Jan 2018. He continues to work with Seismic Unix. 
@@ -24,6 +25,20 @@ XDRFLAG =
 and the package should install just fine. If you have been using SU awhile
 and have files in SU format, then there will be a byte swapping issue between
 data made with XDR versus data made without XDR. 
+
+Update: Nov 2021 The following items in
+src/configs/
+	Makefile.config_Linux_x86_64
+	Makefile.config_Linux_i686
+	Makefile.config_Linux_Ubuntu_20.04
+	Makefile.config_Linux_Ubuntu
+	Makefile.config_Linux_Fedora_32
+	Makefile.config_Linux_ARCH
+	Makefile.config_MacOSX_Big_Sur
+	Makefile.config_MacOSX_Catalina
+
+have been modified with compile time flags to handle the rpc and tirpc issue
+discussed above, so you can use XDR without a problem.
 
 Fixes:
 A number of // C++ style comments have now been changed to /*... */ style
@@ -62,7 +77,8 @@ par/main/ray_theory/rayt2dtopo - a version of RAYT2D with topography
                                   Thanks to Trino Salinas
 
 New:
-su/main/filters/sudeghost.c - Deghosting based on Masoomzahdeh, et al. (2014)
+su/main/filters/sudeghost.c - Deghosting and ghost modeling based on 
+				Masoomzahdeh, et al. (2014)
 
 		Tools for 3D geometry by Andre Latour:
 su/main/headers/sutoolcsv.c - Tools for Comma Separated Values and 
@@ -71,7 +87,6 @@ su/main/headers/sutoolcsv.c - Tools for Comma Separated Values and
                                 Separated or fixed text. 
                 subincsv.c -  3D Grid Resolve and output and assign
                                 traces to cdps (cells)
-
 su/main/transforms/sust.c
 	SUST -  Outputs a time-frequency representation of seismic data via
            	the Stockwell transform (S- transform)
@@ -109,6 +124,7 @@ demos/Ordinary_differential_equations
 	 Epidemiology
 	 Logistic_Equation
 	 Predator_Prey
+demos/Sudeghost - Demos for sudeghost.c
 	
 
 Fixed:
@@ -136,6 +152,9 @@ Sfio/
 
 demos/Ordinary_differential_equations  - has been added to go with the new
 	ordinary_differential equation items in par/main
+
+demos/Geom3D - demos for Andre Latour's 3D geometry tools
+
 
 
 John Stockwell	 | john.19071969@gmail.com

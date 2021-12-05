@@ -8,7 +8,6 @@
  infile=	input of common image gathers with primary amplitude	
  afile=	input of common image gathers with extra amplitude	
  dfile=	output of imaged depths in common image gathers 	
- outfile=	output of dz/dv at the imaged points			
  nx= 	        number of migrated traces 				
  nz=	        number of points in migrated traces 			
  dx=		horizontal spacing of migrated trace 			
@@ -23,6 +22,7 @@
 	z	z-value of a common image point	at zero offset		
 	r	r-parameter in a common image gather			
 
+ outfile	output of dz/dv at the imaged points			
  Optional Parameters:							
  nxw, nzw=0		window widths along x- and z-directions in 	
 			which points are contributed in solving dz/dv. 	

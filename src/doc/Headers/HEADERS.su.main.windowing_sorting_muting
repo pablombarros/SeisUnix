@@ -4,6 +4,7 @@ SUGPRFB - SU program to remove First Breaks from GPR data
 SUKILL - zero out traces					
 SUMIXGATHERS - mix two gathers					
 SUMUTE - MUTE above (or below) a user-defined polygonal curve with	", 
+SUMUTECSV - MUTE above (or below) bilinearly interpolated polygonal curves 
 SUPAD - Pad zero traces						
 SUPUTGTHR - split the stdout flow to gathers on the bases of given	
 SUSORT - sort on any segy header keywords			
