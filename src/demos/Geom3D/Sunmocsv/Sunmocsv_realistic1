@@ -14,13 +14,7 @@
 # inverse option in sunmo, as follows: 
 # sunmo <fakexsrf.su >fakexsrfn.su invert=1 tnmo=0,190,450,800 vnmo=1800,3500,4000,5000
 #
-# Now, put 3d grid cell numbers to cdp key (as seen in ../Subincsv/Subincsv_example3).
-#
-  subincsv <fakexsrfn.su >fakexsrfng.su rfile=kEFG.csv 
-#
-  susort <fakexsrfng.su >fakexsrfngs.su cdp offset
-#
-  sunmocsv <fakexsrfngs.su >fakexsrfngsn.su rfile=kEFG.csv check=1 2>tinfo.txt \
+  sunmocsv <fake7.su >fake11.su rfile=kEFG.csv check=1 print=1 2>tinfo1.txt \
         cdp=21,41,81,101,1473,1493,1533,1553,2683,2703,2743,2763 \
         tnmo=0,190,450,800 \
         vnmo=1200,2000,4000,5000 \
@@ -47,7 +41,7 @@
         tnmo=0,190,450,800 \
         vnmo=2800,5500,6000,8000 \
 #
-  sustack <fakexsrfngsn.su >fakexsrfngsns.su key=cdp 
+  sustack <fake11.su >fake12.su key=cdp 
 #
-  suxwigb <fakexsrfngsns.su key=cdp
+  suxwigb <fake12.su key=cdp
 #
