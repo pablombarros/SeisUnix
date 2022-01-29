@@ -1,14 +1,3 @@
-/* Copyright (c) Colorado School of Mines, 2021.*/
-/* All rights reserved.                       */
-
-/* su.h - include file for SU programs
- *
- * $Author: john $
- * $Source: /usr/local/cwp/src/su/lib/RCS/gridxy.c,v $
- * $Revision: 1.1 $ ; $Date: 2021/10/03 23:10:04 $
- */
-
-
 /*  #include "segy.h" */
 
 #include "su.h"
@@ -330,7 +319,27 @@ void gridiccdp(double *gvals,int igi,int igc,int *icdp) {
 
 }
 
+void gridiccdp90(double *gvals,int igi,int igc,int *jcdp) {
 
+/* Convert grid indexes igi,igc to 90 degree cdp (cell) number         */
+/*                                                                     */
+/* Inputs:                                                             */
+/*   gvals is grid definition after processing by gridset              */
+/*   igi  is computed cell index in A-->B direction (first igi is 1).  */
+/*   igc  is computed cell index in A-->C direction (first igc is 1).  */
+/* Outputs:                                                            */
+/*   jcdp is cell cdp numbered in direction of corner C rather than B. */
+/* Note: if igi or igc are outside grid, icdp=-2147483645 is returned  */
+/* Note: igi and igc numbers are not rotated, just the same as always. */
+
+  if(igi<1 || igi>gvals[12] || igc<1 || igc>gvals[13]) {
+    *jcdp = -2147483645;
+  }
+  else { 
+    *jcdp = gvals[14] + (igi-1) * gvals[13] + igc-1;
+  }
+
+}
 
 void gridcdpic(double *gvals,int icdp,int *igi,int *igc) {
 
@@ -357,6 +366,34 @@ void gridcdpic(double *gvals,int icdp,int *igi,int *igc) {
   *igc = 1 + ncdp/nwb;
 
 }
+
+void gridcdpic90(double *gvals,int jcdp,int *igi,int *igc) {
+
+/* Convert cdp (cell) number to grid indexes igi,igc.                  */
+/*                                                                     */
+/* Inputs:                                                             */
+/*   gvals is grid definition after processing by gridset              */
+/*   jcdp is cell cdp numbered in corner C direction, rather than B.   */
+/* Outputs:                                                            */
+/*   igi  is computed cell index in A-->B direction (first igi is 1).  */
+/*   igc  is computed cell index in A-->C direction (first igc is 1).  */
+/* Note: if jcdp is outside grid, igi,igc returned as -2147483645      */
+/* Note: igi and igc numbers are not rotated, just the same as always. */
+
+  if(jcdp<gvals[14] || jcdp>gvals[15]) {
+    *igi = -2147483645;
+    *igc = -2147483645;
+    return;
+  }
+
+  int ncdp = jcdp - gvals[14];
+  int nwc  = gvals[13];
+
+  *igi = 1 + ncdp/nwc;
+  *igc = 1 + ncdp%nwc;
+
+}
+
 
 void gridcheck(double *gvals, int icheck, int *errwarn) { 
 
