@@ -11,7 +11,9 @@ void gridrawxycdpic(double *gvals,double dx,double dy,int *icdp,int *igi,int *ig
 void gridicrawxy(double *gvals,int igi,int igc,double *dx,double *dy) ;
 void gridicgridxy(double *gvals,int igi,int igc,double *dx,double *dy) ;
 void gridiccdp(double *gvals,int igi,int igc,int *icdp) ;
+void gridiccdp90(double *gvals,int igi,int igc,int *jcdp) ;
 void gridcdpic(double *gvals,int icdp,int *igi,int *igc) ;
+void gridcdpic90(double *gvals,int jcdp,int *igi,int *igc) ;
 void gridrawxygridxy(double *gvals,double dx,double dy,double *tx,double *ty) ;
 void gridgridxyrawxy(double *gvals,double dx,double dy,double *tx,double *ty) ;
 void gridcheck(double *gvals, int icheck, int *errwarn) ; 
