@@ -37,10 +37,14 @@ void tparse(char *tbuf, char d, char **fields, int *numfields) ;
 /*            =-1 at least 1 all-blank field, assumed zero for all.                 */
 
 void readkfile(FILE *fpR, cwp_String *names, cwp_String *forms, double *dfield, 
-               int *numcasesout, int *errwarn) {
+               int *numcasesout, int *errwarn) 
+{
 
   *errwarn = 0;
 
+  int i;
+  int n;
+  int m;
   int numcases = 0;
 
   int maxtext = 10001;
@@ -75,7 +79,7 @@ void readkfile(FILE *fpR, cwp_String *names, cwp_String *forms, double *dfield,
 /* Remove all blanks and tabs because tparse is not designed to handle them.      */
 
     int tsize = 0;
-    for(int n=0; n<maxtext; n++) { /*   linux \n            windows \r */
+    for(n=0; n<maxtext; n++) { /*   linux \n            windows \r */
       if(textraw[n] == '\0' || textraw[n] == '\n' || textraw[n] == '\r') break;
       if(textraw[n] != ' ' && textraw[n] != '\t') {
         textbeg[tsize] = textraw[n];
@@ -83,7 +87,7 @@ void readkfile(FILE *fpR, cwp_String *names, cwp_String *forms, double *dfield,
       }
     }
 
-    for(int n=0; n<sizeof(textbeg); n++) textbeg[n] = tolower(textbeg[n]);
+    for(n=0; n<sizeof(textbeg); n++) textbeg[n] = tolower(textbeg[n]);
     if(strncmp(textbeg,"c_su_setid",10) == 0) num_c_su_setid++;
     if(strncmp(textbeg,"c_su_names",10) == 0) num_c_su_names++;
     if(strncmp(textbeg,"c_su_forms",10) == 0) num_c_su_forms++;
@@ -148,9 +152,9 @@ void readkfile(FILE *fpR, cwp_String *names, cwp_String *forms, double *dfield,
 
   if(strncmp(names[0],"c_su_id",7) == 0) names[0] = "null";
 
-  for (int n=0; n<num_names; n++) {
+  for (n=0; n<num_names; n++) {
     if(strncmp(names[n],"null",4) != 0) {
-      for (int m=n+1; m<num_names; m++) {
+      for (m=n+1; m<num_names; m++) {
         if(strcmp(names[n],names[m]) == 0) {  
           *errwarn = 9;
           return;
@@ -162,7 +166,7 @@ void readkfile(FILE *fpR, cwp_String *names, cwp_String *forms, double *dfield,
 /* ----------------------------------------------------- */
 /* ----------------------------------------------------- */
 
-  for(int i=0; i<num_names;i++) { 
+  for(i=0; i<num_names;i++) { 
     if(strncmp(names[i],"null",4) != 0) { /* actually removes c_su_id also */
       names[numcases] = names[i];
       forms[numcases] = forms[i];
@@ -184,7 +188,7 @@ void readkfile(FILE *fpR, cwp_String *names, cwp_String *forms, double *dfield,
 
   while (fgets(textraw, maxtext, fpR) != NULL) { /*read a line*/
     ncount++;
-    for(int n=0; n<10; n++) textfront[n] = tolower(textraw[n]);
+    for(n=0; n<10; n++) textfront[n] = tolower(textraw[n]);
     if(strncmp(textfront,"c_su",4) == 0 || nextrow==1) {
       nextrow = 0; 
       if(strncmp(textfront,"c_su_names",10) == 0 || 
@@ -224,14 +228,16 @@ void readkfile(FILE *fpR, cwp_String *names, cwp_String *forms, double *dfield,
 
 void getkvalscsv(char *textraw, char *textbeg, int maxtext, char rdel, 
                  double *dfield, int *nspot, int numcases,   
-                 int ncount, int *comerr,int *morerr,int *numerr,int *nblank) {
-
+                 int ncount, int *comerr,int *morerr,int *numerr,int *nblank) 
+{
+  int n;
+  int m;
   int nbeg = -1;
   int nfield = 0;
   int ineed  = 0;
   int igot;
   double dval;
-  for(int n=0; n<maxtext; n++) {                         /* linux \n            windows \r */
+  for(n=0; n<maxtext; n++) {                         /* linux \n            windows \r */
     if(textraw[n] == rdel || textraw[n] == '\0' || textraw[n] == '\n' || textraw[n] == '\r') {
       if(nfield == nspot[ineed]) {
         dval = 1.1e308; 
@@ -240,7 +246,7 @@ void getkvalscsv(char *textraw, char *textbeg, int maxtext, char rdel,
           strncpy(textbeg,textraw+nbeg+1,n-nbeg-1);
           textbeg[n-nbeg-1] = '\0'; /* so sscanf knows where to stop */
           int ib = -1;
-          for (int m=0; m<n-nbeg-1; m++) {
+          for (m=0; m<n-nbeg-1; m++) {
             if(textbeg[m] != ' ') {
               nb = m;
               if(ib>-1) {
@@ -277,10 +283,12 @@ void getkvalscsv(char *textraw, char *textbeg, int maxtext, char rdel,
 
 /* --------------------------- */
 /* expects a string with no blanks and no tabs \t   */
-void tparse(char *tbuf, char d, char **fields, int *numfields) { 
+void tparse(char *tbuf, char d, char **fields, int *numfields) 
+{ 
+  int n=0;
   int nbeg = -1;
   *numfields = 0;
-  for(int n=0; ; n++) {
+  for(n=0; ; n++) {
     if(tbuf[n] == d || tbuf[n] == '\0') {
       if(n-nbeg-1 > 0) {
         fields[*numfields] = ealloc1(n-nbeg-1,1);
@@ -311,8 +319,11 @@ void tparse(char *tbuf, char d, char **fields, int *numfields) {
 /* errwarn    >0 means some kind of error                                           */
 
 void writekfile(FILE *fpW, cwp_String *names, cwp_String *forms, double *dfield, 
-                int numcasesout, int *errwarn) {
+                int numcasesout, int *errwarn) 
+{
 
+  int i=0;
+  int ineed=0;
   *errwarn = 0;
 
   char textraw[10001]; /* fgets puts a \0 after contents */
@@ -347,13 +358,13 @@ void writekfile(FILE *fpW, cwp_String *names, cwp_String *forms, double *dfield,
   mspot = 8;
   strcpy(textraw,"C_SU_ID,");
 
-  for(int i=0; i<numcasesout; i++) { 
+  for(i=0; i<numcasesout; i++) { 
     mleng = strlen(forms[i]);
     strncpy(textraw+mspot,forms[i],mleng);
     mspot += mleng;
     textraw[mspot] = ',';
     mspot++;
-  } /* end of  for(int i=0; i<numcases; i++) { */ 
+  } /* end of  for(i=0; i<numcases; i++) { */ 
   textraw[mspot-1] = '\n';
   textraw[mspot  ] = '\0';
   fputs(textraw,fpW);
@@ -368,20 +379,20 @@ void writekfile(FILE *fpW, cwp_String *names, cwp_String *forms, double *dfield,
   mspot = 8;
   strcpy(textraw,"C_SU_ID,");
 
-  for(int i=0; i<numcasesout; i++) { 
+  for(i=0; i<numcasesout; i++) { 
     mleng = strlen(names[i]);
     strncpy(textraw+mspot,names[i],mleng);
     mspot += mleng;
     textraw[mspot] = ',';
     mspot++;
-  } /* end of  for(int i=0; i<numcases; i++) { */ 
+  } /* end of  for(i=0; i<numcases; i++) { */ 
   textraw[mspot-1] = '\n';
   textraw[mspot  ] = '\0';
   fputs(textraw,fpW);
 
   strncpy(textraw2,Rid,1);
   int mhere = 1;
-  for(int ineed=0; ineed<numcasesout; ineed++) {  
+  for(ineed=0; ineed<numcasesout; ineed++) {  
     if(dfield[ineed]<1.e308) {
       sprintf(textbeg,forms[ineed],dfield[ineed]);
       int mfill = strlen(textbeg);

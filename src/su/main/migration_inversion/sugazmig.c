@@ -276,6 +276,8 @@ dtau		migrated time sampling interval
 ftau		first migrated time sample
 vt		velocity v[tau]
 p		array[nt] containing data to be migrated
+qual		quality or Q value
+gainceil	gain ceiling
 
 Output:
 q		array[ntau] containing migrated data

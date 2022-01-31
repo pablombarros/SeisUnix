@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.                       */
 
-/* SUSETEHW: $Revision: 1.3 $ ; $Date: 2012/03/28 16:44:34 $	*/
+/* SUSETEHW: $Revision: 1.4 $ ; $Date: 2021/12/08 18:07:54 $	*/
 
 #include "su.h"
 #include "segy.h"
@@ -34,7 +34,7 @@ char *sdoc[] = {
 "									",
 " The input data must first be sorted into constant key1 gathers.	",
 " Example: setting the cdpt field					", 
-"        susetehw < cdpgathers.su a=1 b=1 key1=cdp key2=cdpt > new.su	",
+"        susehw < cdpgathers.su a=1 b=1 key1=cdp key2=cdpt > new.su	",
 "									",
 NULL};
 

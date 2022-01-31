@@ -21,6 +21,7 @@ PROGS =			\
 	$B/sukfrac	\
 	$B/sukfilter	\
 	$B/sumedian	\
+	$B/suminphase	\
 	$B/susmgauss2	\
 	$B/suphase	\
 	$B/susvdfilt	\

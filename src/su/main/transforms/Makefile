@@ -22,7 +22,6 @@ PROGS =			\
 	$B/sugabor	\
 	$B/suhilb	\
 	$B/suifft	\
-	$B/suminphase	\
 	$B/suphasevel	\
 	$B/suradon	\
 	$B/suslowft	\

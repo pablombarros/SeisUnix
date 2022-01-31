@@ -14,12 +14,12 @@
 */
 
 #ifdef SUXDR
-#ifndef SUTRPC
+#ifndef SUTIRPC
 #include <rpc/types.h>
 #include <rpc/xdr.h>
 #else
-#include <trpc/rpc/types.h>
-#include <trpc/rpc/xdr.h>
+#include <tirpc/rpc/types.h>
+#include <tirpc/rpc/xdr.h>
 #endif
 #endif
 

@@ -1,9 +1,15 @@
-head	1.3;
+head	1.4;
 access;
 symbols;
-locks; strict;
+locks
+	john:1.4; strict;
 comment	@ * @;
 
+
+1.4
+date	2021.12.08.18.07.54;	author john;	state Exp;
+branches;
+next	1.3;
 
 1.3
 date	2012.03.28.16.44.34;	author john;	state Exp;
@@ -26,15 +32,15 @@ desc
 @
 
 
-1.3
+1.4
 log
-@small change in selfdoc
+@typo
 @
 text
 @/* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.                       */
 
-/* SUSETEHW: $Revision: 1.2 $ ; $Date: 2011/11/16 22:10:29 $	*/
+/* SUSETEHW: $Revision: 1.3 $ ; $Date: 2012/03/28 16:44:34 $	*/
 
 #include "su.h"
 #include "segy.h"
@@ -67,7 +73,7 @@ char *sdoc[] = {
 "									",
 " The input data must first be sorted into constant key1 gathers.	",
 " Example: setting the cdpt field					", 
-"        susetehw < cdpgathers.su a=1 b=1 key1=cdp key2=cdpt > new.su	",
+"        susehw < cdpgathers.su a=1 b=1 key1=cdp key2=cdpt > new.su	",
 "									",
 NULL};
 
@@ -214,6 +220,20 @@ Author:  CWP: John Stockwell,  Feb 2008, hacked from the one in sushw.
 	return;
 }
 
+@
+
+
+1.3
+log
+@small change in selfdoc
+@
+text
+@d4 1
+a4 1
+/* SUSETEHW: $Revision: 1.2 $ ; $Date: 2011/11/16 22:10:29 $	*/
+d37 1
+a37 1
+"        susetehw < cdpgathers.su a=1 b=1 key1=cdp key2=cdpt > new.su	",
 @
 
 
