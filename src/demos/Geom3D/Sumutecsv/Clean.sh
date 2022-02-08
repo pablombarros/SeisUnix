@@ -20,5 +20,6 @@ rm -f tnull4acdpoffmute.su
 rm -f fakex.su fakexs.su fakexsr.su fakexsrf.su 
 rm -f fakexsrfb.su fakexsrfbm.su fakexsrfbms.su
 rm -f fakexsrfbmss.su
+rm -f tnullq*.su
 
 exit 0
