@@ -9,6 +9,7 @@
 #include "gridread.h"
 #include "gridxy.h"
 #include "bilinear.h"
+#include "linterpd.h"
 
 /*********************** self documentation ******************************/
 char *sdoc[] = {
