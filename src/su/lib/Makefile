@@ -16,6 +16,7 @@ ARCH =	$(LIB)(elco_scalar.o)	\
 	$(LIB)(readkfile.o)	\
 	$(LIB)(qdefine.o)	\
 	$(LIB)(bilinear.o)	\
+	$(LIB)(linterpd.o)	\
 	$(LIB)(gridread.o)	\
 	$(LIB)(gridxy.o)	\
 	$(LIB)(hdrpkge.o)	\
