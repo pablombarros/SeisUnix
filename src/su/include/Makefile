@@ -19,6 +19,7 @@ INCLUDE = 	$I/segy.h	\
 		$I/bhdr.h    \
 		$I/sugeom.h    \
 		$I/qdefine.h   \
+		$I/headcase.h  \
 		$I/linterpd.h  \
 		$I/bilinear.h  \
 		$I/readkfile.h \
