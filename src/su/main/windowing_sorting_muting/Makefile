@@ -9,6 +9,8 @@ D = $L/libcwp.a $L/libpar.a $L/libsu.a
 LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
 
 PROGS =			\
+	$B/subraid	\
+	$B/sucleave 	\
 	$B/sucommand	\
 	$B/sugetgthr	\
 	$B/sugprfb	\

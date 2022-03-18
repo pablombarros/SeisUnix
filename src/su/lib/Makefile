@@ -13,9 +13,11 @@ ARCH =	$(LIB)(elco_scalar.o)	\
 	$(LIB)(fputtr.o)	\
 	$(LIB)(fgetgthr.o)	\
 	$(LIB)(fputgthr.o)	\
+	$(LIB)(headcase.o)	\
 	$(LIB)(readkfile.o)	\
 	$(LIB)(qdefine.o)	\
 	$(LIB)(bilinear.o)	\
+	$(LIB)(linterpd.o)	\
 	$(LIB)(gridread.o)	\
 	$(LIB)(gridxy.o)	\
 	$(LIB)(hdrpkge.o)	\

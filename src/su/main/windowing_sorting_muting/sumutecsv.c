@@ -1,12 +1,14 @@
-/* Copyright (c) Colorado School of Mines, 2011.*/
+/* Copyright (c) Colorado School of Mines, 2021.*/
 /* All rights reserved.                       */
 
-/* SUMUTECSV: $Revision: 1.2 $ ; $Date: 2021/10/13 03:57:26 $		*/
+/* SUMUTECSV: $Revision: 1.3 $ ; $Date: 2022/01/10 11:01:01 $		*/
  
 #include "su.h"
 #include "segy.h" 
+#include "qdefine.h"
 #include "gridread.h"
 #include "gridxy.h"
+#include "bilinear.h"
 
 /*********************** self documentation ******************************/
 char *sdoc[] = {
@@ -15,19 +17,27 @@ char *sdoc[] = {
 "									     ",
 "  sumutecsv <stdin >stdout [required parameters] [optional parameters]      ",
 "									     ",
-" Required Parameters:							     ",
-" cdp=		   list of CDPs for which tims & offs are specified.         ",
-"                  Example cdp=1,17,333. (Not needed if just 1 in list).     ",
-" offs=            list of offset values. This parameter must be repeated    ",
-"                  for each number in cdp= list. Values in this list must    ",
-"                  be in increasing order.                                   ",
-" tims=      	   list of mute time values (ms.) Note: MILLISECONDS.        ",
-"                  This parameter must be repeated for each number in the    ",
-"                  cdp= list. There must be the same number of tims and offs ",
-"                  values for a cdp (but can be a different number than for  ",
-"                  other cdps).                                              ",
-"									     ",
-" Optional Parameters:							     ",
+" Optional Parameters:                                                       ",
+"                                                                            ",
+" qin=             Mute functions can be input via this file.                ",
+"                  This file is optional, but if you do not input it,        ",
+"                  you must use parameters cdp=, offs=, tims=.               ",
+"                  See external document Q_FILE_STANDARDS.                   ",
+"                                                                            ",
+"                  The following 3 parameters cannot be specified if         ",
+"                  you input mute functions via the qin= file.               ",
+"                                                                            ",
+" cdp=             CDPs for which offs & tims are specified.                 ",
+" offs=            offsets corresponding to times in tims.                   ",
+" tims=            times corresponding to offsets in offs.                   ",
+"                  If qin= is not specified, all 3 of these parameters       ",
+"                  must be specified. There must be at least 1 number        ",
+"                  in the cdp= list. There must be the same number of        ",
+"                  tims= parameters as numbers in the cdp= list.             ",
+"                  There must be the same number of offs= parameters         ",
+"                  as numbers in the cdp= list, or, there can be just        ",
+"                  one offs= parameter provided there are the same           ",
+"                  number of tims in all tims= lists.                        ", 
 "									     ",
 " rfile=           If set, read a K-file containing 3D grid definition.      ", 
 "                  Assume 2D if no K-file and no grid definition is          ", 
@@ -41,8 +51,6 @@ char *sdoc[] = {
 "                  A 3D also forces restrictions on the locations of         ", 
 "                  the input mute locations. Their CDP locations must        ", 
 "                  form aligned rectangles (see Notes).                      ", 
-"                  Note: no need to input a grid if cdp= list has            ", 
-"                        only 1 number (or is not specified).                ", 
 "									     ",
 " offkey=offset    Key header word specifying trace offset                   ",
 " abs=1            use the absolute value of offkey.                         ",
@@ -93,18 +101,18 @@ char *sdoc[] = {
 "                  This information can be written to a file by              ",
 "                  putting 2>yourfile on the command line.                   ",
 "									     ",
+" print=0          Do not print INPUT mute functions.                        ",
+"               =1 Print INPUT mute functions. The cdp number and its        ",
+"                  input mute function values are printed. This print is     ",
+"                  not intended to be pretty. It just allows easy checking   ",
+"                  that the q-file contains the expected values.             ",
+"                  It also allows programmers and others to confirm that     ",
+"                  command line input via cdp=,offs=,tims= produces the      ",
+"                  same results as identical input via the qin= file.        ",
+"                                                                            ",
 " Notes:								     ",
 "									     ",
-" For muting with one function only, specify the arrays                      ",
-"          offs=o1,o2,... tims=t1,t2,...                                     ",
-" where t1 is the time at offset o1, t2 is the time at offset o2, ...        ",
 " The offsets specified in the offs array must be monotonically increasing.  ",
-" Linear interpolation and constant extrapolation of the specified times     ",
-" is used to compute the times at offsets not specified.                     ",
-"                                                                            ",
-" For muting with a function of offset and CDP, specify the array            ",
-"          cdp=cdp1,cdp2,...                                                 ",
-" and, for each CDP specified, specify another offs and tims array as above. ",
 "									     ",
 " For 3D, user needs to input mute locations (cdp numbers) which form aligned",
 " rectangles. That is, how-ever-many grid inlines the user chooses to put    ",
@@ -120,13 +128,13 @@ char *sdoc[] = {
 " using the input 3D grid definition - so those cdp numbers need to          ",
 " correspond to the input 3D grid definition.                                ",
 "									     ",
-" For trace cdps that are not explicitly in the input cdp= list, bilinear    ",
-" interpolation is done if the trace cdp location is surrounded by 4 mute    ",
-" functions specified in the cdp= list. If the trace cdp is not surrounded   ",
+" For trace CDPs Rnot listed in cdp= parameter or qin= file, bilinear        ",
+" interpolation is done if the trace CDP location is surrounded by 4 mute    ",
+" functions specified in the cdp= list. If the trace CDP is not surrounded   ",
 " by 4 input mute functions, the result depends on the extrapi and extrapc   ",
 " options. The result can be any combination of linear interpolation and     ",
 " linear extrapolation and constant extrapolation. If input mute functions   ",
-" are only located along 1 inline or 1 crossline the result is linear        ", 
+" are only located along 1 grid inline or 1 grid crossline, result is linear ", 
 " interpolation in that direction (and linear or constant extrapolation      ",
 " the outer ending functions).                                               ",
 "									     ",
@@ -163,45 +171,22 @@ NULL};
  *	 2. Changed to expect milliseconds for all parameter inputs.               
  *	 3. Put in error checks to stop users from accidentally         
  *	    trying to use sumute parameter names.                       
+ *      Modified: Feb 2022: Andre Latour   
+ *        1. Reworked to use lib routines to get mute function values
+ *           either from command line parameters or from input q-files.      
+ *        2. Reworked to use lib routines for bilinear interpolation. 
  */
 /**************** end self doc *******************************************/
 
 segy tr;
 
-struct  VelInfo { /* Structure for mute function information */
-     int *kinf;
-     int nto;
-     float *tims;
-     float *offs;
-};
-
-struct VelInfo *RecInfo; /* Storage for all mute function location value pointers */
-
-/* Find the 4 igi,igc locations (near) a cdp and compute their (spatial) weights. */
-static void binterpfind(int kigi, int *mgi, int mgi_tot, int mgiextr,
-                        int kigc, int *mgc, int mgc_tot, int mgcextr,
-                        int *mgix, int *mgcx, float *wi, float *wc) ;
-
-/* Use the 4 igi,igc near cdp, compute mute time from offs,tims arrays and (spatial) weights.*/
-static void binterpvalue(float offset, int mgtextr,
-                         struct VelInfo lwi, struct VelInfo hii, int mgi_tot, float wi, 
-                         struct VelInfo lwc, struct VelInfo hic, int mgc_tot, float wc,
-                         float *timeout) ;
-
-/* Input offset value, and compute mute time from the offs,tims arrays at one location. */
-static void linterpmute(float offset,float *offs,float *tims,int nto,int mgtextr,float *time) ;
+struct QInfo *MInfo; /* All mute function values are stored herein. */
 
 int compSort2 (const void * q1, const void * q2) ; /* comparison function for qsort  */
 
-int bhighi(int *all, int last, int iguy) ;             /* binary search */
-
-int bhighf(float *all, int last, float iguy) ;         /* binary search */
-
 #define SQ(x) ((x))*((x))
 
-int
-main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 
         char *key=NULL;         /* header key word from segy.h          */
         char *type=NULL;        /* ... its type                         */
@@ -210,14 +195,7 @@ main(int argc, char **argv)
         float fval;             /* ... its value cast to float          */
 
 	int ncdp;		/* number of cdps specified */
-  	int *cdp=NULL;	        /* array[ncdp] of cdps */
-	int icdp;		/* index into cdp array */
-	int jcdp;		/* index into cdp array */
 	int oldcdp;     	/* cdp of previous trace */
-
-	int k;    		/* just a general integer               */
-	int ntims;		/* number of tims specified */
-	int noffs;		/* number of offs specified */
 
         cwp_String Rname=NULL;  /* text file name for values            */
         FILE *fpR=NULL;         /* file pointer for Rname input file    */
@@ -228,6 +206,9 @@ main(int argc, char **argv)
         float *taper=NULL;      /* ...          taper values            */
         int ntaper;             /* ...          taper values            */
 
+        cwp_String Qname=NULL;  /* text file name for Q input file      */
+        FILE *fpQ=NULL;         /* file pointer for Q input file        */
+
         int mgiextr = 0;        /* for igi extrapolation option         */
         int mgcextr = 0;        /* for igc extrapolation option         */
         int mgtextr = 0;        /* for offset extrapolation option      */
@@ -236,6 +217,49 @@ main(int argc, char **argv)
         int iabsoff;            /* Take absolute value of offkey        */
         cwp_Bool seismic;       /* cwp_true if seismic, cwp_false not seismic */
 
+        cwp_String *pname = NULL; /* to hold the names of values we want */
+        int numpname = 3;         /* number of values that we want       */
+        cwp_String *ndims = NULL; /* for an unused return argument       */
+
+        int ifixd=0;            /* flag for all tuples same size or vary   */
+        int iztuple=0;          /* element number where first tuple exists */
+        int ktuple=0;           /* type of tuples (2=pairs, 3=triplets)    */
+
+	int i;    		/* the rest of these variables are either trivial or so */
+	int j;    		/* entangled that no short comment up here will help    */
+	int k;    		
+	int nmore = 0;
+	int icdp;
+	int jcdp;		
+        int errwarn=0;          
+        int jnloc1=0;
+        double *pindepa = NULL;
+        int kigi = 0;
+        int kigc = 1;           /* set to 1 in case this is a 2D */ 
+        int mgi_tot = -1;
+        int mgc_tot = 0;
+        int *mgi = NULL;
+        int *mgc = NULL;
+        int mgi_totdeg = 0;
+
+        int mgix = 0;
+        int mgcx = 0;
+        double wi = 0.;
+        double wc = 0.;
+        int ndxi = 0; 
+        int ndxc = 0;
+        int iprint = 0;
+        int maygrid=0;
+        int is3d = 1;
+        int icheck=0;
+        double xg=0.0;
+        double yg=0.0;
+        double xw=0.0;
+        double yw=0.0;
+        double dfval=0.0;
+        double dwbt=0.0;
+
+
 	/* hook up getpar */
 	initargs(argc, argv);
 	requestdoc(1);
@@ -243,52 +267,7 @@ main(int argc, char **argv)
 /* NOTE: In this program code I make an effort to conform to the       */
 /*       original indentation style (even tho I find it awkward).      */
 
-        int nerr = 0;
-	if (countparname("linvel") > 0) {
-          nerr++;
-          warn ("error: linvel is not a parameter. You probably meant: vel");
-        }
-	if (countparname("tm0")    > 0) {
-          nerr++;
-          warn ("error: tm0 is not a parameter. You probably meant: tzero (in MILLISECONDS)");
-        }
-	if (countparname("key")    > 0) {
-          nerr++;
-          warn ("error: key is not a parameter. You probably meant: offkey");
-        }
-	if (countparname("xmute")  > 0) {
-          nerr++;
-          warn ("error: xmute is not a parameter. You probably meant: offs");
-        }
-	if (countparname("tmute")  > 0) {
-          nerr++;
-          warn ("error: tmute is not a parameter. You probably meant: tims (in MILLISECONDS)");
-        }
-	if (countparname("nmute")  > 0) {
-          nerr++;
-          warn ("error: nmute is not a parameter.");
-        }
-	if (countparname("xfile")  > 0) {
-          nerr++;
-          warn ("error: xfile is not a parameter.");
-        }
-	if (countparname("tfile")  > 0) {
-          nerr++;
-          warn ("error: tfile is not a parameter.");
-        }
-	if (countparname("hmute")  > 0) {
-          nerr++;
-          warn ("error: hmute is not a parameter.");
-        }
-	if (countparname("twindow")  > 0) {
-          nerr++;
-          warn ("error: twindow is not a parameter.");
-        }
-	if (countparname("twfile")  > 0) {
-          nerr++;
-          warn ("error: twfile is not a parameter.");
-        }
-        if(nerr>0) err ("error: parameter name for SUMUTE was specified (see above).");
+        getparstring("qin", &Qname);
 
         if (!getparint("mode", &mode))          mode = 0;
         if(mode<0 || mode>3) err ("error: mode must be 0,1,2, or 3");
@@ -331,16 +310,15 @@ main(int argc, char **argv)
 
         getparstring("rfile", &Rname);
       
-        int maygrid;;
         gridcommand(&maygrid);
       
-        int is3d = 1;
+        is3d = 1;
         if(maygrid==1  && Rname != NULL) err("error: input k-file not allowed when full grid on command line.");
         if(maygrid==-1 && Rname == NULL) err("error: input k-file required when partial grid on command line.");
         if(maygrid==0  && Rname == NULL) is3d = 0;
 
-        int icheck;
         if (!getparint("check", &icheck)) icheck = 0;
+        if (!getparint("print", &iprint)) iprint = 0;
 
         if(is3d==1) {
 
@@ -349,7 +327,7 @@ main(int argc, char **argv)
                         if(fpR==NULL) err("error: input K-file did not open correctly.");
                 }
 
-                int errwarn = 1; /* print if error or unusual thing inside gridread */
+                errwarn = 1; /* print if error or unusual thing inside gridread */
                 gridread(fpR,gvals,&errwarn); 
                 if(errwarn>0) err("error reading grid (from K-file or command line parameters)");
 
@@ -380,176 +358,201 @@ main(int argc, char **argv)
                 err ("tr.trid = %d, unsupported trace id",tr.trid);
         }
 
-	/* get tims and offs functions */
-	ncdp = countparval("cdp");
-	if (ncdp>0) {
-		if (countparname("tims")!=ncdp)
-			err("error: a tims array must be specified for each listed cdp");
-		if (countparname("offs")!=ncdp)
-			err("error: a offs array must be specified for each listed cdp");
-	} else {
-		ncdp = 1;
-		if (countparname("tims")!=1)
-			err("error: must be 1 tims array when 0 cdps listed");
-		if (countparname("offs")!=1)
-			err("error: must be 1 offs array when 0 cdps listed");
-	}
-  	cdp = ealloc1int(ncdp); 
-        if (!getparint("cdp",cdp)) cdp[0] = tr.cdp;
+/* Set parameters and names of the 3 values needed from getviaCommand or getviaqfile. */
 
-/* The values from each record are going to be stored.              */
-/* For quick "finding" we will sort by igi,igc (or icdp for 2d).    */
-/* But we are only going to sort the pointers to the record values, */
-/* not the record values themselves. The record values will stay    */
-/* where they were stored during read-in.                           */
-/* Allocate the memory in big chunks, then use pointer arithmatic   */
-/* to divide that memory amoung the individual record pointers.     */
-/* (We could, of course, simply allocate record-by-record but that  */
-/*  means the memory could be spangled around - usually faster to   */
-/*  keep values near each other).                                   */
+        ktuple   = 0;
+        iztuple  = 1;
+        numpname = 3;
+        pname = ealloc1(numpname,sizeof(cwp_String *));
+        for(j=0; j<numpname; j++) pname[j] = ealloc1(4,1);
+        strcpy(pname[0],"cdp");
+        strcpy(pname[1],"offs");
+        strcpy(pname[2],"tims");
 
-        RecInfo = ealloc1(ncdp,sizeof(struct VelInfo)); 
+        if(Qname == NULL) { /* no q-file, so readin mute functions via command line parameters */
 
-        int *tinf = ealloc1int(ncdp*3);
-	for (icdp=0; icdp<ncdp; ++icdp) RecInfo[icdp].kinf = tinf + icdp*3;
+                getviacommand(&pname, &numpname, &iztuple, nmore,
+                              &ktuple, &ifixd, &MInfo, &ncdp,
+                              &pindepa, &ndims, &errwarn) ;
 
-        int ierr = 0;
-        if(is3d==1 && icheck>0) 
-                warn("Input Mute function location information follows: G,cdp,igi,igc,  xgrid,ygrid,  xworld,yworld");
+                if(errwarn==1) err("getviacommand error: no non-tuple name passed in.");
+                else if(errwarn==2) err("getviacommand error: non-tuple names have different amounts of values.");
+                else if(errwarn==3) err("getviacommand error: independent dimension parameter is empty.");
+                else if(errwarn==4) err("getviacommand error: an independent dimension parameter is empty.");
+                else if(errwarn==5) err("getviacommand error: members of tuple have different amounts at same location."); 
+                else if(errwarn>0) err("getviacommand error: returned unrecognized error number = %d",errwarn);
 
-	for (icdp=0; icdp<ncdp; ++icdp) {
+                if(ifixd==2 || iztuple!=1 || ktuple!=2) 
+                  err("error: command line does not contain cdp,offs,tims (or they are incorrect combination). ");
 
-		ntims = countnparval(icdp+1,"tims");
-		noffs = countnparval(icdp+1,"offs");
-
-		if (noffs!=ntims || noffs==0)
-			err("error: tims and offs arrays are different lengths for cdp= %d",cdp[icdp]);
-
-                RecInfo[icdp].nto = ntims;
-
-                RecInfo[icdp].tims = ealloc1float(ntims);
-                RecInfo[icdp].offs = ealloc1float(ntims);
-
-  		if (!getnparfloat(icdp+1,"offs",RecInfo[icdp].offs)) RecInfo[icdp].offs[0] = 0.0;
-  		if (!getnparfloat(icdp+1,"tims",RecInfo[icdp].tims)) RecInfo[icdp].tims[0] = 0.0;
-
-  		/* check that offs are increasing */
-  		for(k=1; k<ntims; k++) {
-                        if(RecInfo[icdp].offs[k] <= RecInfo[icdp].offs[k-1]) 
-			        err("error: offs array values not in increasing order for cdp= %d",cdp[icdp]);
-                }
-
-  		/* so as not to change the code copied from sumute, convert to seconds */
-  		for(k=0; k<ntims; k++) RecInfo[icdp].tims[k] /= 1000.;
-
-                RecInfo[icdp].kinf[0] = cdp[icdp];
-                if(is3d==1) {
-                        gridcdpic(gvals,RecInfo[icdp].kinf[0],RecInfo[icdp].kinf+1,RecInfo[icdp].kinf+2);
-
-                        if(RecInfo[icdp].kinf[1] < -2147483644) ierr = 1;
-
-                        if(icheck>0) {
-                                double xg;
-                                double yg;
-                                double xw;
-                                double yw;
-                                gridicgridxy(gvals,RecInfo[icdp].kinf[1],RecInfo[icdp].kinf[2],&xg,&yg);
-                                gridicrawxy(gvals,RecInfo[icdp].kinf[1],RecInfo[icdp].kinf[2],&xw,&yw);
-                                warn("G,%12d,%12d,%12d,  %.20g,%.20g,  %.20g,%.20g",
-                                RecInfo[icdp].kinf[0],RecInfo[icdp].kinf[1],RecInfo[icdp].kinf[2],xg,yg,xw,yw);
-                        }
-                }
-                else { /* if no 3d grid input, set inline to cdp and crossline to 1 */ 
-                        RecInfo[icdp].kinf[1] = RecInfo[icdp].kinf[0];
-                        RecInfo[icdp].kinf[2] = 1;
-                }
-
-	}
-
-        if(ierr>0) err("error: At least one Input Mute function cdp is not in grid");
-
-        checkpars(); /* I do not know what this does? Call it after all parameters are read? */
-
-/* Sort by the 2 igi,igc values (inline and crossline grid index numbers of each cdp).       */
-
-        qsort(RecInfo,ncdp,sizeof(struct VelInfo),compSort2);
-
-        for (jcdp=1; jcdp<ncdp; ++jcdp) {
-                if(RecInfo[jcdp-1].kinf[1] == RecInfo[jcdp].kinf[1] &&
-                   RecInfo[jcdp-1].kinf[2] == RecInfo[jcdp].kinf[2]) {
-                        err("error: Two mute functions input for cdp,igi,igc = %d %d %d",
-                            RecInfo[jcdp].kinf[0],RecInfo[jcdp].kinf[1],RecInfo[jcdp].kinf[2]);
-                }
         }
 
-/* For bilinear interpolation, user must input mute function locations which form aligned rectangles.   */
-/* That is, howevermany inlines the user chooses to put mute functions on, there must always be the     */
-/* same number of functions on each inline and those functions must be located at the same crosslines.  */
-/* For instance, if user inputs mute functions for inline 7 at crosslines 15,25,40 then the user must   */
-/* input the functions at crosslines 15,25,40 for any other inlines that the user wants to supply mute  */
-/* functions for. The following code enforces that restriction on the user input.                       */
+        else { /* Read-in mute functions via q-file? */
 
-        int mgi_tot = -1;
-        for (jcdp=0; jcdp<ncdp; ++jcdp) {
-                if(RecInfo[jcdp].kinf[2] != RecInfo[0].kinf[2]) {
-                        mgi_tot = jcdp; /* since jcdp starts at 0 */
+                fpQ = fopen(Qname, "r");
+                if(fpQ==NULL) err("error: input Q-file did not open correctly.");
+
+                getviaqfile(fpQ, &pname, &numpname, &iztuple, nmore,
+                            &ktuple, &ifixd, &MInfo, &ncdp,
+                            &pindepa,  &ndims, &errwarn) ;
+
+                if(errwarn==1) err("getqinfo error: extra C_SU_NAMES record in q-file");
+                else if(errwarn==2) err("getqinfo error: extra C_SU_NDIMS record in q-file");
+                else if(errwarn==3) err("getqinfo error: C_SU_ID record not found immediately after C_SU_NAMES record.");
+                else if(errwarn==11)
+                  err("readqhead error: if C_SU_NDIMS not vary, its numbers must align with C_SU_NAMES");
+                else if(errwarn==12)
+                  err("readqhead error: C_SU_ID record not found immediately after C_SU_NAMES record.");
+                else if(errwarn==22) err("getviaqfile error: C_SU_NDIMS record not same length as C_SU_NAMES record.");
+                else if(errwarn==23) err("getviaqfile error: C_SU_NAMES tupled names out-of-order, changed");
+                else if(errwarn==24) err("getviaqfile error: C_SU_NDIMS blank where valid number expected");
+                else if(errwarn==25) err("getviaqfile error: C_SU_NDIMS non-number where valid number expected");
+                else if(errwarn==26) err("getviaqfile error: C_SU_NDIMS value must be same for all members of tuple");
+                else if(errwarn==27) err("getviaqfile error: C_SU_NAMES record followed by C_SU_ID record not found.");
+                else if(errwarn>100)
+                  err("getviaqfile error: record %d (wrong comma count, damaged, non-numbers, ...)",errwarn-99);
+                else if(errwarn>0) err("getviaqfile error: unrecognized error code %d",errwarn);
+
+                if(ifixd==2 || iztuple!=1 || ktuple!=2) 
+                  err("error: q-file does not contain cdp,offs,tims names (or they are in non-standard order)");
+
+        } /* end of else for read-in via q-file */
+
+        checkpars(); /* put this down here since getviacommand reads parameters */
+
+/* Note that the ifixd flag indicates what is going on with the INPUT    */
+/* q-records or parameter sets. The indepenent dimension name may be in  */
+/* pname list (if ifixd=0 the offs are actually in each q-record along   */
+/* with the tims, or offs are in multiple offs= parameters).             */
+/* But if ifixd=1 there is only 1 set of offs values either in the offs= */
+/* parameter or in the C_SU_NDIMS record in q-file.                      */
+/* But this does not matter since pname is not used (much) after here.   */
+/*                                                                       */
+/*      if(ifixd==0) { instead need to get rid of tnmo for ifixd=1?      */
+/*        for(k=iztuple; k<iztuple+ktuple-1; k++) pname[k] = pname[k+1]; */
+/*      }                                                                */
+/*                                                                       */
+/* Set jnloc1 to the location of the cdp values within dlots.            */
+/* Note that, in this program version, we know that cdp is at dlots[0].  */
+/* But we may want to add options to use other values (like 3d indexes)  */
+/* such as for subinqcsv.c inloc parameter (would be nice to use same    */
+/* option values in this program as for inloc parameter of subinqcsv.c)  */
+
+        jnloc1 = -1;
+        for (i=0; i<iztuple; ++i) {
+                if(strcmp(pname[i],"cdp")==0) {
+                        jnloc1 = i;
                         break;
                 }
         }
 
-        if(mgi_tot==-1) mgi_tot = ncdp; /* just incase all kinf[2] are the same value */
+        if(jnloc1!=0) err("error: input must have cdp (before offs,tims).");
 
-        int igc_set = RecInfo[0].kinf[2]; /* igc value of first set, so cannot match next set */
-        int iset_tot = mgi_tot;
-        for (jcdp=mgi_tot; jcdp<ncdp; ++jcdp) {
-                if(RecInfo[jcdp-mgi_tot].kinf[1] != RecInfo[jcdp].kinf[1]) {
-                        err("error: Input Mute functions are irregularly spaced (at cdp= %d)",RecInfo[jcdp].kinf[0]);
-                }
-                if(igc_set == RecInfo[jcdp].kinf[2]) iset_tot++;
-                else {
-                        if(iset_tot != mgi_tot) {
-                                err("error: Not same number of input Mute functions as first set (at cpd= %d)",
-                                RecInfo[jcdp].kinf[0]);
+/* Copy cdp number to kinf[0] and also set kinf[1] and kinf[2].     */
+/* Later, kinf[1] and kinf[2] are what qsort actually sorts on.     */
+/* For 3D, kinf[1] and kinf[2] are inline and crossline 3d indexes. */
+/* For 2D, we just set kinf[1] to cdp number, and kinf[2] to 1.     */
+
+        for (icdp=0; icdp<ncdp; ++icdp) MInfo[icdp].kinf = ealloc1int(3);
+
+        if(is3d>0) {
+                for (icdp=0; icdp<ncdp; ++icdp) {
+                        MInfo[icdp].kinf[0] = lrint(MInfo[icdp].dlots[jnloc1]);
+                        gridcdpic(gvals,MInfo[icdp].kinf[0],MInfo[icdp].kinf+1,MInfo[icdp].kinf+2);
+                        if(MInfo[icdp].kinf[1] < -2147483644)
+                          err("error: input cdp %d is not in grid",MInfo[icdp].kinf[0]);
+                        if(icheck>0) {
+                                gridicgridxy(gvals,MInfo[icdp].kinf[1],MInfo[icdp].kinf[2],&xg,&yg);
+                                gridicrawxy(gvals,MInfo[icdp].kinf[1],MInfo[icdp].kinf[2],&xw,&yw);
+                                warn("G,%12d,%12d,%12d,  %.20g,%.20g,  %.20g,%.20g",
+                                MInfo[icdp].kinf[0],MInfo[icdp].kinf[1],MInfo[icdp].kinf[2],xg,yg,xw,yw);
                         }
-                        igc_set = RecInfo[jcdp].kinf[2];
-                        iset_tot = 1;
+                }
+        }
+        else {
+                for (icdp=0; icdp<ncdp; ++icdp) {
+                        MInfo[icdp].kinf[0] = lrint(MInfo[icdp].dlots[jnloc1]);
+                        MInfo[icdp].kinf[1] = MInfo[icdp].kinf[0]; /* set these for 2d */
+                        MInfo[icdp].kinf[2] = 1;                   /* set these for 2d */
                 }
         }
 
-        int mgc_tot = ncdp/mgi_tot;
+/* The following iprint option is not intended to be pretty. For the users it usually just   */
+/* allows a quick look to confirm they have the correct q-file (or, just use a text editor). */
+/* For you the programmer, it presents simple code to see where the offs and tims values     */
+/* are stored by getviacommand and getviaqfile. Note in particular that tims always          */
+/* start at dlots[iztuple] for each cdp. The offs are either stored AFTER all tims           */
+/* for each cdp, or just ONCE at pointer pindepa (if ifixd flag is 1).                       */
+/* So, yes, an input ifixd=0 q-file has values in offs,tims pair order, but they have been   */
+/* de-multiplexed into all tims at that cdp followed by all offs at that cdp (i.e. arrays).  */
 
-/* OK, a brief review so as not to get confused here. We sorted on 2 values (inline and crossline */
-/* numbers of each cdp). Then we checked/enforced the restriction that there always be the same   */
-/* specified crossline locations ON every specified inline. That is, we made sure that we always  */
-/* things like 5inlines by 3crosslines or 17inlines by 12crosslines or whatever. So, we have      */
-/* effectively forced the users to specify a 2-dimensional array. Now we are going to take        */
-/* advantage of that fact within binterpfind by binary-searching each dimension separately in     */
-/* order to find the 4 surrounding locations that we need for bilinear interpolation.             */
-/* So, allocate and copy the inline and crossline numbers from the sorted RecInfo.                */
+        if(iprint>0) {
 
-        int *mgi = ealloc1int(mgi_tot);
-        int *mgc = ealloc1int(mgc_tot);
+                if(ifixd==0) {
+                        for(jcdp=0; jcdp<ncdp; jcdp++) {
+                                warn(" cpd= %d   Number of offs,tims pairs= %d",MInfo[jcdp].kinf[0],MInfo[jcdp].nto);
+                                for(i=0; i<MInfo[jcdp].nto; i++) {
+                                  warn(" %f %f ",MInfo[jcdp].dlots[iztuple+MInfo[jcdp].nto+i],MInfo[jcdp].dlots[iztuple+i]);
+                                }
+                        }
+                }
+                else if(ifixd==1) {
+                        warn(" Number of offs= %d",MInfo[0].nto);
+                        for(i=0; i<MInfo[0].nto; i++) warn(" %f ",pindepa[i]);
+                        for(jcdp=0; jcdp<ncdp; jcdp++) {
+                                warn(" cpd= %d   Number of tims= %d",MInfo[jcdp].kinf[0],MInfo[jcdp].nto);
+                                for(i=0; i<MInfo[0].nto; i++) warn(" %f ",MInfo[jcdp].dlots[iztuple+i]);
+                        }
+                }
 
-        for (k=0; k<mgi_tot; ++k) mgi[k] = RecInfo[k].kinf[1];
-        for (k=0; k<mgc_tot; ++k) mgc[k] = RecInfo[k*mgi_tot].kinf[2];
+        } /* end of  if(iprint>0) { */
 
-        int kigi = 0;
-        int kigc = 1; /* set to 1 in case this is a 2D */ 
+/* Check that independent dimension values are input in increasing order.   */
+/* Note that we could just sort the tuples into increasing order ourselves. */
+/* But that is far too likely to induce errors. One mis-typed value in the  */
+/* input and the results will be subtly bad (and, if you don't know by now, */
+/* subtly bad is the worst-kind-of-bad in seismic data processing).         */
 
-        int mgix = 0;
-        int mgcx = 0;
-        float wi = 0.;
-        float wc = 0.;
+        if(ifixd==0) {
+                for(jcdp=0; jcdp<ncdp; jcdp++) {
+                        pindepa = MInfo[jcdp].dlots+iztuple+MInfo[jcdp].nto;
+                        for(i=1; i<MInfo[jcdp].nto; i++) {
+                                if(pindepa[i-1] >= pindepa[i])
+                                  err("error: offs values are not increasing (input cdp = %d)",MInfo[jcdp].kinf[0]);
+                        }
+                }
+        }
+        else if(ifixd==1) {
+                for(i=1; i<MInfo[0].nto; i++) {
+                        if(pindepa[i-1] >= pindepa[i]) err("error: offs values are not increasing.");
+                }
+        }
 
-/* ndxi,ndxc are the element numbers that will be computed for the stored mute functions. */
-/* For the degenerate cases of just 1 inline or 1 crossline, set mgi_totdeg = 0 so that   */
-/* ndxc does not get set to access elements that do not exist. For the degenerate cases   */
-/* it actually does not matter which 2 extra functions are being accessed since their     */
-/* weight values wi or wc will be 0.                                                      */
+/* For bilinear interpolation, user must input function locations which form aligned rectangles.  */
+/* That is, howevermany inlines the user chooses to put functions on, there must be the same      */
+/* number of functions on each inline and those functions must be located at the same crosslines. */
+/* For instance, if user inputs functions for inline 7 at crosslines 15,25,40 then the user must  */
+/* input the functions at crosslines 15,25,40 for any other inlines that the user wants to supply */
+/* functions for. The qsplit function enforces that restriction on the user input - and also      */
+/* separates the igi and igc values into 2 simple arrays.                                         */
+/*   The qsplit function expects the values to be sorted by igi,igc values.                       */
+/*   The results of qsplit are then used by binterpfind and binterpapply.                         */
 
-        int ndxi = 0; 
-        int ndxc = 0;
-        int mgi_totdeg = mgi_tot;
+        qsort(MInfo,ncdp,sizeof(struct QInfo),compSort2);
+
+        for (jcdp=1; jcdp<ncdp; ++jcdp) {
+                if(MInfo[jcdp-1].kinf[1] == MInfo[jcdp].kinf[1] &&
+                   MInfo[jcdp-1].kinf[2] == MInfo[jcdp].kinf[2]) {
+                        err("error: Two sets of values input for cdp,igi,igc = %d %d %d",
+                        MInfo[jcdp].kinf[0],MInfo[jcdp].kinf[1],MInfo[jcdp].kinf[2]);
+                }
+        }
+
+/* (Note: qsort is a standard c function, qsplit is a function in su/lib/qdefine.c). */
+
+        qsplit(MInfo,ncdp,&mgi,&mgi_tot,&mgc,&mgc_tot,&errwarn);
+
+        mgi_totdeg = mgi_tot; /* read explanation of mgi_totdeg later */
         if(mgi_tot==1 || mgc_tot==1) mgi_totdeg = 0;
 
 	/* loop over traces */
@@ -576,12 +579,51 @@ main(int argc, char **argv)
                 fval = vtof(type,val);
                 if (iabsoff==1) fval = fabsf(fval);
 
-                if(ncdp<2) { /* if just one mute function, we MUST call linterpmute directly. */ 
-                        linterpmute(fval,RecInfo[0].offs,RecInfo[0].tims,RecInfo[0].nto,mgtextr,&t);
+                dfval = fval;
+ 
+                if(ncdp<2) { /* if just one mute function */ 
+                        if(ifixd==0) { /* see iprint for a simpler example of where these offs,tims are in dlots */
+                          binterpvalue(dfval,mgtextr,
+                          MInfo[0].dlots+iztuple+MInfo[0].nto,MInfo[0].dlots+iztuple,MInfo[0].nto,
+                          MInfo[0].dlots+iztuple+MInfo[0].nto,MInfo[0].dlots+iztuple,MInfo[0].nto,
+                          1,wi,
+                          MInfo[0].dlots+iztuple+MInfo[0].nto,MInfo[0].dlots+iztuple,MInfo[0].nto,
+                          MInfo[0].dlots+iztuple+MInfo[0].nto,MInfo[0].dlots+iztuple,MInfo[0].nto,
+                          1,wc,&dwbt);
+                        }
+                        else {
+                          binterpvalue(dfval,mgtextr,
+                          pindepa,MInfo[0].dlots+iztuple,MInfo[0].nto,
+                          pindepa,MInfo[0].dlots+iztuple,MInfo[0].nto,
+                          1,wi,
+                          pindepa,MInfo[0].dlots+iztuple,MInfo[0].nto,
+                          pindepa,MInfo[0].dlots+iztuple,MInfo[0].nto,
+                          1,wc,&dwbt);
+                        }
+                      
+/* Note: So as not to change the code copied from sumute, t will be in seconds herein */
+                        t = dwbt / 1000.;
                 }
                 else if(tr.cdp==oldcdp) { /* just compute time for new offset */
-                        binterpvalue(fval,mgtextr,RecInfo[ndxi-1],RecInfo[ndxi],mgi_tot,wi,
-                                                  RecInfo[ndxc-1],RecInfo[ndxc],mgc_tot,wc,&t);
+                        if(ifixd==0) { /* see iprint for a simpler example of where these offs,tims are in dlots */
+                          binterpvalue(dfval,mgtextr,
+                          MInfo[ndxi-1].dlots+iztuple+MInfo[ndxi-1].nto,MInfo[ndxi-1].dlots+iztuple,MInfo[ndxi-1].nto,
+                          MInfo[ndxi  ].dlots+iztuple+MInfo[ndxi  ].nto,MInfo[ndxi  ].dlots+iztuple,MInfo[ndxi  ].nto,
+                          mgi_tot,wi,
+                          MInfo[ndxc-1].dlots+iztuple+MInfo[ndxc-1].nto,MInfo[ndxc-1].dlots+iztuple,MInfo[ndxc-1].nto,
+                          MInfo[ndxc  ].dlots+iztuple+MInfo[ndxc  ].nto,MInfo[ndxc  ].dlots+iztuple,MInfo[ndxc  ].nto,
+                          mgc_tot,wc,&dwbt);
+                        }
+                        else {
+                          binterpvalue(dfval,mgtextr,
+                          pindepa,MInfo[ndxi-1].dlots+iztuple,MInfo[ndxi-1].nto,
+                          pindepa,MInfo[ndxi  ].dlots+iztuple,MInfo[ndxi  ].nto,
+                          mgi_tot,wi,
+                          pindepa,MInfo[ndxc-1].dlots+iztuple,MInfo[ndxc-1].nto,
+                          pindepa,MInfo[ndxc  ].dlots+iztuple,MInfo[ndxc  ].nto,
+                          mgc_tot,wc,&dwbt);
+                        }
+                        t = dwbt / 1000.;
                 }
                 else {
                         oldcdp = tr.cdp;
@@ -597,7 +639,7 @@ main(int argc, char **argv)
                                     &mgix,&mgcx,&wi,&wc);
 
                         /* mgix and mgcx are the locations computed for each dimension seperately.    */
-                        /* From them, compute the element numbers of the stored functions in RecInfo. */
+                        /* From them, compute the element numbers of the stored functions in MInfo.   */
                         /* Note that for the degenerate cases of mgi_tot=1 or mgc_tot=1 the           */
                         /* mgi_totdeg=0, which results in ndxc=ndxi, which in turn means the second   */
                         /* two functions passed to binterpvalue are the same as the first two         */
@@ -613,9 +655,26 @@ main(int argc, char **argv)
                         /* That means the 4 locations are ndxi-1,ndxi and ndxc-1,ndxc.                */
 
                         /* use the 4 locations and their offs,tims and get mute time at fval offset)  */
-                        binterpvalue(fval,mgtextr,RecInfo[ndxi-1],RecInfo[ndxi],mgi_tot,wi,
-                                                  RecInfo[ndxc-1],RecInfo[ndxc],mgc_tot,wc,&t);
 
+                        if(ifixd==0) { /* see iprint for a simpler example of where these offs,tims are in dlots */
+                          binterpvalue(dfval,mgtextr,
+                          MInfo[ndxi-1].dlots+iztuple+MInfo[ndxi-1].nto,MInfo[ndxi-1].dlots+iztuple,MInfo[ndxi-1].nto,
+                          MInfo[ndxi  ].dlots+iztuple+MInfo[ndxi  ].nto,MInfo[ndxi  ].dlots+iztuple,MInfo[ndxi  ].nto,
+                          mgi_tot,wi,
+                          MInfo[ndxc-1].dlots+iztuple+MInfo[ndxc-1].nto,MInfo[ndxc-1].dlots+iztuple,MInfo[ndxc-1].nto,
+                          MInfo[ndxc  ].dlots+iztuple+MInfo[ndxc  ].nto,MInfo[ndxc  ].dlots+iztuple,MInfo[ndxc  ].nto,
+                          mgc_tot,wc,&dwbt);
+                        }
+                        else {
+                          binterpvalue(dfval,mgtextr,
+                          pindepa,MInfo[ndxi-1].dlots+iztuple,MInfo[ndxi-1].nto,
+                          pindepa,MInfo[ndxi  ].dlots+iztuple,MInfo[ndxi  ].nto,
+                          mgi_tot,wi,
+                          pindepa,MInfo[ndxc-1].dlots+iztuple,MInfo[ndxc-1].nto,
+                          pindepa,MInfo[ndxc  ].dlots+iztuple,MInfo[ndxc  ].nto,
+                          mgc_tot,wc,&dwbt);
+                        }
+                        t = dwbt / 1000.;
                 }
 
                /* do the mute */
@@ -678,229 +737,13 @@ main(int argc, char **argv)
 	return(CWP_Exit());
 }
 
-/* Find the 4 storage locations associated with the cdp's grid index locations (kigi,kigc).  */
-/* The 4 locations are: mgixo,mgcxo and mgixo-1,mgcxo and mgixo,mgcxo-1 and mgixo-1,mgcxo-1. */
-/* These 4 locations do not always surround the trace cdp location. For instance, for cdps   */
-/* below the minimum igi value of the input functions, mgixo is returned 1 anyway (not 0).   */
-/* But the wi weight is returned as 1.0 so only the lowest igi mute function contributes to  */
-/* resulting mute time from binterpvalue. Similarly, for cdps above the maximum igi value    */
-/* of input mute functions, mgixo is returned as maximum BUT wi weight is returned as 0 so   */
-/* only the highest mute function contributes to the resulting mute time from binterpvalue.  */
-/*                                                                                           */
-/* Input arguments:                                                                          */
-/*                                                                                           */
-/* kigi      igi number of cdp (the 3D grid inline location of the cdp)                      */
-/*                                                                                           */
-/* mgi       array of igi numbers of the mute functions (3D grid inline locations)           */
-/*                                                                                           */
-/* mgi_tot   number of values in mgi array                                                   */
-/*                                                                                           */
-/* mgiextr=0 no extrapolation at igi ends                                                    */
-/*        =1 extrapolate both lower and higher ends                                          */
-/*        =2 extrapolate only at lower end                                                   */
-/*        =3 extrapolate only at higher                                                      */
-/*                                                                                           */
-/* kigc      igc number of cdp (the 3D grid crossline location of the cdp)                   */
-/*                                                                                           */
-/* mgc       array of igc numbers of the mute functions (3D grid crossline locations)        */
-/*                                                                                           */
-/* mgc_tot   number of values in mgc array                                                   */
-/*                                                                                           */
-/* mgcextr=0 no extrapolation at igc ends                                                    */
-/*        =1 extrapolate both lower and higher ends                                          */
-/*        =2 extrapolate only at lower end                                                   */
-/*        =3 extrapolate only at higher                                                      */
-/*                                                                                           */
-/*                                                                                           */
-/* Output arguments:                                                                         */
-/*                                                                                           */
-/* mgixo     mgi element number where mgi[mgixo] is usually greater than kigi (there is      */
-/*           some trickyness here, read the note below)                                      */
-/*                                                                                           */
-/* mgcxo     mgc element number where mgc[mgcxo] is usually greater than kigc (there is      */
-/*           some trickyness here, read the note below)                                      */
-/*                                                                                           */
-/* wi        weight in the igi direction.                                                    */
-/*           This weight should be applied to the TWO mute functions associated with mgixo-1 */
-/*           and (1.-wi) should be applied to the TWO mute functions associated with mgixo.  */
-/*                                                                                           */
-/* wc        weight in the igc direction                                                     */
-/*           This weight should be applied to the TWO mute functions associated with mgcxo-1 */
-/*           and (1.-wc) should be applied to the TWO mute functions associated with mgcxo.  */
-/*                                                                                           */
-
-static void binterpfind(int kigi, int *mgi, int mgi_tot, int mgiextr,
-                        int kigc, int *mgc, int mgc_tot, int mgcextr,
-                        int *mgixo, int *mgcxo, float *wi, float *wc) {
-
-  if(mgi_tot==1 && mgc_tot==1) { 
-    *wi    = 1.;
-    *wc    = 0.;
-    *mgixo = 1; 
-    *mgcxo = 1;
-    return;
-  }
-
-/* Note the trickyness here. We never return an mgix=0 because other  */
-/* code is going to use mgix-1 for the lower "surrounding" location.  */
-/* So, for kigi less than lowest, we set mgix=1. But we reset kigi so */
-/* subsequent computation puts all weight on the values at mgi[0]     */
-/* (unless we want to extrapolate the low end).                       */
-/*                                                                    */
-/* But when kigi is greater than highest, we set mgix to highest and  */
-/* reset kigi so that subsequent computation puts all weight on the   */
-/* values at the highest (unless we want to extrapolate the high end).*/
-
-  int mgix;
-  if(kigi<=mgi[0]) {
-    mgix = 1;
-    if(mgiextr==0 || mgiextr==3) kigi = mgi[0];
-  }
-  else if(kigi>=mgi[mgi_tot-1]) { 
-    mgix = mgi_tot - 1;     
-    if(mgiextr==0 || mgiextr==2) kigi = mgi[mgi_tot-1];
-  }
-  else {
-    mgix = bhighi(mgi, mgi_tot, kigi);
-  }
-
-  if(mgc_tot==1) {
-    *wi    = ((float)(mgi[mgix]-kigi)) / ((float)(mgi[mgix]-mgi[mgix-1]));
-    *wc    = 0.; 
-    *mgixo = mgix;
-    *mgcxo = 1;
-    return;
-  }
-
-/* Same trickyness next as explained above.  */
-
-  int mgcx;
-  if(kigc<=mgc[0]) {
-    mgcx = 1;
-    if(mgcextr==0 || mgcextr==3) kigc = mgc[0];
-  }
-  else if(kigc>=mgc[mgc_tot-1]) {
-    mgcx = mgc_tot - 1;    
-    if(mgcextr==0 || mgcextr==2) kigc = mgc[mgc_tot-1];
-  }
-  else {
-    mgcx = bhighi(mgc, mgc_tot, kigc);
-  }
-
-  if(mgi_tot==1) { 
-    *wi    = 0.;
-    *wc    = ((float)(mgc[mgcx]-kigc)) / ((float)(mgc[mgcx]-mgc[mgcx-1]));
-    *mgixo = 1;
-    *mgcxo = mgcx;
-    return;
-  }
-
-  *wi    = ((float)(mgi[mgix]-kigi)) / ((float)(mgi[mgix]-mgi[mgix-1]));
-  *wc    = ((float)(mgc[mgcx]-kigc)) / ((float)(mgc[mgcx]-mgc[mgcx-1]));
-  *mgixo = mgix;
-  *mgcxo = mgcx;
-
-  return;
-}
-
-/* Use the storage locations and weights found by binterpfind and compute the mute  */
-/* time related to the input offset (by linear interpolation within those functions */
-/* and then applying the input wi,wc weigths).                                      */
-/* Note: Within SUNMOCSV.C binterpfind and binterpvalue are done within one routine,*/
-/*       but here they are seperated into 2 routines because you cannot pre-compute */
-/*       and store mute times for all possible offsets. The mute time for an offset */
-/*       must be computed on-the-fly, but I still want to be able to skip over the  */
-/*       binterpfind code when a trace belongs to same cdp as the previous trace.   */
-
-static void binterpvalue(float offset, int mgtextr,
-                         struct VelInfo lwi, struct VelInfo hii, int mgi_tot, float wi, 
-                         struct VelInfo lwc, struct VelInfo hic, int mgc_tot, float wc,
-                         float *timeout) {
-
-  if(mgi_tot==1 && mgc_tot==1) { /* never get here in sumutecsv due to previous code*/ 
-    linterpmute(offset,lwi.offs,lwi.tims,lwi.nto,mgtextr,timeout);
-    return;
-  }
-
-  *timeout = 0.;
-  float time = 0.;
-
-  if(mgc_tot==1) {
-    if(wi != 0.) { /* because of extrapolation options, check exactly 0 */
-      linterpmute(offset,lwi.offs,lwi.tims,lwi.nto,mgtextr,&time);
-      *timeout += wi*time;  
-    }
-    if(wi != 1.) { /* because of extrapolation options, check exactly 1 */
-      linterpmute(offset,hii.offs,hii.tims,hii.nto,mgtextr,&time);
-      *timeout += (1.0-wi)*time;  
-    }
-    return;
-  }
-
-  if(mgi_tot==1) { 
-    if(wc != 0.) {
-      linterpmute(offset,lwc.offs,lwc.tims,lwc.nto,mgtextr,&time);
-      *timeout += wc*time;  
-    }
-    if(wc != 1.) {
-      linterpmute(offset,hic.offs,hic.tims,hic.nto,mgtextr,&time);
-      *timeout += (1.0-wc)*time;  
-    }
-    return;
-  }
-
-/* The 4 point weighting equation looks like this:           */  
-/*  *timeout =  wc      * (wi*timea + (1.0-wi)*timeb)        */  
-/*           + (1.0-wc) * (wi*timec + (1.0-wi)*timed);       */
-/*                                                           */
-/* But reduce some brackets and it looks like this:          */  
-/*  *timeout =  wc*wi*timea + wc*(1.0-wi)*timeb              */  
-/*           + (1.0-wc)*wi*timec + (1.0-wc)*(1.0-wi)*timed;  */
-/*                                                           */
-/* So we can isolate the weight factors needed for each of   */  
-/* the 4 locations, as follows:                              */  
-
-  float aw = wc*wi;
-  float bw = wc*(1.0-wi);
-  float cw = (1.0-wc)*wi;
-  float dw = (1.0-wc)*(1.0-wi);
-
-/* Which means we do not have to call linterpmute when we    */  
-/* know the corresponding weight is zero. This may seem like */  
-/* it will only save a small amount of CPU time but remember */  
-/* that most situations have many cdps outside of the area   */  
-/* that is completely surrounded by input mute locations.    */  
-/* When outside the surrounded area, the binterpfind routine */  
-/* has produced wi=0 or 1 and/or wc=0 or 1.                  */  
-
-  if(aw != 0.) {
-    linterpmute(offset,lwi.offs,lwi.tims,lwi.nto,mgtextr,&time);
-    *timeout += aw*time;
-  }
-  if(bw != 0.) {
-    linterpmute(offset,hii.offs,hii.tims,hii.nto,mgtextr,&time);
-    *timeout += bw*time;
-  }
-
-  if(cw != 0.) {
-    linterpmute(offset,lwc.offs,lwc.tims,lwc.nto,mgtextr,&time);
-    *timeout += cw*time;
-  }
-  if(dw != 0.) {
-    linterpmute(offset,hic.offs,hic.tims,hic.nto,mgtextr,&time);
-    *timeout += dw*time;
-  }
-
-  return;
-}
-
 /* -----------------------------------------------------------         */
 /* Specify compare function for qsort.                                 */
 
 int compSort2 (const void * q1, const void * q2) {
 
-  struct VelInfo* p1 = (struct VelInfo*) q1;
-  struct VelInfo* p2 = (struct VelInfo*) q2;
+  struct QInfo* p1 = (struct QInfo*) q1;
+  struct QInfo* p2 = (struct QInfo*) q2;
 
 /* Note I decided so sort to igc,igi order (kinf[2], then kinf[1])     */
 
@@ -911,79 +754,4 @@ int compSort2 (const void * q1, const void * q2) {
 
   return (0); 
 
-}
-
-/* Standard binary search. But which side includes equal value */
-/* is an important detail for other code in this program.      */
-
-int bhighi(int *all, int last, int iguy) {
-  int mid;
-  int low = 0;
-  int high = last;
-  while (low < high) {
-    mid = low + (high - low) / 2;
-    if (iguy >= all[mid]) low = mid +1;
-    else high = mid;
-  }
-  return low;
-}
-
-/* Linearly interpolate time at desired offset from arrays of offsets and times.      */
-/*                                                                                    */
-/* Input arguments:                                                                   */
-/*  offset = the offset of the desire output time                                     */
-/*  offs   = array of offsets (in increasing order)                                   */
-/*  tims   = a time for each input offset                                             */
-/*  nto    = number of offs and tims values (must be >0, can be =1)                   */
-/*  mgtextr=0 no extrapolation at offset ends                                         */
-/*         =1 extrapolate both lower and higher ends                                  */
-/*         =2 extrapolate only at lower end                                           */
-/*         =3 extrapolate only at higher                                              */
-/*                                                                                    */
-/* Output argument:                                                                   */
-/*  time   = linearly interpolated time value for input offset value                  */
-
-static void linterpmute(float offset,float *offs,float *tims,int nto,int mgtextr,float *time) {
-
-  if(nto<2) {
-    *time = tims[0];
-    return;
-  }
-
-  int n = 1;
-  if(offset <= offs[0]) {
-    if(mgtextr==0 || mgtextr==3) {
-      *time = tims[0];
-      return;
-    }
-/*  needs to be n=1 here, but already initialed 1 (to avoid compiler warnings) */
-  }
-  else if(offset >= offs[nto-1]) {
-    if(mgtextr==0 || mgtextr==2) {
-      *time = tims[nto-1];
-      return;
-    }
-    n = nto - 1;
-  }
-  else {
-    n = bhighf(offs, nto, offset);
-  }
-
-  float wo = (offs[n]-offset) / (offs[n]-offs[n-1]);
-  *time = wo*tims[n-1] + (1.0-wo)*tims[n];
-
-  return;
-
-}
-
-int bhighf(float *all, int last, float iguy) {
-  int mid;
-  int low = 0;
-  int high = last;
-  while (low < high) {
-    mid = low + (high - low) / 2;
-    if (iguy >= all[mid]) low = mid +1;
-    else high = mid;
-  }
-  return low;
 }

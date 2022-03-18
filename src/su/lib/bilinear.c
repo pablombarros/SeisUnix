@@ -2,6 +2,7 @@
 
 #include "su.h"
 #include "bilinear.h"
+#include "linterpd.h"
 
 /* Find the 4 storage locations associated with the cdp's grid index locations (kigi,kigc).  */
 /* The 4 locations are: mgixo,mgcxo and mgixo-1,mgcxo and mgixo,mgcxo-1 and mgixo-1,mgcxo-1. */
@@ -197,6 +198,13 @@ void binterpfind(int kigi, int *mgi, int mgi_tot, int mgiextr,
 /* valsout - output array containing weighted sum of the 4 input arrays      */
 /*           (length must be lwinto or greater)                              */
 /*                                                                           */
+/* ------------------------------------------------------------------------- */
+/* NOTE that program sunmocsv uses binterpapply whereas program sumutecsv    */
+/*      uses binterpvalue. The reason is that sunmocsv pre-computes and      */
+/*      stores arrays of velocities (a velocity for each sample time).       */
+/*      But sumutecsv computes the mute time on-the-fly for the offset       */
+/*      from each trace.                                                     */
+/*                                                                           */
 void binterpapply(double *lwitims, double *hiitims, int mgi_tot, double wi, 
                   double *lwctims, double *hictims, int mgc_tot, double wc,
                   int lwinto, double *valsout) {
@@ -277,19 +285,142 @@ void binterpapply(double *lwitims, double *hiitims, int mgi_tot, double wi,
   return;
 }
 
-/* Standard binary search. But which side includes equal value */
-/* is an important detail for other code herein.               */
+/* Compute mute time for an offset distance.                                 */
+/* (Note that offset distance and mute time are just the typical way this    */
+/*  routine is used so I am explaining it that way.)                         */
+/*                                                                           */
+/* Use the storage locations and weights found by binterpfind and compute    */
+/* mute time related to the input offset (by linear interpolation within     */
+/* those functions and then by applying the input wi,wc weigths).            */
+/*                                                                           */
+/*                                                                           */
+/* Input arguments:                                                          */
+/*                                                                           */
+/* lwioffs - offset array at low igi location found by binterpfind           */
+/*                                                                           */
+/* lwitims -  time  array at low igi location found by binterpfind           */
+/*                                                                           */
+/* lwinto  - number of values in lwioffs,lwitims arrays                      */
+/*                                                                           */
+/* hwioffs - offset array at high igi location found by binterpfind          */
+/*                                                                           */
+/* hwitims -  time  array at high igi location found by binterpfind          */
+/*                                                                           */
+/* hwinto  - number of values in hwioffs,hwitims arrays                      */
+/*                                                                           */
+/* mgi_tot - number of mgi values (just a flag herein, 1 is handled special).*/
+/*                                                                           */
+/* wi      - weight associated with igi direction (returned by binterpfind)  */
+/*                                                                           */
+/* lwcoffs - offset array at low igc location found by binterpfind           */
+/*                                                                           */
+/* lwctims -  time  array at low igc location found by binterpfind           */
+/*                                                                           */
+/* lwcnto  - number of values in lwcoffs,lwctims arrays                      */
+/*                                                                           */
+/* hwcoffs - offset array at high igc location found by binterpfind          */
+/*                                                                           */
+/* hwctims -  time  array at high igc location found by binterpfind          */
+/*                                                                           */
+/* hwcnto  - number of values in hwcoffs,hwctims arrays                      */
+/*                                                                           */
+/* mgc_tot - number of mgc values (just a flag herein, 1 is handled special).*/
+/*                                                                           */
+/* wc      - weight associated with igc direction (returned by binterpfind)  */
+/*                                                                           */
+/* Output Argument:                                                          */
+/*                                                                           */
+/* timeout - output value                                                    */
+/*                                                                           */
+/* ------------------------------------------------------------------------- */
+/* NOTE that program sunmocsv uses binterpapply whereas program sumutecsv    */
+/*      uses binterpvalue. The reason is that sunmocsv pre-computes and      */
+/*      stores arrays of velocities (a velocity for each sample time).       */
+/*      But sumutecsv computes the mute time on-the-fly for the offset       */
+/*      from each trace.                                                     */
 
-int bhighi(int *all, int last, int iguy) {
-  int mid; 
-  int low = 0; 
-  int high = last;
-  while (low < high) {
-    mid = low + (high - low) / 2; 
-    if (iguy >= all[mid]) low = mid +1;
-    else high = mid; 
+void binterpvalue(double offset, int mgtextr,
+                  double *lwioffs, double *lwitims, int lwinto,
+                  double *hiioffs, double *hiitims, int hiinto, 
+                  int mgi_tot, double wi, 
+                  double *lwcoffs, double *lwctims, int lwcnto,
+                  double *hicoffs, double *hictims, int hicnto, 
+                  int mgc_tot, double wc,
+                  double *timeout) {
+
+  if(mgi_tot==1 && mgc_tot==1) {  
+    linterpd(offset,lwioffs,lwitims,lwinto,mgtextr,timeout);
+    return;
   }
-  return low; 
+
+  *timeout = 0.;
+  double time = 0.;
+
+  if(mgc_tot==1) {
+    if(wi != 0.) { /* because of extrapolation options, check exactly 0 */
+      linterpd(offset,lwioffs,lwitims,lwinto,mgtextr,&time);
+      *timeout += wi*time;  
+    }
+    if(wi != 1.) { /* because of extrapolation options, check exactly 1 */
+      linterpd(offset,hiioffs,hiitims,hiinto,mgtextr,&time);
+      *timeout += (1.0-wi)*time;  
+    }
+    return;
+  }
+
+  if(mgi_tot==1) { 
+    if(wc != 0.) {
+      linterpd(offset,lwcoffs,lwctims,lwcnto,mgtextr,&time);
+      *timeout += wc*time;  
+    }
+    if(wc != 1.) {
+      linterpd(offset,hicoffs,hictims,hicnto,mgtextr,&time);
+      *timeout += (1.0-wc)*time;  
+    }
+    return;
+  }
+
+/* The 4 point weighting equation looks like this:           */  
+/*  *timeout =  wc      * (wi*timea + (1.0-wi)*timeb)        */  
+/*           + (1.0-wc) * (wi*timec + (1.0-wi)*timed);       */
+/*                                                           */
+/* But reduce some brackets and it looks like this:          */  
+/*  *timeout =  wc*wi*timea + wc*(1.0-wi)*timeb              */  
+/*           + (1.0-wc)*wi*timec + (1.0-wc)*(1.0-wi)*timed;  */
+/*                                                           */
+/* So we can isolate the weight factors needed for each of   */  
+/* the 4 locations, as follows:                              */  
+
+  double aw = wc*wi;
+  double bw = wc*(1.0-wi);
+  double cw = (1.0-wc)*wi;
+  double dw = (1.0-wc)*(1.0-wi);
+
+/* Which means we do not have to call linterpd when we know  */  
+/* the corresponding weight is zero. This may seem like it   */  
+/* will only save a small amount of CPU time but remember    */  
+/* that most situations have many cdps outside of the area   */  
+/* that is completely surrounded by input mute locations.    */  
+/* When outside the surrounded area, the binterpfind routine */  
+/* produces wi=0 or 1 and/or wc=0 or 1 if NOT extrapolating. */  
+
+  if(aw != 0.) {
+    linterpd(offset,lwioffs,lwitims,lwinto,mgtextr,&time);
+    *timeout += aw*time;
+  }
+  if(bw != 0.) {
+    linterpd(offset,hiioffs,hiitims,hiinto,mgtextr,&time);
+    *timeout += bw*time;
+  }
+
+  if(cw != 0.) {
+    linterpd(offset,lwcoffs,lwctims,lwcnto,mgtextr,&time);
+    *timeout += cw*time;
+  }
+  if(dw != 0.) {
+    linterpd(offset,hicoffs,hictims,hicnto,mgtextr,&time);
+    *timeout += dw*time;
+  }
+
+  return;
 }
-
-
