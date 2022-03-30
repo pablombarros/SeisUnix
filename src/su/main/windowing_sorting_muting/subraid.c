@@ -229,7 +229,9 @@ int main(int argc, char **argv) {
 
 int compdouble (double *p1, double *p2, int nkeys) {
 
-  for(int n=0; n<nkeys; n++) {  
+  int n = 0;
+
+  for(n=0; n<nkeys; n++) {  
     if(p1[n] < p2[n]) return (-1);
     if(p1[n] > p2[n]) return (1); 
   }
