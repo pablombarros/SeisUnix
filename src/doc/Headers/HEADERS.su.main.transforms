@@ -11,7 +11,6 @@ SUHILB - Hilbert transform
 SUICEPSTRUM - fft of complex log frequency traces to real time traces
 SUICLOGFFT - fft of complex log frequency traces to real time traces
 SUIFFT - fft complex frequency traces to real time traces	
-SUMINPHASE - convert input to minimum phase				
 SUPHASEVEL - Multi-mode PHASE VELocity dispersion map computed
 SURADON - compute forward or reverse Radon transform or remove multiples
 SUSLOWFT - Fourier Transforms by a (SLOW) DFT algorithm (Not an FFT)

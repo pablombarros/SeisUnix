@@ -8,7 +8,8 @@
 
  Optional parameters:							
 	v=1500.0		speed of sound in the top layer		
-	r=0.5			surface reflectivity 0 < r < .7		
+	r=0.5			surface reflectivity 0 < r < .8		
+	lambert=1 		Lambert's cosine law obliquity factor	
        dt= (from header)       time sampling interval (sec)        	
 	verbose=0		=1 for advisory messages, =2 debugging	
 	deghost=1		deghosting filter; =0 ghosting filter	
@@ -21,7 +22,7 @@
  incident and the ghost delay time is 2h/v.				
 
  If the input data are in the (tau,p) domain, then it is assumed that  
- f2=\'first p value\' and d1=\'increment in p\' and the ghost delay time
+ f2=\'first p value\' and d2=\'increment in p\' and the ghost delay time
  is assumed to be (2h/v) sqrt{1 - v^2 p^2}, addressing the angular	
  dependence of the ghost delay. 					
 
@@ -42,9 +43,12 @@
  Caveats:								
  The value of r is the reflectivity of the sea surface, which may be   
  both dependent on frequency and on the angle of incidence. The program
- may be unstable if r > .6 is chosen.					
+ may be unstable if r > .8 is chosen.					
 
  Smaller values of dp may be needed to retain high frequencies		
+
+ For lambert=1 a cosine obliquity law is chosen. Frequency dependence  
+ of reflectivity is not addressed.		 			
 
  Credits:
       CWP: John Stockwell (2021)

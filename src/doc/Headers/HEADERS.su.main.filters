@@ -10,6 +10,7 @@ SUKFILTER - radially symmetric K-domain, sin^2-tapered, polygonal
 SUKFRAC - apply FRACtional powers of i|k| to data, with phase shift 
 SULFAF -  Low frequency array forming					", 
 SUMEDIAN - MEDIAN filter about a user-defined polygonal curve with	
+SUMINPHASE - convert input to minimum phase				
 SUPHASE - PHASE manipulation by linear transformation			
 SUSMGAUSS2 --- SMOOTH a uniformly sampled 2d array of velocities	
 SUSVDFILT - SVD (Eigen) filter					

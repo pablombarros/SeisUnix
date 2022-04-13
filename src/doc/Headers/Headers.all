@@ -149,6 +149,7 @@ SUKFILTER - radially symmetric K-domain, sin^2-tapered, polygonal
 SUKFRAC - apply FRACtional powers of i|k| to data, with phase shift 
 SULFAF -  Low frequency array forming					", 
 SUMEDIAN - MEDIAN filter about a user-defined polygonal curve with	
+SUMINPHASE - convert input to minimum phase				
 SUPHASE - PHASE manipulation by linear transformation			
 SUSMGAUSS2 --- SMOOTH a uniformly sampled 2d array of velocities	
 SUSVDFILT - SVD (Eigen) filter					
@@ -163,6 +164,8 @@ SUADDHEAD - put headers on bare traces and set the tracl and ns fields
 SUAHW - Assign Header Word using another header word			
 SUAZIMUTH - compute trace AZIMUTH, offset, and midpoint coordinates    
 SUBINCSV - 3D Grid Resolve and output and assign traces to cdps (cells). 
+SUBINQCSV - Input Q-records or parameters. interpolate, output Q-records.  
+SUBINXXCSV - Expand Size and Exchange Corners of 3D Grid Definition.       
 SUCDPBIN - Compute CDP bin number					
 SUCHART - prepare data for x vs. y plot			
 SUCHW - Change Header Word using one or two header word fields	
@@ -334,7 +337,6 @@ SUHILB - Hilbert transform
 SUICEPSTRUM - fft of complex log frequency traces to real time traces
 SUICLOGFFT - fft of complex log frequency traces to real time traces
 SUIFFT - fft complex frequency traces to real time traces	
-SUMINPHASE - convert input to minimum phase				
 SUPHASEVEL - Multi-mode PHASE VELocity dispersion map computed
 SURADON - compute forward or reverse Radon transform or remove multiples
 SUSLOWFT - Fourier Transforms by a (SLOW) DFT algorithm (Not an FFT)
@@ -367,6 +369,8 @@ SULPRIME - find appropriate Backus average length for
 SUWELLRF - convert WELL log depth, velocity, density data into a	
 
 In CWPROOT/src/su/main/windowing_sorting_muting:
+SUBRAID - Braid traces from files together and output.                
+SUCLEAVE - Cleave traces from 1 input into multiple output files.     
 SUCOMMAND - pipe traces having the same key header word to command	
 SUGETGTHR - Gets su files from a directory and put them               
 SUGPRFB - SU program to remove First Breaks from GPR data		

@@ -28,9 +28,5 @@ void qsplit(struct QInfo *RecInfo, int ncdp,
 void getqvalscsv(char *textraw, char *textbeg, int maxtext, char rdel,
                  int *nspot, int numcases, double *dfield, int *izlast, int *notblank, int *errwarn) ;
 
-void linterpd(double offset,double *offs,double *tims,int nto,int mgtextr,double *time) ;
-
-int bhighd(double *all, int last, double iguy) ;
-
 void tparseq(char *tbuf, char d, char **fields, int *numfields) ; 
 

@@ -19,7 +19,7 @@
 
  The input data must first be sorted into constant key1 gathers.	
  Example: setting the cdpt field					", 
-        susetehw < cdpgathers.su a=1 b=1 key1=cdp key2=cdpt > new.su	
+        susehw < cdpgathers.su a=1 b=1 key1=cdp key2=cdpt > new.su	
 
 
  Credits:

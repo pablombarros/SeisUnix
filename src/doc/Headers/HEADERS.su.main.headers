@@ -5,6 +5,8 @@ SUADDHEAD - put headers on bare traces and set the tracl and ns fields
 SUAHW - Assign Header Word using another header word			
 SUAZIMUTH - compute trace AZIMUTH, offset, and midpoint coordinates    
 SUBINCSV - 3D Grid Resolve and output and assign traces to cdps (cells). 
+SUBINQCSV - Input Q-records or parameters. interpolate, output Q-records.  
+SUBINXXCSV - Expand Size and Exchange Corners of 3D Grid Definition.       
 SUCDPBIN - Compute CDP bin number					
 SUCHART - prepare data for x vs. y plot			
 SUCHW - Change Header Word using one or two header word fields	
