@@ -28,7 +28,7 @@
 # Note that there is no reason to run inverse-NMO and then forward-NMO since all we
 # are doing in the Subincsv tests is binning, sorting, and stacking.
 #
-# sunmo <fakexsrf.su >fakexsrfn.su invert=1 tnmo=0,190,450,800 vnmo=1800,3500,4000,5000
+# sunmo <fakexsrf.su >fakexsrfn.su invert=1 tnmo=0,0.190,0.450,0.800 vnmo=1800,3500,4000,5000
 # rm -f fakexsrf.su 
 #
 # suximage <fakexsrf.su
