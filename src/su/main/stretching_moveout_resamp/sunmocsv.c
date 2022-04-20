@@ -28,9 +28,11 @@ char *sdoc[] = {
 "                       The following 3 parameters cannot be specified if    ",
 "                       you input velocity functions via the qin= file.      ",
 "									     ",
-" cdp=			CDPs for which vnmo & tnmo are specified.            ",
-" tnmo=           	NMO times corresponding to velocities in vnmo.       ",
-" vnmo=         	NMO velocities corresponding to times in tnmo.	     ",
+" cdp=		        CDPs for which vnmo & tnmo are specified.            ",
+" tnmo=                 NMO times corresponding to velocities in vnmo.       ",
+"                       If any tnmo value is greater than 100 they are all   ",
+"                       assumed to be milliseconds. Otherwise seconds.       ",
+" vnmo=                 NMO velocities corresponding to times in tnmo.	     ",
 "                       If qin= is not specified, all 3 of these parameters  ",
 "                       must be specified. There must be at least 1 number   ",
 "                       in the cdp= list. There must be the same number of   ",
@@ -40,7 +42,7 @@ char *sdoc[] = {
 "                       one tnmo= parameter provided there are the same      ",
 "                       number of velocities in all vnmo= lists.             ",
 "									     ",
-" smute=1.5		samples with NMO stretch exceeding smute are zeroed  ",
+" smute=1.5             samples with NMO stretch exceeding smute are zeroed  ",
 " lmute=25		length (in samples) of linear ramp for stretch mute  ",
 " sscale=1		=1 to divide output samples by NMO stretch factor    ",
 " invert=0		=1 to perform (approximate) inverse NMO		     ",
@@ -151,6 +153,9 @@ NULL};
  *	  1. Reworked to use lib routines to get velocity function values
  *           either from command line parameters or from input q-files.      
  *	  2. Reworked to use lib routines for bilinear interpolation. 
+ *        Modified Apr  2022: Andre Latour   
+ *	  1. changed so that if any tnmo value is greater than 100 all tnmo   
+ *	     values are assumed to be milliseconds. Otherwise seconds.
  * Technical Reference:
  *	The Common Depth Point Stack
  *	William A. Schneider
@@ -493,6 +498,7 @@ int main(int argc, char **argv) {
 /* input and the results will be subtly bad (and, if you don't know by now, */
 /* subtly bad is the worst-kind-of-bad in seismic data processing).         */
 
+        j = 0;
         if(ifixd==0) {
                 for(jcdp=0; jcdp<ncdp; jcdp++) {
                         pindepa = VInfo[jcdp].dlots+iztuple+VInfo[jcdp].nto;
@@ -500,11 +506,27 @@ int main(int argc, char **argv) {
                                 if(pindepa[i-1] >= pindepa[i])
                                   err("error: tnmo values are not increasing (input cdp = %d)",VInfo[jcdp].kinf[0]);
                         }
+                        if(pindepa[VInfo[jcdp].nto-1] > 100.) j = 1; 
                 }
         }
         else if(ifixd==1) {
                 for(i=1; i<VInfo[0].nto; i++) {
                         if(pindepa[i-1] >= pindepa[i]) err("error: tnmo values are not increasing.");
+                }
+                if(pindepa[VInfo[0].nto-1] > 100.) j = 1; 
+        }
+
+/* If input times are milliseconds, convert them to seconds for use herein.                       */
+
+        if(j==1) {
+                if(ifixd==0) {
+                        for(jcdp=0; jcdp<ncdp; jcdp++) {
+                                pindepa = VInfo[jcdp].dlots+iztuple+VInfo[jcdp].nto;
+                                for(i=0; i<VInfo[jcdp].nto; i++) pindepa[i] *= 0.001;
+                        }
+                }
+                else if(ifixd==1) {
+                        for(i=0; i<VInfo[0].nto; i++) pindepa[i] *= 0.001;
                 }
         }
 
