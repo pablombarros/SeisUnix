@@ -128,7 +128,7 @@ char *sdoc[] = {
 " using the input 3D grid definition - so those cdp numbers need to          ",
 " correspond to the input 3D grid definition.                                ",
 "									     ",
-" For trace CDPs Rnot listed in cdp= parameter or qin= file, bilinear        ",
+" For trace CDPs not listed in cdp= parameter or qin= file, bilinear         ",
 " interpolation is done if the trace CDP location is surrounded by 4 mute    ",
 " functions specified in the cdp= list. If the trace CDP is not surrounded   ",
 " by 4 input mute functions, the result depends on the extrapi and extrapc   ",
@@ -551,6 +551,7 @@ int main(int argc, char **argv) {
 /* (Note: qsort is a standard c function, qsplit is a function in su/lib/qdefine.c). */
 
         qsplit(MInfo,ncdp,&mgi,&mgi_tot,&mgc,&mgc_tot,&errwarn);
+        if(errwarn>0) err("error: Input cdps do not form enclosed-rectangles (needed for bilinear).");
 
         mgi_totdeg = mgi_tot; /* read explanation of mgi_totdeg later */
         if(mgi_tot==1 || mgc_tot==1) mgi_totdeg = 0;
