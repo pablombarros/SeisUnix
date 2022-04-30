@@ -553,6 +553,7 @@ int main(int argc, char **argv) {
 /* (Note: qsort is a standard c function, qsplit is a function in su/lib/qdefine.c). */
 
         qsplit(VInfo,ncdp,&mgi,&mgi_tot,&mgc,&mgc_tot,&errwarn);
+        if(errwarn>0) err("error: Input cdps do not form enclosed-rectangles (needed for bilinear).");
 
         mgi_totdeg = mgi_tot; /* read explanation of mgi_totdeg later */
         if(mgi_tot==1 || mgc_tot==1) mgi_totdeg = 0;
