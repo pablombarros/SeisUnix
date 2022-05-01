@@ -30,7 +30,9 @@ char *sdoc[] = {
 " cdp=             CDPs for which offs & tims are specified.                 ",
 " offs=            offsets corresponding to times in tims.                   ",
 " tims=            times corresponding to offsets in offs.                   ",
-"                  If qin= is not specified, all 3 of these parameters       ",
+"                  If any tims value is greater than 100 all times are       ",
+"                  assumed to be milliseconds. Otherwise seconds.            ",
+"            ***   If qin= is not specified, all 3 previous parameters       ",
 "                  must be specified. There must be at least 1 number        ",
 "                  in the cdp= list. There must be the same number of        ",
 "                  tims= parameters as numbers in the cdp= list.             ",
@@ -69,7 +71,8 @@ char *sdoc[] = {
 "                  the value of vel=                                         ",
 " vel=330          constant velocity for linear or hyperbolic mute           ",
 " tzero=0          time shift (ms.) of linear or hyperbolic mute at the      ",
-"                  offkey value of 0. Note: MILLISECONDS.                    ",
+"                  offkey value of 0. Note: If any tims value is greater     ",
+"                  than 100, tzero must be MILLISECONDS. Otherwise seconds.  ",
 "									     ",
 " extrapi=0        do not extrapolate at ends in igi direction.              ",
 "                  (Mute times beyond ends are held constant).               ",
@@ -258,6 +261,7 @@ int main(int argc, char **argv) {
         double yw=0.0;
         double dfval=0.0;
         double dwbt=0.0;
+        double tscale=1.;
 
 
 	/* hook up getpar */
@@ -299,7 +303,6 @@ int main(int argc, char **argv) {
         if (!getparfloat("vel", &linvel))    linvel = 330;
         if (linvel==0) err ("error: vel cannot be 0");
         if (!getparfloat("tzero", &tm0))          tm0 = 0;
-        tm0 /= 1000.; /* so as not to change code copied from sumute, convert to seconds */
 
         if (!getparstring("offkey", &key)) key = "offset";
         type = hdtype(key);
@@ -528,6 +531,30 @@ int main(int argc, char **argv) {
                 }
         }
 
+/* Determine whether times are seconds or milliseconds.                     */                      
+
+        j = 0;
+        if(ifixd==0) {
+               for(jcdp=0; jcdp<ncdp; jcdp++) {
+                        for(i=0; i<MInfo[jcdp].nto; i++) {
+                                if(MInfo[jcdp].dlots[iztuple+i] > 100.) j = 1;
+                        }
+                        if(j>0) break;
+                }
+        }
+        else if(ifixd==1) {
+                for(jcdp=0; jcdp<ncdp; jcdp++) {
+                        for(i=0; i<MInfo[0].nto; i++) {
+                                if(MInfo[jcdp].dlots[iztuple+i] > 100.) j = 1;
+                        }
+                        if(j>0) break;
+                }
+        }
+        
+        if(j>0) tscale = 0.001;
+        else tscale = 1.;
+        tm0 = tm0 * tscale; 
+
 /* For bilinear interpolation, user must input function locations which form aligned rectangles.  */
 /* That is, howevermany inlines the user chooses to put functions on, there must be the same      */
 /* number of functions on each inline and those functions must be located at the same crosslines. */
@@ -603,7 +630,7 @@ int main(int argc, char **argv) {
                         }
                       
 /* Note: So as not to change the code copied from sumute, t will be in seconds herein */
-                        t = dwbt / 1000.;
+                        t = dwbt * tscale;
                 }
                 else if(tr.cdp==oldcdp) { /* just compute time for new offset */
                         if(ifixd==0) { /* see iprint for a simpler example of where these offs,tims are in dlots */
@@ -624,7 +651,7 @@ int main(int argc, char **argv) {
                           pindepa,MInfo[ndxc  ].dlots+iztuple,MInfo[ndxc  ].nto,
                           mgc_tot,wc,&dwbt);
                         }
-                        t = dwbt / 1000.;
+                        t = dwbt * tscale;
                 }
                 else {
                         oldcdp = tr.cdp;
@@ -675,7 +702,7 @@ int main(int argc, char **argv) {
                           pindepa,MInfo[ndxc  ].dlots+iztuple,MInfo[ndxc  ].nto,
                           mgc_tot,wc,&dwbt);
                         }
-                        t = dwbt / 1000.;
+                        t = dwbt * tscale;
                 }
 
                /* do the mute */
