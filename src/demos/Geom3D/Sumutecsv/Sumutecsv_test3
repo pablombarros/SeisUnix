@@ -4,8 +4,9 @@
 #
   echo "----------------------------------------------------------------------------"
   echo "---  This test is similar to test1 except it has mute functions at          "
-  echo "---  the 4 corners of the 3D grid definition (just to confirm the           "
-  echo "---  maximum grid extents works correctly.                                  "
+  echo "---  the 4 corners of the 3D grid definition (to confirm that the           "
+  echo "---  maximum grid extents works correctly).                                 "
+  echo "---  Also this test uses time in SECONDS from parameter input.              "
   echo "----------------------------------------------------------------------------"
 #
 # I know the 3d grid is 121 by 23 cells. So make 2783 traces.   
@@ -22,12 +23,12 @@
   sumutecsv <tnull3acdpoff.su >tnull3acdpoffmute.su rfile=kEFG.csv mode=0 \
         cdp=1,121,2663,2783 \
         offs=300,500,1000 \
-        tims=200,1001,1501 \
+        tims=.200,1.001,1.501 \
         offs=300,500,900,2000 \
-        tims=200,1121,1521,500 \
+        tims=.200,1.121,1.521,.500 \
         offs=100,300,500,1900,2000 \
-        tims=50,200,3663,5063,500 \
+        tims=.050,0.200,3.663,5.063,0.500 \
         offs=300,500,1000,2000 \
-        tims=200,3783,4283,500 \
+        tims=.200,3.783,4.283,.500 \
 #
   suxwigb <tnull3acdpoffmute.su key=cdp xcur=0.5 

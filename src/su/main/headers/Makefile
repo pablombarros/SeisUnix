@@ -19,6 +19,7 @@ PROGS =			\
 	$B/subincsv	\
 	$B/subinqcsv	\
 	$B/subinxxcsv	\
+	$B/subinbigcsv	\
 	$B/sucdpbin	\
 	$B/suchart	\
 	$B/suchw	\

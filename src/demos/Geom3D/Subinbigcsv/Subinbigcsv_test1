@@ -1,0 +1,23 @@
+#!/bin/sh
+# Subinbigcsv_test1 - for program SUBINBIGCSV
+# Author: Andre Latour, April 2022
+#
+  echo "----------------------------------------------------------------------------"
+  echo "---  This is a test for 2D. This test creates some traces (using sunull).   "
+  echo "---  Then it sets the cdp number(s) (starts at 1, increments by 1)          "
+  echo "---  Then subinbigcsv increments through the cdps by 40 and resets the      "
+  echo "---  adjacent cdps to the incremented value AND deletes all other traces.   "
+  echo "----------------------------------------------------------------------------"
+#
+# Make cdp numbers starting at 1, incrementing by 1, ending at 200.
+# Replicate the cdp numbers in cdpt so you can see how cdp gets reset. 
+#
+  sunull nt=50 ntr=200 dt=0.004 >tnull11.su
+  sushw <tnull11.su >tnull12.su key=cdp,cdpt a=1,1 b=1,1
+#
+# So now you can run a bunch of tests similar to what you see next.
+#
+  subinbigcsv <tnull12.su >tnull13.su igiout=40,9999,40 igiext=1
+#
+  sugethw <tnull13.su key=cdp,cdpt
+

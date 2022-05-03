@@ -99,6 +99,10 @@ NULL};
  *	CWP: Shuki Ronen, Jack Cohen, Chris Liner
  *	Warnemuende: Toralf Foerster
  *	CENPET: Werner M. Heigl (modified to include well log data)
+ * Modified: Andre Latour
+ *      Added information about key ranges to verbose option.
+ *      This is useful in 3D Velans or other situations where the input   
+ *      traces do not have contiguous cdp (or other) key numbers.   
  *
  * Trace header fields accessed: ns, dt, delrt, keyword
  * Trace header fields modified: ns, delrt, ntr
@@ -121,6 +125,12 @@ main(int argc, char **argv)
 	int ordered;   /* order of key				*/
 	long min;	/* smallest key value to accept		*/
 	long max;	/* largest key value to accept		*/
+	long minin = INT_MAX;  /* smallest key >= min and <= max*/
+	long maxin = INT_MIN;  /* largest key >= min and <= max */
+	long maxless = INT_MIN;   /* largest key < min          */
+	long minmore = INT_MAX;   /* smallest key > max         */
+	long numin = 0; /* number of output traces              */
+
 	int j;		/* take every jth trace ...		*/
 	int s;		/* ... starting at the sth trace ...	*/
 
@@ -310,7 +320,6 @@ main(int argc, char **argv)
 		warn("Padding %d zeroes", nzeros/FSIZE);
 	}
 
-
         if( skip ){
 
 		/* Main loop over traces */
@@ -338,6 +347,11 @@ main(int argc, char **argv)
 	
 			ival = vtoi(type, val);
 	
+	                if (verbose) {
+                                if(ival<min && ival>maxless) maxless = ival;
+                                if(ival>max && ival<minmore) minmore = ival;
+			}
+
 			/* If trace selected, put it out */
 
 			if (((ordered == 1 ) && (max < ival)) || ((ordered == (-1) ) && (min > ival ))) break;
@@ -346,6 +360,12 @@ main(int argc, char **argv)
 			if ( isgood || 
 			    ((min <= ival) && (ival <= max) &&
 			     !((ival - s) % j) && !isbad ) ) {
+	
+	                        if (verbose) {
+                                        if(ival<minin) minin = ival;
+                                        if(ival>maxin) maxin = ival;
+                                        numin++;
+	                        }
 	
 				/* Perform time windowing */
 				if (itmin > 0) {
@@ -397,13 +417,25 @@ main(int argc, char **argv)
 	
 			ival = vtoi(type, val);
 	
+	                if (verbose) {
+                                if(ival<min && ival>maxless) maxless = ival;
+                                if(ival>max && ival<minmore) minmore = ival;
+                        }
+
 			/* If trace selected, put it out */
 
 			if (((ordered == 1 ) && (max < ival)) || ((ordered == (-1) ) && (min > ival ))) break; 
 
+
 			if ( isgood || 
 			    ((min <= ival) && (ival <= max) &&
 			     !((ival - s) % j) && !isbad ) ) {
+
+	                        if (verbose) {
+                                        if(ival<minin) minin = ival;
+                                        if(ival>maxin) maxin = ival;
+                                        numin++;
+                                }
 	
 				/* Perform time windowing */
 				if (itmin > 0) {
@@ -419,12 +451,20 @@ main(int argc, char **argv)
 	
 				/* zero ntr field to keep sugraphics from choking */
 				tr.ntr = 0; 
-	
+                                
 				puttr(&tr);
 				if (!(--count)) break; /* all done */
 			}
 	
 		} while (gettr(&tr));
+        }
+
+        if(verbose) {
+          warn("numinside=%ld",numin);
+          warn("mininside=%ld",minin);
+          warn("maxinside=%ld",maxin);
+          warn("maxless=%ld",maxless);
+          warn("minmore=%ld",minmore);
         }
 
 	return(CWP_Exit());
