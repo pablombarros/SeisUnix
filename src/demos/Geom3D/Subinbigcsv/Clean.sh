@@ -4,8 +4,8 @@
 
 rm -f  fake* tnul* panel.* mpicks.* par.* unisam.p
 rm -f  bigbined.su bbsorted.su bbsortedno544.su
-rm -f  qlocations.csv
-rm -f  stkveltail.p1 stkvelrtail.p1
+rm -f  qlocations.csv 
+rm -f  stkveltail.p1 stkvelrtail.p1 mutestail.p1 temp
 rm -f  windfile kEFG100.csv
 
 exit
