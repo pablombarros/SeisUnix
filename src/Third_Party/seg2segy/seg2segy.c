@@ -34,7 +34,7 @@
 	-partial addition of structures to handle the keywords and headers.
 	but I eventually gave up.
 
-	$Id: seg2segy.c,v 1.6 2019/12/10 18:40:34 john Exp $
+	$Id: seg2segy.c,v 1.7 2022/04/13 17:48:50 john Exp john $
 
 	Changes:
 	Feb 96.  Trace header was not being written out with swap on bytes above
@@ -63,6 +63,9 @@
 	file altogether!
 
 	$Log: seg2segy.c,v $
+	Revision 1.7  2022/04/13 17:48:50  john
+	removed extra comment /*   */
+
 	Revision 1.6  2019/12/10 18:40:34  john
 	changed tmpnam to mkstemp
 
@@ -311,7 +314,7 @@ NULL};
 	char tmpfilename[L_tmpnam];
 	FILE *tmpfileptr;
 #ifdef __MSDOS__
-	/* MSDOS doesn't seem to have a tmpnam_s() so continue to use the tmpnam() 
+	* MSDOS doesn't seem to have a tmpnam_s() so continue to use the tmpnam() 
          * function.  tmpnam_s() is available on WIN32 with possible code:
          * errno_t err;
          * err = tmpnam_s(tmpfilename, L_tmpnam);
@@ -320,7 +323,7 @@ NULL};
          * printf("Error occurred creating temp file.\n");
          * exit(1);
          * }
-        */
+        *
         tmpname(tmpfilename);
 #else
         mkstemp(tmpfilename);

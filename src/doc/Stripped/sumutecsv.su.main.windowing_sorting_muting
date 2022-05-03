@@ -2,19 +2,27 @@
 
   sumutecsv <stdin >stdout [required parameters] [optional parameters]      
 
- Required Parameters:							     
- cdp=		   list of CDPs for which tims & offs are specified.         
-                  Example cdp=1,17,333. (Not needed if just 1 in list).     
- offs=            list of offset values. This parameter must be repeated    
-                  for each number in cdp= list. Values in this list must    
-                  be in increasing order.                                   
- tims=      	   list of mute time values (ms.) Note: MILLISECONDS.        
-                  This parameter must be repeated for each number in the    
-                  cdp= list. There must be the same number of tims and offs 
-                  values for a cdp (but can be a different number than for  
-                  other cdps).                                              
+ Optional Parameters:                                                       
 
- Optional Parameters:							     
+ qin=             Mute functions can be input via this file.                
+                  This file is optional, but if you do not input it,        
+                  you must use parameters cdp=, offs=, tims=.               
+                  See external document Q_FILE_STANDARDS.                   
+
+                  The following 3 parameters cannot be specified if         
+                  you input mute functions via the qin= file.               
+
+ cdp=             CDPs for which offs & tims are specified.                 
+ offs=            offsets corresponding to times in tims.                   
+ tims=            times corresponding to offsets in offs.                   
+                  If qin= is not specified, all 3 of these parameters       
+                  must be specified. There must be at least 1 number        
+                  in the cdp= list. There must be the same number of        
+                  tims= parameters as numbers in the cdp= list.             
+                  There must be the same number of offs= parameters         
+                  as numbers in the cdp= list, or, there can be just        
+                  one offs= parameter provided there are the same           
+                  number of tims in all tims= lists.                        ", 
 
  rfile=           If set, read a K-file containing 3D grid definition.      ", 
                   Assume 2D if no K-file and no grid definition is          ", 
@@ -28,8 +36,6 @@
                   A 3D also forces restrictions on the locations of         ", 
                   the input mute locations. Their CDP locations must        ", 
                   form aligned rectangles (see Notes).                      ", 
-                  Note: no need to input a grid if cdp= list has            ", 
-                        only 1 number (or is not specified).                ", 
 
  offkey=offset    Key header word specifying trace offset                   
  abs=1            use the absolute value of offkey.                         
@@ -80,18 +86,18 @@
                   This information can be written to a file by              
                   putting 2>yourfile on the command line.                   
 
+ print=0          Do not print INPUT mute functions.                        
+               =1 Print INPUT mute functions. The cdp number and its        
+                  input mute function values are printed. This print is     
+                  not intended to be pretty. It just allows easy checking   
+                  that the q-file contains the expected values.             
+                  It also allows programmers and others to confirm that     
+                  command line input via cdp=,offs=,tims= produces the      
+                  same results as identical input via the qin= file.        
+
  Notes:								     
 
- For muting with one function only, specify the arrays                      
-          offs=o1,o2,... tims=t1,t2,...                                     
- where t1 is the time at offset o1, t2 is the time at offset o2, ...        
  The offsets specified in the offs array must be monotonically increasing.  
- Linear interpolation and constant extrapolation of the specified times     
- is used to compute the times at offsets not specified.                     
-
- For muting with a function of offset and CDP, specify the array            
-          cdp=cdp1,cdp2,...                                                 
- and, for each CDP specified, specify another offs and tims array as above. 
 
  For 3D, user needs to input mute locations (cdp numbers) which form aligned
  rectangles. That is, how-ever-many grid inlines the user chooses to put    
@@ -107,13 +113,13 @@
  using the input 3D grid definition - so those cdp numbers need to          
  correspond to the input 3D grid definition.                                
 
- For trace cdps that are not explicitly in the input cdp= list, bilinear    
- interpolation is done if the trace cdp location is surrounded by 4 mute    
- functions specified in the cdp= list. If the trace cdp is not surrounded   
+ For trace CDPs Rnot listed in cdp= parameter or qin= file, bilinear        
+ interpolation is done if the trace CDP location is surrounded by 4 mute    
+ functions specified in the cdp= list. If the trace CDP is not surrounded   
  by 4 input mute functions, the result depends on the extrapi and extrapc   
  options. The result can be any combination of linear interpolation and     
  linear extrapolation and constant extrapolation. If input mute functions   
- are only located along 1 inline or 1 crossline the result is linear        ", 
+ are only located along 1 grid inline or 1 grid crossline, result is linear ", 
  interpolation in that direction (and linear or constant extrapolation      
  the outer ending functions).                                               
 
@@ -149,4 +155,8 @@
 	 2. Changed to expect milliseconds for all parameter inputs.               
 	 3. Put in error checks to stop users from accidentally         
 	    trying to use sumute parameter names.                       
+      Modified: Feb 2022: Andre Latour   
+        1. Reworked to use lib routines to get mute function values
+           either from command line parameters or from input q-files.      
+        2. Reworked to use lib routines for bilinear interpolation. 
 

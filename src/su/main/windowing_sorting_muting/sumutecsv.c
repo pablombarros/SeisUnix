@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2021.*/
 /* All rights reserved.                       */
 
-/* SUMUTECSV: $Revision: 1.3 $ ; $Date: 2022/01/10 11:01:01 $		*/
+/* SUMUTECSV: $Revision: 1.3 $ ; $Date: 2022/03/26 02:50:15 $		*/
  
 #include "su.h"
 #include "segy.h" 

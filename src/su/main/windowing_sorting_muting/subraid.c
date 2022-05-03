@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2022.*/
 /* All rights reserved.			*/
 
-/* SUBRAID: $Revision: 1.01 $ ; $Date: 2022/02/14 00:00:01 $	*/
+/* SUBRAID: $Revision: 1.1 $ ; $Date: 2022/03/26 02:48:10 $	*/
 
 #include "su.h"
 #include "segy.h"

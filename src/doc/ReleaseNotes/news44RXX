@@ -85,8 +85,14 @@ su/main/headers/sutoolcsv.c - Tools for Comma Separated Values and
                                 fixed text files. 
                 sugeomcsv.c - 3D/2D land/OBotm geometry from Comma 
                                 Separated or fixed text. 
+		subinqcsv.c -  3D Grid Resolve and output and 
+                                assign traces to cdps (cells)
+                subinxxcsv.c - Expand Size and Exchange Corners of 
+                                3D Grid Definition.
                 subincsv.c -  3D Grid Resolve and output and assign
                                 traces to cdps (cells)
+                sutoolcsv.c - Tools for Comma Separated Values and 
+                               fixed text files. 
 su/main/transforms/sust.c
 	SUST -  Outputs a time-frequency representation of seismic data via
            	the Stockwell transform (S- transform)
@@ -97,10 +103,26 @@ su/main/noise/sugroll.c
 	SUGROLL - Ground roll supression using Karhunen-Loeve transform
 	    Thanks to Adnand Bitri
 
-su/main/stretching_moveout_resamp/sudlmo.c
-	SUDLMO -- Dynamic Linear Move Out Correction for Surface Waves 
-	    Thanks to Adnand Bitri
-	
+su/main/stretching_moveout_resamp/
+		sudlmo.c  - Dynamic Linear Move Out Correction for 
+    				Surface Waves
+			Thanks to Adnand Bitri
+
+		sunmocsv - NMO for an arbitrary velocity function 
+                           of time and 3D or 2D CDP 
+			Thanks to Andre Latour
+
+su/main/windowing_sorting_muting
+	Andre Latour's additions:
+		sumutecsv.c - MUTE above (or below) bilinearly 
+                               interpolated polygonal curves
+		subraid.c - Braid traces from files together and output.
+                       (combine multiple ordered inputs into 1 ordered output)
+		sucleave.c - Cleave traces from 1 input into multiple output
+                         files.  
+           		  (split to multiple output files, retaining 
+                              input order). 
+
 su/shell/ramac2su.sh - converts RAMAC GPR files to su format with a 
         nominal geometry
 	Thanks to: Hervé Perrou,d  12/2000and Dominique Rousset,  2019 
@@ -124,7 +146,21 @@ demos/Ordinary_differential_equations
 	 Epidemiology
 	 Logistic_Equation
 	 Predator_Prey
+
 demos/Sudeghost - Demos for sudeghost.c
+
+demos/Geom3D/ - demos for Andre Latour's csv codes
+	Subincsv
+	Subinxxcsv
+	Sumutecsv
+	Sutoolcsv
+	Subinqcsv
+	Sugeomcsv
+	Sunmocsv
+
+demos/Utilities/
+	Subraid
+	Sucleave
 	
 
 Fixed:
@@ -149,6 +185,10 @@ Sfio/
 	./src/lib/sfio/Stdio_b/vsprintf.c
 	./src/lib/sfio/Stdio_s/stdsprintf.c
         The make sfio should work now.
+	 Some people are having difficulty with this version. There is
+	a gzipped tarfile of the 15 Sept 2021 version of Sfio. Try that
+        one or take the Sfio directory from an older release
+
 
 demos/Ordinary_differential_equations  - has been added to go with the new
 	ordinary_differential equation items in par/main

@@ -12,7 +12,7 @@ BIN=$(ROOT)/bin
 MKTARS=$(SRC)/Maketars
 SCRATCH=/Users/john/scratch/john/Temp
 TARDIR=$(MKTARS)/Tarfiles
-RELEASE=44R23
+RELEASE=44R25
 TARNAME=Free/cwp_su_all_$(RELEASE).tgz
 
 # TMPDIR is the directory where we put the files in a single standalone tree
@@ -64,6 +64,7 @@ copy	:
 		mailhome.sh Makefile Makefile.config \
 		mkdirectories.sh cwp par doc cwputils Mathematica \
 		Fortran Sfio  \
+		sfio_15_Sept_2021.tgz \
 		demos LEGAL_STATEMENT faq Complex comp \
 		tetra tri xtri Trielas \
 		psplot xplot Xtcwp Xmcwp su/Makefile Mesa \

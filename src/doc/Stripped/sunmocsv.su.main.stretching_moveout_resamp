@@ -3,9 +3,27 @@
   sunmocsv <stdin >stdout [optional parameters]			     
 
  Optional Parameters:							     
- tnmo=0,...		NMO times corresponding to velocities in vnmo	     
- vnmo=1500,...		NMO velocities corresponding to times in tnmo	     
+
+ qin=                  Velocity functions can be input via this file.       
+                       This file is optional, but if you do not input it,   
+                       you must use parameters cdp=, tnmo=, vnmo=.          
+                       See external document Q_FILE_STANDARDS.              
+
+                       The following 3 parameters cannot be specified if    
+                       you input velocity functions via the qin= file.      
+
  cdp=			CDPs for which vnmo & tnmo are specified.            
+ tnmo=           	NMO times corresponding to velocities in vnmo.       
+ vnmo=         	NMO velocities corresponding to times in tnmo.	     
+                       If qin= is not specified, all 3 of these parameters  
+                       must be specified. There must be at least 1 number   
+                       in the cdp= list. There must be the same number of   
+                       vnmo= parameters as numbers in the cdp= list.        
+                       There must be the same number of tnmo= parameters    
+                       as numbers in the cdp= list, or, there can be just   
+                       one tnmo= parameter provided there are the same      
+                       number of velocities in all vnmo= lists.             
+
  smute=1.5		samples with NMO stretch exceeding smute are zeroed  
  lmute=25		length (in samples) of linear ramp for stretch mute  
  sscale=1		=1 to divide output samples by NMO stretch factor    
@@ -39,8 +57,17 @@
                           This information can be written to a file by      
                           putting 2>yourfile on the command line.           
 
+ print=0               Do not print INPUT velocity functions.               
+                       =1 Print INPUT velocity functions. The cdp number    
+                          and its input velocity function are printed.      
+                          This print is not intended to be pretty. It just  
+                          allows easy checking that the q-file contains     
+                          the expected values (or just use a text editor).  
+                          It also allows programmers and others to confirm  
+                          that command line input via cdp=,tnmo=,vnmo=      
+                          is the same as identical input via the qin= file. 
+
  Notes:								     
- For constant-velocity NMO, specify only one vnmo=constant and omit tnmo.   
 
  NMO interpolation error is less than 1% for frequencies less than 60% of   
  the Nyquist frequency.						     
@@ -52,18 +79,11 @@
  Use suazimuth to set offset header field when sx,sy,gx,gy are all	     
  nonzero. 							   	     
 
- For NMO with a velocity function of time only, specify the arrays	     
-	   vnmo=v1,v2,... tnmo=t1,t2,...				     
- where v1 is the velocity at time t1, v2 is the velocity at time t2, ...    
- The times specified in the tnmo array must be monotonically increasing.    
- Linear interpolation and constant extrapolation of the specified velocities
- is used to compute the velocities at times not specified.		     
- The same holds for the anisotropy coefficients as a function of time only. 
+ The times specified in tnmo= parameters must be monotonically increasing.  
+ Velocities can also be input via the qin= file (see C_QFILE_STANDARDS).    
 
- For NMO with a velocity function of time and CDP, specify the array	     
-	   cdp=cdp1,cdp2,...						     
- and, for each CDP specified, specify the vnmo and tnmo arrays as described 
- above. The first (vnmo,tnmo) pair corresponds to the first cdp, and so on. 
+ Velocities at each input cdp are interpolated to the sample times and then 
+ spatial interpolation is done, as explained next:                          
 
  For 3D, the user needs to input velocity functions which form aligned      
  rectangles. That is, how-ever-many grid inlines the user chooses to put    
@@ -79,7 +99,7 @@
  using the input 3D grid definition - so those cdp numbers need to          
  correspond to the input 3D grid definition.                                
 
- For CDPs not specified in the input cdp= parameter, bilinear interpolation 
+ For CDPs not listed in cdp= parameter or qin= file, bilinear interpolation 
  of 1/velocity_squared is done if CDP is surrounded by 4 input functions,   
  linear interpolation of 1/velocity_squared is done if the CDP is outside   
  the sides of fully surrounded area, constant extrapolation if the CDP is   
@@ -90,8 +110,6 @@
  The format of the output interpolated velocity file is unformatted C floats
  with vout[cdp][t], with time as the fast dimension and may be used as an   
  input velocity file for further processing.				     
-
- Note this version of sunmocsv does not attempt to deal with anisotropy.    
 
 
  Credits:
@@ -112,6 +130,10 @@
 	  1. added 3D option (bilinear interpolation of velocity functions).
            This is activated by input of a 3D grid definition.                   
            See the SUBINCSV program for grid definition details.               
+        Modified Jan  2022: Andre Latour   
+	  1. Reworked to use lib routines to get velocity function values
+           either from command line parameters or from input q-files.      
+	  2. Reworked to use lib routines for bilinear interpolation. 
  Technical Reference:
 	The Common Depth Point Stack
 	William A. Schneider

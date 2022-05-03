@@ -1,9 +1,15 @@
-head	1.6;
+head	1.7;
 access;
 symbols;
-locks; strict;
+locks
+	john:1.7; strict;
 comment	@ * @;
 
+
+1.7
+date	2022.04.13.17.48.50;	author john;	state Exp;
+branches;
+next	1.6;
 
 1.6
 date	2019.12.10.18.40.34;	author john;	state Exp;
@@ -41,9 +47,9 @@ desc
 @
 
 
-1.6
+1.7
 log
-@changed tmpnam to mkstemp
+@removed extra comment /*   */
 @
 text
 @/* Copyright (c) Colorado School of Mines, 2002.*/
@@ -82,7 +88,7 @@ text
 	-partial addition of structures to handle the keywords and headers.
 	but I eventually gave up.
 
-	$Id: seg2segy.c,v 1.5 2019/12/10 17:57:25 john Exp john $
+	$Id: seg2segy.c,v 1.6 2019/12/10 18:40:34 john Exp $
 
 	Changes:
 	Feb 96.  Trace header was not being written out with swap on bytes above
@@ -111,6 +117,9 @@ text
 	file altogether!
 
 	$Log: seg2segy.c,v $
+	Revision 1.6  2019/12/10 18:40:34  john
+	changed tmpnam to mkstemp
+
 	Revision 1.5  2019/12/10 17:57:25  john
 	changed long to int and ld to d
 
@@ -355,8 +364,21 @@ NULL};
 /*
 	char tmpfilename[L_tmpnam];
 	FILE *tmpfileptr;
-
-	tmpnam(tmpfilename);
+#ifdef __MSDOS__
+	* MSDOS doesn't seem to have a tmpnam_s() so continue to use the tmpnam() 
+         * function.  tmpnam_s() is available on WIN32 with possible code:
+         * errno_t err;
+         * err = tmpnam_s(tmpfilename, L_tmpnam);
+         * if (err)
+         * {
+         * printf("Error occurred creating temp file.\n");
+         * exit(1);
+         * }
+        *
+        tmpname(tmpfilename);
+#else
+        mkstemp(tmpfilename);
+#endif
 	tmpfileptr=fopen(tmpfilename, "w");
 */
 
@@ -1022,6 +1044,22 @@ main (int argc, char *argv[])
 	fclose(f2);
 	return 0;
 }        /* end main */
+@
+
+
+1.6
+log
+@changed tmpnam to mkstemp
+@
+text
+@d37 1
+a37 1
+	$Id: seg2segy.c,v 1.5 2019/12/10 17:57:25 john Exp john $
+d66 3
+d313 15
+a327 2
+
+	tmpnam(tmpfilename);
 @
 
 
