@@ -17,7 +17,18 @@
 #
 # So now you can run a bunch of tests similar to what you see next.
 #
-  subinbigcsv <tnull12.su >tnull13.su igiout=40,9999,40 igiext=1
+  subinbigcsv <tnull12.su >tnull13.su igiout=40,200,40 igiext=1 qout=qtest1.csv
 #
-  sugethw <tnull13.su key=cdp,cdpt
-
+  sugethw <tnull13.su key=cdp,cdpt > gethw1
+#
+  subinbigcsv <tnull12.su >tnull14.su igilist=40,80,120,160,200 igiext=1 qout=qtest1list.csv
+#
+  echo "---  diff qtest1.csv qtest1list.csv follows ---   "
+  diff qtest1.csv qtest1list.csv
+#
+  sugethw <tnull14.su key=cdp,cdpt > gethw1list
+#
+  echo "---  diff gethw1 gethw1list follows ---   "
+  diff gethw1 gethw1list
+#
+  echo "---  end  ---   "

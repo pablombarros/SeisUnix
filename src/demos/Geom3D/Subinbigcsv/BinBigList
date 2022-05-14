@@ -4,9 +4,10 @@
 # NOTE: Comment lines preceeding user input start with  ##
 #set -x
 
-## Basically, here, Subigbincsv increments through 3D Grid indexes    
-## in both directions and makes super-cdps by (re)setting the cdp key 
-## value for all traces near the intersecting cdp TO THAT cdp number. 
+## Basically, here, you specify a list of grid indexes for Subigbincsv
+## in both directions and it makes super-cdps by (re)setting the cdp key 
+## value for all traces near the cdps at the index intersections
+## TO THAT cdp number. 
 ## The size of the super-cdps is controlled by igilo,igihi,igclo,igchi. 
 ## Typically you want symmetrical super-cdps which also make a roughly  
 ## square PHYSICAL area (which is often a different number of cells        
@@ -24,12 +25,8 @@
 ## Set parameters for Subigbincsv and Subinqcsv.
 tracein=fake6.su        # your input seismic data. 
 rfile=kEFG.csv          # your 3D grid file. As output by Subincsv.                 
-igibeg=20               # first grid inline to create big cdps           
-igiend=32765            # last grid inline (resets to within grid)  
-igiinc=40               # grid inline increment to create big cdps     
-igcbeg=5                # first grid crossline to create big cdps           
-igcend=32765            # last grid crossline (resets to within grid)     
-igcinc=15               # grid crossline increment to create big cdps     
+igilist=20,60,100       # list of grid inlines to create big cdps           
+igclist=5,8,12,20       # list of grid crosslines to create big cdps           
 igilo=2                 # grid inline low cell extent of big cdps
 igihi=$igilo            # grid inline high cell extent of big cdps
 igclo=1                 # grid crossline low cell extent of big cdps
@@ -53,12 +50,12 @@ if [ $rfile ]
 then
 echo "            Now running input traces through subinbigcsv, with grid"
 subinbigcsv <$tracein >$tracebigbin rfile=$rfile qout=$qlocations \
-        igiout=$igibeg,$igiend,$igiinc igcout=$igcbeg,$igcend,$igcinc \
+        igilist=$igilist igclist=$igclist \
         igiext=$igilo,$igihi igcext=$igclo,$igchi
 else
 echo "            Now running input traces through subinbigcsv, no grid"
 subinbigcsv <$tracein >$tracebigbin              qout=$qlocations \
-        igiout=$igibeg,$igiend,$igiinc                                \
+        igilist=$igilist                  \
         igiext=$igilo,$igihi                         
 fi
 
