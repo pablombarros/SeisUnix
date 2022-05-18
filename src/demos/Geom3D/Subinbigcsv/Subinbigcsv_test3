@@ -34,8 +34,21 @@
 #
 # So now you can run a bunch of tests similar to what you see next.
 #
-  subinbigcsv <tnull24.su >tnull25.su rfile=kEFG100.csv igiout=40,9999,40 igcout=5,9999,15 \
-               igiext=2 igcext=1 intype=1
+  subinbigcsv <tnull24.su >tnull25.su rfile=kEFG100.csv igiout=40,9999,20 igcout=5,9999,5 \
+               igiext=1 igcext=2 intype=1 qout=qtest3.csv
 #
-  sugethw <tnull25.su key=cdp,cdpt
+  sugethw <tnull25.su key=cdp,cdpt > gethw3
+#
+  subinbigcsv <tnull24.su >tnull26.su rfile=kEFG100.csv igilist=40,60,80,100 igclist=5,10,15,20 \
+               igiext=1 igcext=2 intype=1 qout=qtest3list.csv
+#
+  echo "---  diff qtest3.csv qtest3list.csv follows ---   "
+  diff qtest3.csv qtest3list.csv
+#
+  sugethw <tnull26.su key=cdp,cdpt > gethw3list
+#
+  echo "---  diff gethw3 gethw3list follows ---   "
+  diff gethw3 gethw3list
+#
+  echo "---  end  ---   "
 

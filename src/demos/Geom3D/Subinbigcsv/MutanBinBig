@@ -11,9 +11,9 @@
 #set -x
 
 
-mutepanel=bbsorted.su    # input traces from BinBig (subinbigcsv and susort)                  
-#mutepanel=bbsortedno544.su  # input traces after Reject544                 
-qlocations=qlocations.csv # cdp locations from BinBig (subinqcsv)
+#mutepanel=bbsorted.su    # input traces from BinBig (subinbigcsv and susort)                  
+mutepanel=bbsortedno544.su  # input traces after Reject544                 
+qlocations=qlocations.csv # cdp locations from BinBig (subinbigcsv)
 seqbeg=5                 # skip this many header records in qlocations
 
 # The sumutecsv has many parameters and options.                      
@@ -106,6 +106,8 @@ seqend=`wc -l < $qlocations`
 while [ $seqnow -lt $seqend ]
 do
         cdp=`sed <"$qlocations" 1,"$seqnow"d | sed 1q | cut -d, -f2`
+        igi=`sed <"$qlocations" 1,"$seqnow"d | sed 1q | cut -d, -f4`
+        igc=`sed <"$qlocations" 1,"$seqnow"d | sed 1q | cut -d, -f5`
 
 	ok=false
 	reusepanel=false
@@ -163,7 +165,7 @@ do
 		   echo "No traces for cdp $cdp.  Make at least 1 pick anyway (and then reset function in $mpicks)."
 		fi
 
-		suxwigb < panel.$cdp title="CDP gather for cdp=$cdp" \
+		suxwigb < panel.$cdp title="gather for cdp=$cdp  igi=$igi igc=$igc" \
 				key=offset xbox=50 mpicks=mpicks.$cdp \
 				perc=$perc xcur=$xcur wbox=900 \
                                 grid1=dash x1beg=0 grid2=dash x2beg=0 x2end=$maxoff
@@ -186,7 +188,7 @@ do
 		echo "Hit return after mute panel comes up"
                 sumutecsv < panel.$cdp mode=$mode ntaper=$ntaper extrapt=$extrapt \
                             cdp=1 par=par.$cdp |
-                suxwigb key=offset title="Mute of cdp=$cdp" xbox=50 xcur=$xcur \
+                suxwigb key=offset title="Mute of cdp=$cdp  igi=$igi igc=$igc" xbox=50 xcur=$xcur \
                         grid1=dash x1beg=0 grid2=dash x2beg=0 x2end=$maxoff \
 			perc=$perc xcur=$xcur wbox=900 &
 

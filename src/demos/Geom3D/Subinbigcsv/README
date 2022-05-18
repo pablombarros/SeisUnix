@@ -47,6 +47,16 @@ sh ./NMOandDisplay           (after velocities are picked)
 
 sh ./VelanBinBigRandom       (this is also INTERACTIVE velan picking)
 
+-----
+
+In the place of BinBig above, you can run                                 
+
+sh ./BinBigList              
+
+This demonstrates that you can have different spacing between locations  
+while still getting enclosing-rectangles needed for bilinear interpolation.
+ 
+-----
 
 The following script performs interactive mute picking. Inputting the
 trace file from Reject544 causes it to produce a dark image which you
