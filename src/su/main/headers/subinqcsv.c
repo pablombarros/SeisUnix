@@ -42,7 +42,7 @@ char *sdoc[] = {
 "           contain the locations of all other input values. The option here ",
 "           must find the corresponding names within the non-tuple names in  ",
 "           the input q-file or in the parameter names you specify (later).  ",
-"      =1   cdp (default). Required if no grid is input.                     ",
+"      =1   cdp (default). Option 1 is required if no grid is input.         ",
 "      =2   cdpt (grid transposed cdp numbers).                              ",
 "      =3   igi,igc (grid index numbers).                                    ",
 "      =4   gx,gy (grid coordinates).                                        ",
@@ -52,6 +52,12 @@ char *sdoc[] = {
 "           corresponding to your choice here (giving you a chance to        ",
 "           adjust your input values before going through the error-check    ",
 "           that forces the input locations to be in aligned rectangles).    ",
+"									     ",
+" keyloc=   Location key. Can only be specified if inloc=1 and 2D (no rfile).",
+"           Name must be in the input Q-file (or parameters listed below).   ",
+"           This allows linear interpolation based on values such as point   ",
+"           numbers, station numbers, reciever numbers, or shot numbers.     ",
+"           Parameters extrapi and igiout refer to these values.             ",
 "									     ",
 " extrapi=0        do not extrapolate at ends in igi direction.              ",
 "                  (values beyond outer functions are held constant).        ",
@@ -145,14 +151,19 @@ char *sdoc[] = {
 "									     ",
 " cdp=             The parameters to the left are all optional but at least  ",
 " cdpt=            one of them must be specified. These are the names which  ",
-" igi=       	   contain single values at each location (also known as     ",
-" igc=       	   the non-tuple names). Typically, cdp= is the most likely  ",
-" gx=              name to specify. Each name specified here must have the   ",
-" gy=              same amount of values (separated by commas).              ",
-" sx=              For example: cdp=2,7,23,44 means that you must also       ",
-" sy=              list 4 values if you specify numa=.                       ",
-" numa=            Note the names specified must include the names needed    ",
-" numb=            for your inloc= option (by default inloc= requires cdp).  ",
+" fldr=            contain single values at each location (also known as     ",
+" grnors=    	   the non-tuple names). Typically, cdp= is the most likely  ",
+" grnofr=    	   name to specify. Each name specified here must have the   ",
+" grnlof=    	   same amount of values (separated by commas).              ",
+" gaps=      	   For example: cdp=2,7,23,44 means that you must also       ",
+" igi=       	   list 4 values if you specify numa=.                       ",
+" igc=       	                                                             ",
+" gx=                                                                        ",
+" gy=                                                                        ",
+" sx=              Note the names specified must include the names needed    ",
+" sy=              for your inloc= option (by default inloc= requires cdp).  ",
+" numa=                                                                      ",
+" numb=                                                                      ",
 " vuma=            (See invp2= for why some names here start with v).        ",
 " vumb=                                                                      ",
 "									     ",
@@ -267,8 +278,8 @@ int main(int argc, char **argv) {
 
   double gvals[99];       /* more than enough to contain grid definition */
 
-  int knownnames = 21;         /* this set of variables is related to   */
-  int ltuple = 12;             /* handling of parameter and value names */
+  int knownnames = 26;         /* this set of variables is related to   */
+  int ltuple = 17;             /* handling of parameter and value names */
   cwp_String *zname = NULL;                                         
   cwp_String *pname = NULL;                                         
   cwp_String *ndims = NULL;                                                 
@@ -356,6 +367,16 @@ int main(int argc, char **argv) {
   if (!getparint("inloc", &inloc)) inloc = 1;
   if(inloc<1 || inloc>5) err ("error: inloc= option not in range ");
   if(is3d==0 && inloc>1) err("**** Error: cannot specify inloc>1 with no input 3d grid.");
+
+  cwp_String keyloc = NULL;  
+  if(countparval("keyloc") > 0) {
+    if(inloc!=1 || is3d==1) err ("Error: to use keyloc= must be inloc=1 and also not a 3d.");
+    getparstring("keyloc", &keyloc);
+  }
+  else {
+    keyloc = ealloc1(3,1);
+    strcpy(keyloc,"cdp");
+  }
 
   if (!getparint("check", &icheck)) icheck = 0;
   if(icheck<0 || icheck>1) err("**** Error: check= value out of range.");
@@ -461,8 +482,8 @@ int main(int argc, char **argv) {
   qform = ealloc1(20+ktuple,sizeof(cwp_String *)); /* more than enough memory*/
 
   numstandard = 0;
-  qname[numstandard] = ealloc1(3,1);
-  strcpy(qname[numstandard],"cdp");
+  qname[numstandard] = ealloc1(strlen(keyloc),1);
+  strcpy(qname[numstandard],keyloc); 
   qform[numstandard] = ealloc1(5,1);
   strcpy(qform[numstandard],"%.20g"); 
   numstandard++;
@@ -557,33 +578,38 @@ int main(int argc, char **argv) {
     zname = ealloc1(knownnames,sizeof(cwp_String *));
     ihere = ealloc1int(knownnames);
     for(j=0; j<knownnames; j++) {
-      pname[j] = ealloc1(4,1);
-      zname[j] = ealloc1(4,1);
+      pname[j] = ealloc1(6,1);
+      zname[j] = ealloc1(6,1);
       strcpy(pname[j],"null");
       ihere[j] = 0;
     }
     strcpy(zname[0],"cdp");
     strcpy(zname[1],"cdpt");
-    strcpy(zname[2],"igi");
-    strcpy(zname[3],"igc");
-    strcpy(zname[4],"gx");
-    strcpy(zname[5],"gy");
-    strcpy(zname[6],"sx");
-    strcpy(zname[7],"sy");
-    strcpy(zname[8],"numa");
-    strcpy(zname[9],"numb");
-    strcpy(zname[10],"vuma");
-    strcpy(zname[11],"vumb");
-    ltuple = 12; /* first tuple name is at 12 */
-    strcpy(zname[12],"tupa"); 
-    strcpy(zname[13],"offs");
-    strcpy(zname[14],"tims");
-    strcpy(zname[15],"tnmo");
-    strcpy(zname[16],"dpth");
-    strcpy(zname[17],"vels");
-    strcpy(zname[18],"vnmo");
-    strcpy(zname[19],"tupb");
-    strcpy(zname[20],"vupa");
+    strcpy(zname[2],"fldr");
+    strcpy(zname[3],"grnors");
+    strcpy(zname[4],"grnofr");
+    strcpy(zname[5],"grnlof");
+    strcpy(zname[6],"gaps");
+    strcpy(zname[7],"igi");
+    strcpy(zname[8],"igc");
+    strcpy(zname[9],"gx");
+    strcpy(zname[10],"gy");
+    strcpy(zname[11],"sx");
+    strcpy(zname[12],"sy");
+    strcpy(zname[13],"numa");
+    strcpy(zname[14],"numb");
+    strcpy(zname[15],"vuma");
+    strcpy(zname[16],"vumb");
+    ltuple = 17; /* first tuple name is at 17 */
+    strcpy(zname[17],"tupa"); 
+    strcpy(zname[18],"offs");
+    strcpy(zname[19],"tims");
+    strcpy(zname[20],"tnmo");
+    strcpy(zname[21],"dpth");
+    strcpy(zname[22],"vels");
+    strcpy(zname[23],"vnmo");
+    strcpy(zname[24],"tupb");
+    strcpy(zname[25],"vupa");
 
     ktuple = 0;
     numpname = 0;
@@ -650,43 +676,45 @@ int main(int argc, char **argv) {
 /* The reason to get rid of them here is not just to save memory, but also to skip over  */
 /* any badly formated values in these fields of the q-records.                           */
 
-    if(inloc!=1) {
-      pname[numpname] = ealloc1(3,1);
-      strcpy(pname[numpname],"cdp");
-      numpname++;
-    }
-    if(inloc!=2) {
-      pname[numpname] = ealloc1(4,1);
-      strcpy(pname[numpname],"cdpt");
-      numpname++;
-    }
-    if(inloc!=3) {
-      pname[numpname] = ealloc1(3,1);
-      strcpy(pname[numpname],"igi");
-      numpname++;
-      pname[numpname] = ealloc1(3,1); 
-      strcpy(pname[numpname],"igc"); 
-      numpname++;
-    }
-    if(inloc!=4) {
-      pname[numpname] = ealloc1(2,1);
-      strcpy(pname[numpname],"gx");
-      numpname++;
-      pname[numpname] = ealloc1(2,1); 
-      strcpy(pname[numpname],"gy");
-      numpname++;
-    }
-    if(inloc!=5) {
-      pname[numpname] = ealloc1(2,1);
-      strcpy(pname[numpname],"sx");
-      numpname++;
-      pname[numpname] = ealloc1(2,1);
-      strcpy(pname[numpname],"sy");
-      numpname++;
+    if(is3d>0) { 
+      if(inloc!=1) {
+        pname[numpname] = ealloc1(3,1);
+        strcpy(pname[numpname],"cdp");
+        numpname++;
+      }
+      if(inloc!=2) {
+        pname[numpname] = ealloc1(4,1);
+        strcpy(pname[numpname],"cdpt");
+        numpname++;
+      }
+      if(inloc!=3) {
+        pname[numpname] = ealloc1(3,1);
+        strcpy(pname[numpname],"igi");
+        numpname++;
+        pname[numpname] = ealloc1(3,1); 
+        strcpy(pname[numpname],"igc"); 
+        numpname++;
+      }
+      if(inloc!=4) {
+        pname[numpname] = ealloc1(2,1);
+        strcpy(pname[numpname],"gx");
+        numpname++;
+        pname[numpname] = ealloc1(2,1); 
+        strcpy(pname[numpname],"gy");
+        numpname++;
+      }
+      if(inloc!=5) {
+        pname[numpname] = ealloc1(2,1);
+        strcpy(pname[numpname],"sx");
+        numpname++;
+        pname[numpname] = ealloc1(2,1);
+        strcpy(pname[numpname],"sy");
+        numpname++;
+      }
     }
 
-/* negative numpname is a flag to NOT store values if they are on pname list. */
-/* positive numpname is a flag to ONLY store values if they are on pname list.*/
+/* 0 or negative numpname is a flag to NOT store values if they are on pname list. */
+/* positive numpname is a flag to ONLY store values if they are on pname list.     */
 
     numpname = 0 - numpname; 
 
@@ -779,12 +807,12 @@ int main(int argc, char **argv) {
 
   if(inloc==1) {     /* cdp (required if no grid is input) */
     for (i=0; i<iztuple; ++i) {
-      if(strcmp(pname[i],"cdp")==0) {
+      if(strcmp(pname[i],keyloc)==0) {
         jnloc1 = i;
         break;
       }
     }
-    if(jnloc1<0) err("error: for inloc=1, input must have cdp (amoung non-tuple names).");
+    if(jnloc1<0) err("error: for inloc=1, input must have your keyloc=%s (among non-tuple names).",keyloc);
 
     if(is3d>0) {
       for (icdp=0; icdp<ncdp; ++icdp) {
@@ -810,7 +838,7 @@ int main(int argc, char **argv) {
         break;
       }
     }
-    if(jnloc1<0) err("error: for inloc=2, input must have cdpt (amoung non-tuple names).");
+    if(jnloc1<0) err("error: for inloc=2, input must have cdpt (among non-tuple names).");
 
     for (icdp=0; icdp<ncdp; ++icdp) {
       k = lrint(RecInfo[icdp].dlots[jnloc1]); 
@@ -829,14 +857,14 @@ int main(int argc, char **argv) {
         break;
       }
     }
-    if(jnloc1<0) err("error: for inloc=3, input must have igi (amoung non-tuple names).");
+    if(jnloc1<0) err("error: for inloc=3, input must have igi (among non-tuple names).");
     for (i=0; i<iztuple; ++i) {
       if(strcmp(pname[i],"igc")==0) {
         jnloc2 = i;
         break;
       }
     }
-    if(jnloc2<0) err("error: for inloc=3, input must have igc (amoung non-tuple names).");
+    if(jnloc2<0) err("error: for inloc=3, input must have igc (among non-tuple names).");
 
     for (icdp=0; icdp<ncdp; ++icdp) {
       RecInfo[icdp].kinf[1] = lrint(RecInfo[icdp].dlots[jnloc1]);
@@ -855,14 +883,14 @@ int main(int argc, char **argv) {
         break;
       }
     }
-    if(jnloc1<0) err("error: for inloc=4, input must have gx (amoung non-tuple names).");
+    if(jnloc1<0) err("error: for inloc=4, input must have gx (among non-tuple names).");
     for (i=0; i<iztuple; ++i) {
       if(strcmp(pname[i],"gy")==0) {
         jnloc2 = i;
         break;
       }
     }
-    if(jnloc2<0) err("error: for inloc=4, input must have gy (amoung non-tuple names).");
+    if(jnloc2<0) err("error: for inloc=4, input must have gy (among non-tuple names).");
 
     for (icdp=0; icdp<ncdp; ++icdp) {
       xg = RecInfo[icdp].dlots[jnloc1];
@@ -881,14 +909,14 @@ int main(int argc, char **argv) {
         break;
       }
     }
-    if(jnloc1<0) err("error: for inloc=5, input must have sx (amoung non-tuple names).");
+    if(jnloc1<0) err("error: for inloc=5, input must have sx (among non-tuple names).");
     for (i=0; i<iztuple; ++i) {
       if(strcmp(pname[i],"sy")==0) {
         jnloc2 = i;
         break;
       }
     }
-    if(jnloc2<0) err("error: for inloc=5, input must have sy (amoung non-tuple names).");
+    if(jnloc2<0) err("error: for inloc=5, input must have sy (among non-tuple names).");
 
     for (icdp=0; icdp<ncdp; ++icdp) {
       xw = RecInfo[icdp].dlots[jnloc1];
