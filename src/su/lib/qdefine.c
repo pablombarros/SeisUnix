@@ -216,8 +216,8 @@ void getviacommand(cwp_String **pnameA, int *numpnameA, int *iztupleA, int numdi
 /*             (Note: I defined q-file standard when I wrote this Dec 2021). */
 /* pnameA    - names of values to determine what not to input from q-file.   */
 /* numpnameA - absolute value is the number of names input in pnameA.        */
-/*             If numpnameA is negative then only store a q-file value if    */
-/*             it is NOT a name input in pnameA.                             */
+/*             If numpnameA is 0 or negative then only store a q-file value  */
+/*             if it is NOT a name input in pnameA.                          */
 /*             If numpnameA is positive then only store a q-file value if    */
 /*             it IS a name input in pnameA.                                 */
 /* numdind   - number of indepenent dimension values that will be output.    */
@@ -352,7 +352,7 @@ void getviaqfile(FILE *fpP, cwp_String **pnameA, int *numpnameA, int *iztupleA,
   for(i=0; i<janames; i++) { 
     if(strncmp(aname[i],"null",4) != 0) { /*no store if name starts with null*/ 
 
-      if(numpname<0) {
+      if(numpname<1) {
         k = 1;
         for(j=0; j<-numpname; j++) {        /*only store if name not in in-list*/ 
           if(strcmp(aname[i],pname[j]) == 0) {
