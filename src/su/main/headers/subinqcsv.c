@@ -362,7 +362,7 @@ int main(int argc, char **argv) {
   if(mgcextr<0 || mgcextr>3) err ("error: extrapc= option not in range ");
 
   if (!getparint("extrapt", &mgtextr)) mgtextr = 0;
-  if(mgcextr<0 || mgcextr>3) err ("error: extrapt= option not in range ");
+  if(mgtextr<0 || mgtextr>3) err ("error: extrapt= option not in range ");
 
   if (!getparint("inloc", &inloc)) inloc = 1;
   if(inloc<1 || inloc>5) err ("error: inloc= option not in range ");
