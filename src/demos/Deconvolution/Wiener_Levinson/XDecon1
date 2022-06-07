@@ -52,7 +52,7 @@ suxwigb <modeldata title="Data: 64ms reverbs" \
  
 # Plot the autocorrelation with gain
 sugain <modeldata tpow=$tpow |
-suacor nt=31 |
+suacor ntout=31 |
 suxwigb title="Autocorrelation" \
 	windowtitle="AutoCorr" \
 	label1="Time (sec)" label2="Trace" \
@@ -75,7 +75,7 @@ suxwigb label1="Time"  label2="Trace" title="Spiking Decon: 4,40ms" \
 # Plot the autocorrelation after spike
 supef <modeldata maxlag=.04 |
 sugain tpow=$tpow |
-suacor nt=31 |
+suacor ntout=31 |
 suxwigb title="Autocor after spike" \
 	windowtitle="AutoCorr/Spike" \
 	label1="Time (sec)" label2="Trace" \

@@ -34,7 +34,7 @@ supswigp <modeldata title="Model Data: 64ms reverbs" \
 
 # Plot the autocorrelation with gain
 sugain <modeldata tpow=$tpow |
-suacor nt=31 |
+suacor ntout=31 |
 supswigp title="Autocorrelation (with gain)" \
 	label1="Time (sec)" label2="Trace" >${demo}.2.eps
 

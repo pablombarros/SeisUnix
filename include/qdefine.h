@@ -1,4 +1,7 @@
 
+#ifndef QDEFINE_H
+#define QDEFINE_H
+
 struct  QInfo { 
      int *kinf;
      int nto;
@@ -30,3 +33,4 @@ void getqvalscsv(char *textraw, char *textbeg, int maxtext, char rdel,
 
 void tparseq(char *tbuf, char d, char **fields, int *numfields) ; 
 
+#endif

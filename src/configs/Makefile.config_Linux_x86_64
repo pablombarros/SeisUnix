@@ -41,6 +41,8 @@ XDRFLAG =  -DSUXDR
 # /usr/include/tirpc/rpc use this one 
 #XDRFLAG =  -DSUXDR -DSUTIRPC
 
+# else if you do not want to use XDR, uncomment the next line
+#XDRFLAG =
 
 # Most systems are LITTLE_ENDIAN these days
 ENDIANFLAG = -DCWP_LITTLE_ENDIAN

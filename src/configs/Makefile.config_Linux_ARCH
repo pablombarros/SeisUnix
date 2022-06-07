@@ -42,6 +42,9 @@ XDRFLAG =  -DSUXDR
 # /usr/include/tirpc/rpc use this one 
 #XDRFLAG =  -DSUXDR -DSUTIRPC
 
+# else if you don't want to use XDR, uncomment the next line
+#XDRFLAG = 
+
 ENDIANFLAG = -DCWP_LITTLE_ENDIAN
 LARGE_FILE_FLAG = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 

@@ -42,7 +42,7 @@ suxwigb <modeldata title="Data: 64ms reverbs" \
  
 # Plot the autocorrelation with gain
 sugain <modeldata tpow=$tpow |
-suacor nt=31 |
+suacor ntout=31 |
 suxwigb title="Autocorrelation" \
 	windowtitle="AutoCorr" \
 	label1="Time (sec)" label2="Trace" \
@@ -65,7 +65,7 @@ suxwigb label1="Time"  label2="Trace" title="PEF: 50,160ms" \
 # Plot the autocorrelation after PEF
 supef pnoise=0.0005 mix=$mix <modeldata minlag=.05 maxlag=.16 |
 sugain pbal=1 |
-suacor nt=31 |
+suacor ntout=31 |
 suxwigb title="Autocor after PEF" \
 	windowtitle="AutoCorr/PEF" \
 	label1="Time (sec)" label2="Trace" \
