@@ -61,6 +61,8 @@ Then review and run:
 
  sh ./Subinqcsv_just_3dgridXYs
 
+ sh ./Subinqcsv_piecewise1     
+
  sh ./Subinqcsv_notuples_command
 
  sh ./Subinqcsv_notuples_qinput_2d
