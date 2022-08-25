@@ -418,7 +418,7 @@ __INLINE__ ssize_t sfvalue(Sfio_t* f)		{ return __sf_value(f); }
 	 ((f)->_data == (unsigned char*)(b) ? 0 : -1) \
 	)
 
-ssize_t sfvaprints(char** sp, const char* form, va_list args);
+ssize_t sfvaprints(char** sp, const char* form, _ast_va_list args);
 
 #endif /* _SFSTR_H */
 

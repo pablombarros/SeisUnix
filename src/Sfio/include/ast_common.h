@@ -9,7 +9,6 @@
 #define _sys_time	1	/* #include <sys/time.h> ok */
 #define _sys_times	1	/* #include <sys/times.h> ok */
 #define _hdr_stdlib	1	/* #include <stdlib.h> ok */
-#define _typ_long_double	1	/* long double is a type */
 #define _typ_size_t	1	/* size_t is a type */
 #define _typ_ssize_t	1	/* ssize_t is a type */
 #define _sys_stat	1	/* #include <sys/stat.h> ok */
@@ -140,23 +139,18 @@
 
 #define _ast_flt4_t		float
 #define _ast_flt8_t		double
-#define _ast_flt16_t		long double
-#define _ast_fltmax_t		_ast_flt16_t
+#define _ast_fltmax_t		_ast_flt8_t
+#define _ast_fltmax_double		1
 
 #ifndef va_listref
-#define va_listref(p) (&(p))	/* pass va_list to varargs function */
-#define va_listval(p) (*(p))	/* retrieve va_list from va_arg(ap,va_listarg) */
-#define va_listarg va_list*	/* va_arg() va_list type */
+#define va_listref(p) (p)	/* pass va_list to varargs function */
+#define va_listval(p) (p)	/* retrieve va_list from va_arg(ap,va_listarg) */
+#define va_listarg va_list	/* va_arg() va_list type */
 #undef	_ast_va_list
 #ifdef	va_start
 #define _ast_va_list va_list
 #else
-#if __STD_C
-#include <stdarg.h>
-#else
-#include <varargs.h>
-#endif
-#define _ast_va_list va_list
+#define _ast_va_list void*	/* va_list that avoids #include */
 #endif
 #endif
 #ifndef _AST_STD_H
