@@ -64,7 +64,7 @@
 
 	$Log: seg2segy.c,v $
 	Revision 1.7  2022/04/13 17:48:50  john
-	removed extra comment /*   */
+	removed extra comment 
 
 	Revision 1.6  2019/12/10 18:40:34  john
 	changed tmpnam to mkstemp
