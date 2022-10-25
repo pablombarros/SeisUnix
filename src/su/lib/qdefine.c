@@ -349,6 +349,25 @@ void getviaqfile(FILE *fpP, cwp_String **pnameA, int *numpnameA, int *iztupleA,
 
   if(strncmp(aname[0],"c_su_id",7) == 0) aname[0] = "null";
 
+/* If names have lead/trail digits (like 01_gx_12), reduce them to root name.*/
+
+  for(i=0; i<janames; i++) {  
+    k = -1;
+    n = -1;
+    for(j=0; j<strlen(aname[i]); j++) {
+      if(aname[i][j]=='_') {
+        if(k==-1) k = j;
+        else n = j;
+      } 
+    } 
+    if(k!=-1 && n!=-1 && n-k>1) {
+      for(j=0; j<n-k-1; j++) {
+        aname[i][j] = aname[i][j+k+1];
+      }
+      aname[i][n-k-1] = '\0';
+    }
+  } 
+
   for(i=0; i<janames; i++) { 
     if(strncmp(aname[i],"null",4) != 0) { /*no store if name starts with null*/ 
 
