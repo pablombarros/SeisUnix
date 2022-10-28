@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2022.*/
 /* All rights reserved.			*/
 
-/* SUCLEAVE: $Revision: 1.1 $ ; $Date: 2022/03/26 02:48:10 $	*/
+/* SUCLEAVE: $Revision: 1.2 $ ; $Date: 2022/10/28 11:00:01 $	*/
 
 #include "su.h"
 #include "segy.h"
@@ -185,7 +185,7 @@ int main(int argc, char **argv) {
     else if(ifile<1)  ifile = 0;
 
     if(icount[ifile] < 1) {
-      n = lrint(ifile*dsize+dlow);
+      n = lrint(ifile*dsize+dlow+0.00000000001); 
       sprintf(fname,"%s%d.su",outbase,n); 
       fps[ifile] = efopen(fname,"w");
       if(ifile<minf) minf = ifile;
@@ -203,7 +203,7 @@ int main(int argc, char **argv) {
       efclose(fps[i]);
       if(iprint==1) {
         dsum[i] /= icount[i];
-        n = lrint(i*dsize+dlow);
+        n = lrint(i*dsize+dlow+0.00000000001);
         sprintf(fname,"%s%d.su",outbase,n); 
         warn("%s       %d       %f",fname,icount[i],dsum[i]);
       }
