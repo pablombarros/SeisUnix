@@ -2009,8 +2009,6 @@ int main(int argc, char **argv) {
      int npchan = 0;
      int npsegs = 0;
      double rpinc = 0.;
-     int n=0;
-     int m=0;
 
      for(n=1; n<=numR; n++) {
 
@@ -2033,11 +2031,14 @@ int main(int argc, char **argv) {
            long long int mcf = longt(RecInfo[m].dfield[mapx[0]],dtolh,dtol);
            long long int mct = longt(RecInfo[m].dfield[mapx[1]],dtolh,dtol);
            long long int mci = longt(RecInfo[m].dfield[mapx[2]],dtolh,dtol);  
+           if(mci == 0) mci = 1;
 
            nchan += (mct - mcf) / mci + 1;
            nsegs++;
 
-           double rinc = (RecInfo[m].dfield[mapx[3]] - RecInfo[m].dfield[mapx[4]]) / ((mct - mcf) / mci + 1);
+           double rinc = 1.;
+           if(mct != mcf) rinc = (RecInfo[m].dfield[mapx[3]] - RecInfo[m].dfield[mapx[4]]) / ((mct - mcf) / mci);
+
            if(ntop>0 && l5same==0 && fabs(rinc-rpinc) > dtolh*2.) {
              l5same = 1;
              l5verr = l5verr + 1;
@@ -2049,6 +2050,7 @@ int main(int argc, char **argv) {
                }
              }
            }
+           rpinc = rinc;
 
            if(l1same==0 && mcf%mci != mct%mci) {
              l1same = 1;

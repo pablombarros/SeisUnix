@@ -34,7 +34,9 @@ PROGS =			\
 	$B/sukeycount	\
 	$B/sulcthw	\
 	$B/sulhead	\
+	$B/sunearcsv    \
 	$B/supaste	\
+	$B/suprofcsv    \
 	$B/surange	\
 	$B/surandhw	\
 	$B/susehw	\

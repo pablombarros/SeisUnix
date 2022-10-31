@@ -61,6 +61,7 @@ char *sdoc[] = {
 "    unrepeat= help when duplicate fldr values exist (default is off)      ", 
 "      scalco= check size of sx,sy,gx,gy coordinate values                 ",
 "      scalel= check size of elevation and related values                  ",
+"       outid= output data records with these first characters (Q,S, etc.) ",
 "                                                                          ",
 " ***********************************************************              ",
 "   To output this documentation:  sutoolcsv 2> tooldoc.txt                ",
@@ -463,6 +464,14 @@ char *sdoc[] = {
 "           ** find that values like 3333.6 get rounded to 3334            ",
 "           ** when SUGEOMCSV updates them to traces.                      ",
 "                                                                          ", 
+"      outid=  Use this as first characters on output data records,        ", 
+"              and on the output C_SU_SETID record.                        ", 
+"              Default is the same value as the input setid.               ", 
+"           =Q is the most likely id to change to because it is required   ", 
+"              for (crooked) profiles input to suprofcsv and sunearcsv.    ", 
+"                    Note: this value is automatically upper-cased unless  ", 
+"                          you surround it by double-quotes.               ", 
+"                          So q becomes Q unless you use double-quotes.    ", 
 "                                                                          ", 
 " ------------------------------------------------------------------------ ",
 " ------------------------------------------------------------------------ ",
@@ -718,6 +727,7 @@ int main(int argc, char **argv) {
 
    cwp_String Rname=NULL;  /* text file name for values            */
    cwp_String Rid  =NULL;  /* rejection id for records             */
+   cwp_String Rod  =NULL;  /* id for output records                */
    FILE *fpR=NULL;         /* file pointer for Rname input file    */
    cwp_String Wname=NULL;  /* text file name for output values     */
    FILE *fpW=NULL;         /* file pointer for Wname output file   */
@@ -1144,6 +1154,25 @@ int main(int argc, char **argv) {
      }
    }
 
+/* Resolve outid options. */
+
+   int lenod = lenid;
+   if(countparval("outid") > 0) {
+     getparstring("outid", &Rod);
+     lenod = strlen(Rod);
+     if(lenod>3 && Rod[0]=='"' && Rod[lenod-1]=='"') {
+       for(int n=0; n<lenod-1; n++) Rod[n] = Rod[n+1];
+       lenod -= 2;
+     }
+     else {
+       for(int n=0; n<lenod; n++) Rod[n] = toupper(Rod[n]);
+     }
+   }
+   else {
+     Rod = ealloc1(lenid,1);
+     strcpy(Rod,Rid);
+     lenod = lenid;
+   }
 
 /* ------------------------------------------------  */
 /* ------------------------------------------------  */
@@ -2247,13 +2276,13 @@ int main(int argc, char **argv) {
        memset(textraw,' ',iwidth);
        textraw[iwidth] = '\n';
      }
-     if(lenid>0) { 
+     if(lenod>0) { 
        strcpy(textraw,"C_SU_SETID,");
-       strcpy(textraw+11,Rid);
-       if(iwtype==0) textraw[11+lenid] = ' ';
+       strcpy(textraw+11,Rod);
+       if(iwtype==0) textraw[11+lenod] = ' ';
        else {
-         textraw[11+lenid] = '\n';
-         textraw[12+lenid] = '\0';
+         textraw[11+lenod] = '\n';
+         textraw[12+lenod] = '\0';
        }
      }
      else if(isetid==1) {
@@ -2505,12 +2534,12 @@ int main(int argc, char **argv) {
 
              if(iwchop>0) {
                int last = strlen(textraw);
-               if(lenid>0) {
-                 strcpy(textraw2,Rid);
-                 textraw2[lenid] = ','; /* always comma for output */
-                 for(n=0; n<last; n++) textraw2[n+lenid+1] = textraw[n];
-                 textraw2[last+lenid  ] = '\n';
-                 textraw2[last+lenid+1] = '\0';
+               if(lenod>0) {
+                 strcpy(textraw2,Rod);
+                 textraw2[lenod] = ','; /* always comma for output */
+                 for(n=0; n<last; n++) textraw2[n+lenod+1] = textraw[n];
+                 textraw2[last+lenod  ] = '\n';
+                 textraw2[last+lenod+1] = '\0';
                }
                else {
                  for(n=0; n<last; n++) textraw2[n] = textraw[n];
@@ -2615,7 +2644,7 @@ int main(int argc, char **argv) {
              if(iwtype == 0) {   /* convert from delimited and then output fixed */ 
                memset(textraw2,' ',iwidth);
                textraw2[iwidth] = '\n';
-               strncpy(textraw2,Rid,lenid);
+               strncpy(textraw2,Rod,lenod);
                for(ineed=0; ineed<numcases; ineed++) { 
                  sprintf(textbeg,forms[ineed],RecInfo[count].dfield[ineed]);
                  int mfill = strlen(textbeg);
@@ -2630,8 +2659,8 @@ int main(int argc, char **argv) {
              } /* end of  if(iwtype == 0) { */ 
 
              else { /* iwtype = csv. Insert commas and output */
-               strncpy(textraw2,Rid,lenid);
-               int mhere = lenid;
+               strncpy(textraw2,Rod,lenod);
+               int mhere = lenod;
                for(ineed=0; ineed<numcases; ineed++) { /* nspot not used, why add comma for no value? */ 
                  if(RecInfo[count].dfield[ineed]<1.e308) {
                    sprintf(textbeg,forms[ineed],RecInfo[count].dfield[ineed]);
@@ -2754,12 +2783,15 @@ int main(int argc, char **argv) {
            long long int mcf = longt(RecInfo[m].dfield[mapx[0]],dtolh,dtol);
            long long int mct = longt(RecInfo[m].dfield[mapx[1]],dtolh,dtol);
            long long int mci = longt(RecInfo[m].dfield[mapx[2]],dtolh,dtol);  
+           if(mci == 0) mci = 1;
 
            nchan += (mct - mcf) / mci + 1;
            nsegs++;
 
-           double rinc = (RecInfo[m].dfield[mapx[3]] - RecInfo[m].dfield[mapx[4]]) / ((mct - mcf) / mci + 1);
-           if(ntop>0 && l5same==0 && fabs(rinc-rpinc) > dtolh*2.) { 
+           double rinc = 1.;
+           if(mct != mcf) rinc = (RecInfo[m].dfield[mapx[3]] - RecInfo[m].dfield[mapx[4]]) / ((mct - mcf) / mci);
+
+           if(ntop>0 && l5same==0 && fabs(rinc-rpinc) > dtolh*2.) {  
              l5same = 1;
              l5verr = l5verr + 1;
              if(l5verr<4) {
@@ -2770,6 +2802,7 @@ int main(int argc, char **argv) {
                }
              }
            }
+           rpinc = rinc;
 
            if(l1same==0 && mcf%mci != mct%mci) {
              l1same = 1;
