@@ -2,20 +2,22 @@
 # Velocity analyses for the cmp gathers
 # Authors: Dave Hale, Jack K. Cohen, with modifications by John Stockwell
 # NOTE: Comment lines preceeding user input start with  ##
+# 2 November 2022 version
 #set -x
 
 ## Set parameters
+## The user must set the relevant field
 datadir=.
-velpanel=mute.gain.cdp.su  # gained data sorted in cdps
+velpanel=mute_gain_jon_1_cdp.su        # muted gained data sorted in cdps
 vpicks=radon_nmo_vel_1.par       # output file of vnmo= and tnmo= values
 normpow=0               # see selfdoc for suvelan
 slowness=0              # see selfdoc for suvelan
 cdpfirst=1              # minimum cdp value in data
 cdplast=2142            # maximum cdp value in data
-cdpmin=120              # minimum cdp value used in velocity analysis
+cdpmin=1500              # minimum cdp value used in velocity analysis
 cdpmax=2130             # maximum cdp value used in velocity analysis
-dcdp=512                # change in cdp for velocity scans
-fold=120                # maximum number of traces per cdp gather
+dcdp=100                # change in cdp for velocity scans
+fold=60                 # maximum number of traces per cdp gather
 dxcdp=12.5              # distance between successive midpoints
                         # in full data set
 mix=0			# number of adjacent cdp panels on either side
@@ -118,37 +120,78 @@ echo
 echo
 echo "            Instructions for Velocity Analysis."
 echo
-echo " This version of the Velan script is expressly for picking velocities"
-echo " to use in radon transform domain multiple suppression, and for"
-echo " the NMO correction. Pick the maxima of the semblance peaks that"
-echo " represent actual reflection events. There are a lot of peaks that"
-echo " are due to multiples, data truncation and noise. These peaks are not"
-echo " to be picked."
+echo " This version of the Velan script employs suvelan and suradon"
+echo " to permit the user to pick primaries on a semblance plot when"
+echo " multiples are present."
 echo
-echo " An  image semblance map will appear on the right of your screen."
-echo " A wiggle trace plot of the cdp panel being analysed will appear"
-echo " on the left as an aid in picking. Click on the semblance contour"
-echo " map to make that window active."
+echo " The user must first edit the script adding the name of the input file,"
+echo " which consists of CDP gathers that are muted and gained."
 echo
+echo " velpanel=mute_gain_cdp.su        # muted gained data sorted in cdps"
+echo " vpicks=radon_nmo_vel_X.par       # output file of vnmo= and tnmo= values"
 
 pause
 
+echo " The user must also edit the followig fields:" 
+echo 
+
+echo "cdpfirst=              # minimum cdp value in data"
+echo "cdplast=               # maximum cdp value in data"
+echo "cdpmin=                # minimum cdp value used in velocity analysis"
+echo "cdpmax=                # maximum cdp value used in velocity analysis"
+echo "dcdp=                  # change in cdp for velocity scans"
+echo "fold=                  # maximum number of traces per cdp gather"
+echo "dxcdp=                 # distance between successive midpoints"
+
+pause
+
+echo "   Instructions for picking "
 echo
-echo " Pick velocities by placing the cursor on each peak (do not click) "
-echo " in the semblance plot and typing 's'. Type 'q' when last peak is "
-echo " picked. Picked values will be saved into a file."
+echo " A wiggle trace plot will appear on the left side of the screen"
+echo " and a NMO semblance plot will appear on the right side."
+echo
+echo " Click the bar at the top of the semblance plot to activate the panel"
+echo
+echo " Picks are made by placing the tip of the cursor on the desired"
+echo " point on the plot and typing the letter 's'. When the last pick is"
+echo " is made after typing 's' type the letter 'q'.
+echo " Picked values will be saved into a file."
 echo
 echo " Note, this is 'blind' picking. You will not see any indication"
-echo " on the contour plot that a point has been picked."
+echo " on the semblance plot that a point has been picked."
+
+pause
+
+echo "   What to pick "
 echo
-echo " Note also, that it is best if a value of the velocity is picked "
-echo " at the beginning of the data (t=0.0 usually). The picks must "
-echo " be increasing in time.  If you feel you have made an incorrect pick"
+echo " Owing to some peculiarities of the script, it is helpful to pick"
+echo " the velocity at time 0.0. For offshore data this is 1500 m/s."
+echo " this will also be the velocity at the water bottom."
+echo " The picks must be monotonically increasing in time."
+echo " If you feel you have made an incorrect pick"
 echo " you will be given an opportunity to pick the velocities again. "
+echo
+echo " The aim is to pick the centers of the peaks reprenting what you think"
+echo " are primary reflections, often referred to as 'bulls eyes'." 
+echo " Finally, you will pick tying velocity at the latest time on the plot,"
+echo " usually at a higher velocity, to continue the increasing trend. Otherwise
+echo " the sunmo program will extrapolate a constant velocity from the last"
+echo " pick to the latest time."
 
 pause
 
 echo
+echo " What not to pick "
+echo 
+echo "There are a number of things not to pick. There are truncation errors"
+echo "that may make large peaks on the semblance plot. Avoid picking these."
+echo "Avoid picking multiples. These can be recognized by repetitive appearance."
+echo "According to the Dix equation, interval velocity inversions will appear"
+echo "reduction in the increase of RMS velocity. Thus, avoid picking sequences"
+echo "of semblance peaks that do not increase in velocity."
+
+echo
+echo "    Are you satisfied with your velocity picks"
 echo
 echo " You will be shown a wiggle trace plot and a semblance map of the"
 echo " multiple-suppressed data. Do not attempt to pick these. You will"
@@ -156,7 +199,7 @@ echo " be asked if the multiple-suppression is ok. If you will answer y"
 echo " you will be asked if you want to continue doing velocity picking."
 echo " If you answer y, the script will take you to the next cdp."
 echo " If you answer n, you will be asked if you want to perform picking"
-echo " on the multiple suppressed data. If you answer n you the picking"
+echo " on the multiple suppressed data. If you answer \'n\' you the picking"
 echo " will be purformed on the non-multiple suppressed panel."
 echo
 
@@ -195,7 +238,7 @@ echo " Advanced features"
 echo
 echo " You may set the mix=  to a value that will indicate the number of"
 echo " cdps to the right and left of the current cdp to \"mix\" or average"
-echo " with the current cdp on which velocity analysis is being performed".
+echo " with the current cdp on which velocity analysis is being performed."
 echo
 
 ;;
@@ -342,8 +385,9 @@ do
 
 
 		# make a par file for this cdp based on the velocity and time picks
-		sort <mpicks.$cdp  -n |
-		mkparfile string1=tnmo string2=vnmo >par.$cdp
+		sort  <mpicks.$cdp  -n > tmp.sort
+		mkparfile < tmp.sort string1=tnmo string2=vnmo >par.$cdp
+		rm tmp.sort
 
 		# view the picked velocity function  as both inter
 		echo "Putting up velocity function for cdp $cdp"
@@ -355,6 +399,8 @@ do
 			par=unisam.p method=$interpolation > uni.temp.bin
 		velconv intype=vrmst outtype=vintt nt=$nout dt=$dt < uni.temp.bin > vel.temp.bin
 		cat uni.temp.bin vel.temp.bin > graph.temp.bin
+		echo 
+		echo
 
 		$CWPROOT/bin/zap xwigb 
 		$CWPROOT/bin/zap ximage 
@@ -484,6 +530,10 @@ do
 		   ybox=10 perc=$perc xcur=$xcur  key=offset &
 
 		pause  
+		echo
+		echo
+		echo
+		echo
 
 		# kill windows
 		$CWPROOT/bin/zap xgraph 
@@ -515,8 +565,12 @@ do
 			case $response in
 			n*) # get a fresh copy of panel.$cdp
 				# do nothing
+				echo 
+				echo
 				$CWPROOT/bin/zap ximage
 				$CWPROOT/bin/zap xwigb
+				echo 
+				echo
 
 				cp $datadir/panel.$cdp origpanel.$cdp
                         	suwind < $velpanel key=cdp min=$cdp max=$cdp \
@@ -525,8 +579,12 @@ do
 			;;
 			*) # move radon panel into cdp panel
 				mv radonpanel.$cdp panel.$cdp
+				echo 
+				echo
 				$CWPROOT/bin/zap ximage
 				$CWPROOT/bin/zap xwigb
+				echo 
+				echo
 			;;
 			esac
 			
@@ -537,10 +595,14 @@ do
 			par=unisam.p method=$interpolation > $vrmst.$cdp
 
 			# clean up the screen
+				echo 
+				echo
 			$CWPROOT/bin/zap ximage
 			$CWPROOT/bin/zap xgraph
 			$CWPROOT/bin/zap xwigb
 			$CWPROOT/bin/zap xcontour
+				echo 
+				echo
 		;;
 		esac
 
@@ -565,6 +627,7 @@ END`
 	mv tempcurve curvefile.$cdp
 	mv tempnpairs npairs.$cdp
 
+	echo $cdp
 	;;
 	esac
 
