@@ -1,10 +1,20 @@
-head	1.16;
+head	1.18;
 access;
 symbols;
 locks
-	john:1.16; strict;
+	john:1.18; strict;
 comment	@ * @;
 
+
+1.18
+date	2022.11.03.20.45.43;	author john;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2022.11.03.20.44.32;	author john;	state Exp;
+branches;
+next	1.16;
 
 1.16
 date	2015.10.12.16.58.08;	author john;	state Exp;
@@ -92,16 +102,16 @@ desc
 @
 
 
-1.16
+1.18
 log
-@fixxed end padding error on output.
+@changed nfiltby2 to nearest integer and put in delay to honor delrt from the input sufile, so as to make this program more like an inverse to suconv
 @
 text
 @/* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.                       */
 
 
-/* SUCDDECON: $Revision: 1.15 $ ; $Date: 2015/08/11 21:14:49 $		*/
+/* SUCDDECON: $Revision: 1.16 $ ; $Date: 2015/10/12 16:58:08 $		*/
 
 #include "su.h"
 #include "segy.h"
@@ -150,14 +160,27 @@ char *sdoc[] = {
 " necessarily have the same number of samples, but the filter trace length",
 " length be always equal or shorter than the data traces. 		",
 " 									",
-" Caveat: 								",
-" You may need to apply frequency filtering to get acceptable output	",
-"   sucddecon  ...| sufilter f=f1,f2,f3,f4 				",
-" where f1,f2,f3,f4 are an acceptable frequency range, and you may need ",
-" to mute artifacts that appear at the beginning of the output, as well.",
+" The time delay 'delrt' of the sufile subtracted from the delrt of each",
+" input trace. This is designed to make this program closer to an inverse",
+" of suconv, which adds the time delay of the sufile to each trace.	",
 " 									",
-" Trace header fields accessed: ns, dt					",
-" Trace header fields modified: none					",
+" Caveats: 								",
+" Owing to zero padding by the Fourier transform, the number of samples ",
+" on the output traces will likely be greater than on input traces.	",
+" The user may wish to use						",
+"      sucddecon .... |  suwind itmin=0 itmax=NSminus1			",
+" where NSminus1 is the numerical value of the number of samples on the ",
+" input trace minus 1.							",
+" 									",
+" The user may need to apply frequency filtering to get acceptable output",
+"   sucddecon  ...| sufilter f=f1,f2,f3,f4 				",
+" where f1,f2,f3,f4 are an acceptable frequency range.			",
+" 									",
+" The user may need to mute artifacts that appear in previously muted   ",
+" parts of the input data, as well.					",
+" 									",
+" Trace header fields accessed: ns, delrt				",
+" Trace header fields modified: none, delrt				",
 " 									",
 NULL};
 
@@ -168,7 +191,7 @@ NULL};
  *	In the option, panel=1 the number of traces in the sufile must be 
  *	the same as the number of traces on the input.
  *
- * Trace header fields accessed: ns,dt
+ * Trace header fields accessed: ns
  * Trace header fields modified: none
  */
 /**************** end self doc *******************************************/
@@ -180,7 +203,6 @@ main(int argc, char **argv)
 {
 	int nt;			/* number of samples on input traces	*/
 	int it,i;		/* counter 				*/
-	float dt;		/* sampling interval of input data	*/
 	
 	float *rf=NULL;		/* filter coefficients			*/
 	float *rt=NULL;		/* data coefficients in time		*/
@@ -192,9 +214,7 @@ main(int argc, char **argv)
 	float pnoise=0.0;	/* input parameter for computing delta	*/
 	float sum_powspec=0.0;	/* sum of filter power spectra		*/
 	
-	float nyq=0.0;		/* nyquist frequency			*/
 	int nfft;		/* number of points for fft data trace  */
-	int nf;			/* number of frequencies (incl Nyq)	*/
 	
 	int nfilter=0;		/* filter length in samples		*/
 	int nfiltby2=0;		/* filter length/2 in samples		*/
@@ -203,6 +223,8 @@ main(int argc, char **argv)
 	float *filter=NULL;	/* filter if set as filter=		*/
 	cwp_String sufile;	/* name of file containing one SU trace */
 	FILE *fp=NULL;		/* ... its file pointer			*/
+	int delrtf=0;		/* time delay (s) from sufile   	*/
+	int delrtout=0;		/* time delay (s) on output trace	*/
 
 	int panel=0;		/* xcor with trace or panel 		*/
 	int verbose=0;		/* =0 silent =1 chatty	 		*/
@@ -219,15 +241,12 @@ main(int argc, char **argv)
 	/* Get info from first trace */ 
 	if (!gettr(&tr)) err("can't get first trace");
 	nt = tr.ns;
-	dt = ((double) tr.dt)/1000000.0;
-	nyq=0.5/dt;
 	
 	/* Set up FFT parameters */
 	nfft = npfaro(nt, LOOKFAC * nt);
 	if (nfft >= SU_NFLTS || nfft >= PFA_MAX)
 				err("Padded nt=%d -- too big", nfft);
 
-	nf = nfft/2 + 1;
 	
 	/* Get parameters and set up filter array */
 	if (!getparint("panel", &panel)) 		panel = 0;
@@ -241,7 +260,7 @@ main(int argc, char **argv)
 			warn("must specify filter= desired filter");
 			err(" or sufile= ");
 		}
-			nfiltby2 = nfilter/2;
+			nfiltby2 = NINT(nfilter/2);
 			filter = ealloc1float(nfilter+nfiltby2);
 			getparfloat("filter",filter);
 			
@@ -255,7 +274,9 @@ main(int argc, char **argv)
 		fp = efopen(sufile, "r");
 		fgettr(fp, &sutrace);
 		nfilter = sutrace.ns;
-		nfiltby2 = nfilter/2;
+		nfiltby2 = NINT(nfilter/2);
+		delrtf = sutrace.delrt;
+	
 		rf = ealloc1float(nfft+nfiltby2);
 		cf = ealloc1complex(nfft+nfiltby2);
 	}
@@ -292,6 +313,7 @@ main(int argc, char **argv)
 
 			if (!is_filter_out) {
 				if ((!fgettr(fp, &sutrace))) {
+					delrtf = sutrace.delrt;
 					if (verbose)
 					warn("Out of traces in sufile at trace= %d !",ntr);
 					is_filter_out = cwp_true;
@@ -357,17 +379,78 @@ main(int argc, char **argv)
 		
 		/* Perform inverse fourier transform */
 		pfacr(-1,nfft,ct,rt);
+
 		
 		/* Copy deconvolved samples */
 		for (it=0; it<nt; ++it)
 				tr.data[it] = rt[nfiltby2+it];
 		
+		delrtout=tr.delrt - delrtf;
+		tr.delrt=delrtout;
 		puttr(&tr);
 
 	} while (gettr(&tr));
 
 	return(CWP_Exit());
 }
+@
+
+
+1.17
+log
+@small changes
+@
+text
+@d54 13
+a66 2
+" Caveat: 								",
+" You may need to apply frequency filtering to get acceptable output	",
+d68 4
+a71 2
+" where f1,f2,f3,f4 are an acceptable frequency range, and you may need ",
+" to mute artifacts that appear at the beginning of the output, as well.",
+d73 2
+a74 2
+" Trace header fields accessed: ns					",
+" Trace header fields modified: none					",
+d117 2
+d154 1
+a154 1
+			nfiltby2 = nfilter/2;
+d168 3
+a170 1
+		nfiltby2 = nfilter/2;
+d207 1
+d273 1
+d279 2
+@
+
+
+1.16
+log
+@fixxed end padding error on output.
+@
+text
+@d5 1
+a5 1
+/* SUCDDECON: $Revision: 1.15 $ ; $Date: 2015/08/11 21:14:49 $		*/
+d60 1
+a60 1
+" Trace header fields accessed: ns, dt					",
+d72 1
+a72 1
+ * Trace header fields accessed: ns,dt
+a83 1
+	float dt;		/* sampling interval of input data	*/
+a94 1
+	float nyq=0.0;		/* nyquist frequency			*/
+a95 1
+	int nf;			/* number of frequencies (incl Nyq)	*/
+a119 2
+	dt = ((double) tr.dt)/1000000.0;
+	nyq=0.5/dt;
+a125 1
+	nf = nfft/2 + 1;
 @
 
 

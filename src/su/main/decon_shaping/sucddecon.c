@@ -2,7 +2,7 @@
 /* All rights reserved.                       */
 
 
-/* SUCDDECON: $Revision: 1.16 $ ; $Date: 2015/10/12 16:58:08 $		*/
+/* SUCDDECON: $Revision: 1.18 $ ; $Date: 2022/11/03 20:45:43 $		*/
 
 #include "su.h"
 #include "segy.h"
@@ -51,14 +51,27 @@ char *sdoc[] = {
 " necessarily have the same number of samples, but the filter trace length",
 " length be always equal or shorter than the data traces. 		",
 " 									",
-" Caveat: 								",
-" You may need to apply frequency filtering to get acceptable output	",
-"   sucddecon  ...| sufilter f=f1,f2,f3,f4 				",
-" where f1,f2,f3,f4 are an acceptable frequency range, and you may need ",
-" to mute artifacts that appear at the beginning of the output, as well.",
+" The time delay 'delrt' of the sufile subtracted from the delrt of each",
+" input trace. This is designed to make this program closer to an inverse",
+" of suconv, which adds the time delay of the sufile to each trace.	",
 " 									",
-" Trace header fields accessed: ns					",
-" Trace header fields modified: none					",
+" Caveats: 								",
+" Owing to zero padding by the Fourier transform, the number of samples ",
+" on the output traces will likely be greater than on input traces.	",
+" The user may wish to use						",
+"      sucddecon .... |  suwind itmin=0 itmax=NSminus1			",
+" where NSminus1 is the numerical value of the number of samples on the ",
+" input trace minus 1.							",
+" 									",
+" The user may need to apply frequency filtering to get acceptable output",
+"   sucddecon  ...| sufilter f=f1,f2,f3,f4 				",
+" where f1,f2,f3,f4 are an acceptable frequency range.			",
+" 									",
+" The user may need to mute artifacts that appear in previously muted   ",
+" parts of the input data, as well.					",
+" 									",
+" Trace header fields accessed: ns, delrt				",
+" Trace header fields modified: none, delrt				",
 " 									",
 NULL};
 
@@ -101,6 +114,8 @@ main(int argc, char **argv)
 	float *filter=NULL;	/* filter if set as filter=		*/
 	cwp_String sufile;	/* name of file containing one SU trace */
 	FILE *fp=NULL;		/* ... its file pointer			*/
+	int delrtf=0;		/* time delay (s) from sufile   	*/
+	int delrtout=0;		/* time delay (s) on output trace	*/
 
 	int panel=0;		/* xcor with trace or panel 		*/
 	int verbose=0;		/* =0 silent =1 chatty	 		*/
@@ -136,7 +151,7 @@ main(int argc, char **argv)
 			warn("must specify filter= desired filter");
 			err(" or sufile= ");
 		}
-			nfiltby2 = nfilter/2;
+			nfiltby2 = NINT(nfilter/2);
 			filter = ealloc1float(nfilter+nfiltby2);
 			getparfloat("filter",filter);
 			
@@ -150,7 +165,9 @@ main(int argc, char **argv)
 		fp = efopen(sufile, "r");
 		fgettr(fp, &sutrace);
 		nfilter = sutrace.ns;
-		nfiltby2 = nfilter/2;
+		nfiltby2 = NINT(nfilter/2);
+		delrtf = sutrace.delrt;
+	
 		rf = ealloc1float(nfft+nfiltby2);
 		cf = ealloc1complex(nfft+nfiltby2);
 	}
@@ -187,6 +204,7 @@ main(int argc, char **argv)
 
 			if (!is_filter_out) {
 				if ((!fgettr(fp, &sutrace))) {
+					delrtf = sutrace.delrt;
 					if (verbose)
 					warn("Out of traces in sufile at trace= %d !",ntr);
 					is_filter_out = cwp_true;
@@ -252,11 +270,14 @@ main(int argc, char **argv)
 		
 		/* Perform inverse fourier transform */
 		pfacr(-1,nfft,ct,rt);
+
 		
 		/* Copy deconvolved samples */
 		for (it=0; it<nt; ++it)
 				tr.data[it] = rt[nfiltby2+it];
 		
+		delrtout=tr.delrt - delrtf;
+		tr.delrt=delrtout;
 		puttr(&tr);
 
 	} while (gettr(&tr));
