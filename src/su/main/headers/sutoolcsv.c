@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2021.*/
 /* All rights reserved.                       */
 
-/* SUTOOLCSV: $Revision: 1.1 $ ; $Date: 2021/10/03 23:47:18 $        */
+/* SUTOOLCSV: $Revision: 1.2 $ ; $Date: 2022/11/21 18:47:13 $        */
 
 #include <stdio.h>
 #include <string.h>
@@ -1161,11 +1161,11 @@ int main(int argc, char **argv) {
      getparstring("outid", &Rod);
      lenod = strlen(Rod);
      if(lenod>3 && Rod[0]=='"' && Rod[lenod-1]=='"') {
-       for(int n=0; n<lenod-1; n++) Rod[n] = Rod[n+1];
+       for(n=0; n<lenod-1; n++) Rod[n] = Rod[n+1];
        lenod -= 2;
      }
      else {
-       for(int n=0; n<lenod; n++) Rod[n] = toupper(Rod[n]);
+       for(n=0; n<lenod; n++) Rod[n] = toupper(Rod[n]);
      }
    }
    else {
