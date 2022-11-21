@@ -27,6 +27,7 @@ PROGS =			\
 	$B/sucountkey	\
 	$B/sudumptrace	\
 	$B/suedit	\
+	$B/suflex2d     \
 	$B/sugethw	\
 	$B/sugeom	\
 	$B/sugeomcsv	\
