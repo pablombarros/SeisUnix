@@ -12,7 +12,7 @@ The 3 programs are:
 
   suprofcsv - create cdp locations (coordinates) at intervals along a profile
   sunearcsv - assign traces the cdp number of the nearest cdp of a profile
-  suflex2d  - reject traces if too far away from nearest cdp (and other options)
+  suflex2d  - duplicate traces of nearby cdps for offset bin fold requirements 
               (Using the suflex2d program is not required for crooked lines,
                but it uses values that are output by sunearcsv).
  
