@@ -5,7 +5,7 @@
 # that would have been collected at offsets less than those that were
 # actually collected. Offset continuation is related to Dip Moveout (DMO).
 # Where DMO may be thought of as "migration to zero offset", offset continuation
-# may be thought of as "migration to near offset"
+# may be thought of as "migration to near offset".
 
 # input data nmo corrected, gained, multiple suppressed data, sorted in
 # common offset gathers.  The vel_par_file contains only one set of vdmo=

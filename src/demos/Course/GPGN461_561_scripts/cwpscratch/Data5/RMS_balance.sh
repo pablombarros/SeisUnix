@@ -5,6 +5,7 @@ set -x
 # RMS_balance - balance the amplitudes by the rms power of the first arrival on
 # the nearest offset trace. 
 
+
 infile=shot_gathers.su 		# input shot gathers
 outfile=rmsbal_$infile		# RMS balanced 
 
