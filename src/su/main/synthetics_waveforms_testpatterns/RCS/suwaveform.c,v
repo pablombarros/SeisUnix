@@ -1,9 +1,15 @@
-head	1.8;
+head	1.9;
 access;
 symbols;
-locks; strict;
+locks
+	john:1.9; strict;
 comment	@ * @;
 
+
+1.9
+date	2022.11.27.23.13.08;	author john;	state Exp;
+branches;
+next	1.8;
 
 1.8
 date	2015.06.02.20.15.23;	author john;	state Exp;
@@ -51,15 +57,15 @@ desc
 @
 
 
-1.8
+1.9
 log
-@added NINT for dt -- Ekkehart Tessmer Uni-bremen
+@added reference for the Berlage waveform.
 @
 text
 @/* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.			*/
 
-/* SUWAVEFORM: $Revision: 1.7 $ ; $Date: 2012/01/26 18:00:38 $	*/
+/* SUWAVEFORM: $Revision: 1.8 $ ; $Date: 2015/06/02 20:15:23 $	*/
 
 
 #include "su.h"
@@ -141,6 +147,9 @@ char *sdoc[] = {
 " 									",
 " Gaussian and derivatives of Gaussians:				",
 " Use \"sudgwaveform\" to generate these				",
+" 									",
+" Technical references:							",
+" Aldridge, D. F., 1990, The Berlage wavelet: Geophysics, 55,1508-1511.	",
 " 									",
 " Caveat:								",
 "	This program does not check for aliasing.			",
@@ -329,6 +338,18 @@ main(int argc, char **argv)
 
 	return(CWP_Exit());
 }
+@
+
+
+1.8
+log
+@added NINT for dt -- Ekkehart Tessmer Uni-bremen
+@
+text
+@d4 1
+a4 1
+/* SUWAVEFORM: $Revision: 1.7 $ ; $Date: 2012/01/26 18:00:38 $	*/
+d87 3
 @
 
 

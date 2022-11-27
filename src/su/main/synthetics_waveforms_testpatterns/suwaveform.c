@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2011.*/
 /* All rights reserved.			*/
 
-/* SUWAVEFORM: $Revision: 1.8 $ ; $Date: 2015/06/02 20:15:23 $	*/
+/* SUWAVEFORM: $Revision: 1.9 $ ; $Date: 2022/11/27 23:13:08 $	*/
 
 
 #include "su.h"
@@ -83,6 +83,9 @@ char *sdoc[] = {
 " 									",
 " Gaussian and derivatives of Gaussians:				",
 " Use \"sudgwaveform\" to generate these				",
+" 									",
+" Technical references:							",
+" Aldridge, D. F., 1990, The Berlage wavelet: Geophysics, 55,1508-1511.	",
 " 									",
 " Caveat:								",
 "	This program does not check for aliasing.			",
