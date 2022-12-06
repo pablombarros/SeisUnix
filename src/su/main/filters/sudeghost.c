@@ -15,17 +15,17 @@ char *sdoc[] = {
 " sudeghost <stdin >stdout [optional parameters]         		",
 "									",
 " Required parameters:                                         		",
-"       if dt is not set in header, then dt is mandatory        	",
-"	h=source or receiver depth					",
+" h=			source or receiver depth			",
 "									",
 " Optional parameters:							",
-"	v=1500.0		speed of sound in the top layer		",
-"	r=0.5			surface reflectivity 0 < r < .8		",
-"	lambert=1 		Lambert's cosine law obliquity factor	",
-"       dt= (from header)       time sampling interval (sec)        	",
-"	verbose=0		=1 for advisory messages, =2 debugging	",
-"	deghost=1		deghosting filter; =0 ghosting filter	",
-" 				for modeling				",
+" v=1500.0		speed of sound in the top layer			",
+" r=0.5			surface reflectivity 0 < r < .8			",
+" lambert=1 		Lambert's cosine law obliquity factor		",
+" dt= (from header)     time sampling interval (sec)        		",
+" verbose=0		=1 for advisory messages, =2 debugging		",
+" deghost=1		deghosting filter; =0 ghosting filter for modeling",
+" pnoise=1.e-9		white noise parameter				",
+"									",
 " Notes:								",
 " The input data are assumed to be shot gathers with no missing traces.	",
 "									",
@@ -61,10 +61,12 @@ char *sdoc[] = {
 " 									",
 " For lambert=1 a cosine obliquity law is chosen. Frequency dependence  ",
 " of reflectivity is not addressed.		 			",
+" 									",
+" If tr.dt is not set in the header, then dt is mandatory		",
 NULL};
 
 /* Credits:
- *      CWP: John Stockwell (2021)
+ *      CWP: John Stockwell (November 2021)
  *
  * Technical reference:
  *  Perz, M. J., & Masoomzadeh, H. (2014). Deterministic marine 
@@ -77,7 +79,7 @@ NULL};
 /**************** end self doc ***********************************/
 
 /* Prototype of function used internally */
-void deGhostingFilter(int lambert, int deghost, int verbose,
+void deGhostingFilter(int lambert, int deghost, float pnoise, int verbose,
 			float r, float h, float v, float p,
 			 int nfft, float dt, complex *filter);
 
@@ -98,6 +100,7 @@ main(int argc, char **argv)
         register float *rt=NULL;     /* real trace                           */
         register complex *ct=NULL;   /* complex transformed trace            */
         complex *filter=NULL;    /* filter array                         */
+
         float dt;               /* sample spacing                       */
         float nyq;              /* nyquist frequency                    */
         int nt;                 /* number of points on input trace      */
@@ -115,6 +118,8 @@ main(int argc, char **argv)
 	float dp=0.0;		/* increment in horizontal slowness 	*/
 	int deghost=1;		/* =1 deghost ; =0 add ghosts		*/
 	int lambert=1;		/* =1 r cos(theta) ; =0 r		*/
+
+	float pnoise;		/* white noise parameter 		*/
 	
         
         /* Initialize */
@@ -161,6 +166,8 @@ main(int argc, char **argv)
 	if (!getparint("deghost",&deghost))		deghost=1;
 	if (!getparint("lambert",&lambert))		lambert=1;
 
+	if (!getparfloat("pnoise", &pnoise)) pnoise=1.0e-9;
+
         /* Set up FFT parameters */
         nfft = npfaro(nt, LOOKFAC * nt);
         if (nfft >= SU_NFLTS || nfft >= PFA_MAX)
@@ -185,7 +192,7 @@ main(int argc, char **argv)
 		p = ntr*dp + fp;
 
 		/* Build the deghosting filter */
-		deGhostingFilter(lambert,deghost,verbose,
+		deGhostingFilter(lambert,deghost,pnoise,verbose,
 					r,h,v,p,nfft,dt,filter);
 
                 /* Load trace into rt (zero-padded) */
@@ -208,7 +215,7 @@ main(int argc, char **argv)
 }
 
 
-void deGhostingFilter(int lambert, int deghost, int verbose,
+void deGhostingFilter(int lambert, int deghost,float pnoise,int verbose,
 			float r, float h, float v, float p,
 			int nfft, float dt, complex *filter)
 /*************************************************************************
@@ -217,6 +224,7 @@ DEGHOSTING filter applied in the (t,x) or (tau,p) domain
 Input:
 lambert		=1 r cos(theta) ; =0  r
 deghost		=1 deghost ; =0 add ghosts for modeling
+pnoise		white noise parameter
 r		absolute value of surface reflectivity
 v		water velocity or velocity of top layer
 h		depth of source or receiver
@@ -294,6 +302,7 @@ Author:  CWP: John Stockwell   2021
 		/* scale the amplitude by cos(theta) for lambert=1 */
 		if (lambert==1) {
 			amp = r*sqrt(1 - vvpp); 
+			if (amp < pnoise) amp=pnoise;
 		} else if (lambert==0) {
 			amp = r;
 		}
