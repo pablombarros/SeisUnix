@@ -36,6 +36,7 @@ PROGS =			\
 	$B/sulcthw	\
 	$B/sulhead	\
 	$B/sunearcsv    \
+	$B/sunomstreamers \
 	$B/supaste	\
 	$B/suprofcsv    \
 	$B/surange	\
