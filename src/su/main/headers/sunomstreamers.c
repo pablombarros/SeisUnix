@@ -623,7 +623,7 @@ int main(int argc, char **argv) {
           }
         } /* end of  if(ifakestreamer==numstreamer) {                         */
         ifakechan = stcbeg[ifakestreamer];
-        tohead(&tr, idntkase, (double)stidnt[ifakestreamer]);
+        if(iuseidnt>0) tohead(&tr, idntkase, (double)stidnt[ifakestreamer]);
       } /* end of  if(ifakechan>stcend[ifakestreamer]) {                      */
       tohead(&tr, chankase, (double)ifakechan);
     } /* end of  if(ncreate>0) {                                              */
