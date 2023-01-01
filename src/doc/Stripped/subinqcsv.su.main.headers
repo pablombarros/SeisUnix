@@ -26,7 +26,7 @@
            contain the locations of all other input values. The option here 
            must find the corresponding names within the non-tuple names in  
            the input q-file or in the parameter names you specify (later).  
-      =1   cdp (default). Required if no grid is input.                     
+      =1   cdp (default). Option 1 is required if no grid is input.         
       =2   cdpt (grid transposed cdp numbers).                              
       =3   igi,igc (grid index numbers).                                    
       =4   gx,gy (grid coordinates).                                        
@@ -36,6 +36,12 @@
            corresponding to your choice here (giving you a chance to        
            adjust your input values before going through the error-check    
            that forces the input locations to be in aligned rectangles).    
+
+ keyloc=   Location key. Can only be specified if inloc=1 and 2D (no rfile).
+           Name must be in the input Q-file (or parameters listed below).   
+           This allows linear interpolation based on values such as point   
+           numbers, station numbers, reciever numbers, or shot numbers.     
+           Parameters extrapi and igiout refer to these values.             
 
  extrapi=0        do not extrapolate at ends in igi direction.              
                   (values beyond outer functions are held constant).        
@@ -129,14 +135,19 @@
 
  cdp=             The parameters to the left are all optional but at least  
  cdpt=            one of them must be specified. These are the names which  
- igi=       	   contain single values at each location (also known as     
- igc=       	   the non-tuple names). Typically, cdp= is the most likely  
- gx=              name to specify. Each name specified here must have the   
- gy=              same amount of values (separated by commas).              
- sx=              For example: cdp=2,7,23,44 means that you must also       
- sy=              list 4 values if you specify numa=.                       
- numa=            Note the names specified must include the names needed    
- numb=            for your inloc= option (by default inloc= requires cdp).  
+ fldr=            contain single values at each location (also known as     
+ grnors=    	   the non-tuple names). Typically, cdp= is the most likely  
+ grnofr=    	   name to specify. Each name specified here must have the   
+ grnlof=    	   same amount of values (separated by commas).              
+ gaps=      	   For example: cdp=2,7,23,44 means that you must also       
+ igi=       	   list 4 values if you specify numa=.                       
+ igc=       	                                                             
+ gx=                                                                        
+ gy=                                                                        
+ sx=              Note the names specified must include the names needed    
+ sy=              for your inloc= option (by default inloc= requires cdp).  
+ numa=                                                                      
+ numb=                                                                      
  vuma=            (See invp2= for why some names here start with v).        
  vumb=                                                                      
 

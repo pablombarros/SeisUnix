@@ -1,5 +1,5 @@
 SUBRAID - Braid traces from files together and output.                
-SUCLEAVE - Cleave traces from 1 input into multiple output files.     
+SUCLEAVE - Cleave traces from 1 input into multiple output files.     ",
 SUCOMMAND - pipe traces having the same key header word to command	
 SUGETGTHR - Gets su files from a directory and put them               
 SUGPRFB - SU program to remove First Breaks from GPR data		

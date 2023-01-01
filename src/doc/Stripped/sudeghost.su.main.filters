@@ -3,17 +3,17 @@
  sudeghost <stdin >stdout [optional parameters]         		
 
  Required parameters:                                         		
-       if dt is not set in header, then dt is mandatory        	
-	h=source or receiver depth					
+ h=			source or receiver depth			
 
  Optional parameters:							
-	v=1500.0		speed of sound in the top layer		
-	r=0.5			surface reflectivity 0 < r < .8		
-	lambert=1 		Lambert's cosine law obliquity factor	
-       dt= (from header)       time sampling interval (sec)        	
-	verbose=0		=1 for advisory messages, =2 debugging	
-	deghost=1		deghosting filter; =0 ghosting filter	
- 				for modeling				
+ v=1500.0		speed of sound in the top layer			
+ r=0.5			surface reflectivity 0 < r < .8			
+ lambert=1 		Lambert's cosine law obliquity factor		
+ dt= (from header)     time sampling interval (sec)        		
+ verbose=0		=1 for advisory messages, =2 debugging		
+ deghost=1		deghosting filter; =0 ghosting filter for modeling
+ pnoise=1.e-9		white noise parameter				
+
  Notes:								
  The input data are assumed to be shot gathers with no missing traces.	
 
@@ -50,8 +50,10 @@
  For lambert=1 a cosine obliquity law is chosen. Frequency dependence  
  of reflectivity is not addressed.		 			
 
+ If tr.dt is not set in the header, then dt is mandatory		
+
  Credits:
-      CWP: John Stockwell (2021)
+      CWP: John Stockwell (November 2021)
 
  Technical reference:
   Perz, M. J., & Masoomzadeh, H. (2014). Deterministic marine 

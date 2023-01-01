@@ -15,7 +15,9 @@
  cdp=             CDPs for which offs & tims are specified.                 
  offs=            offsets corresponding to times in tims.                   
  tims=            times corresponding to offsets in offs.                   
-                  If qin= is not specified, all 3 of these parameters       
+                  If any tims value is greater than 100 all times are       
+                  assumed to be milliseconds. Otherwise seconds.            
+            ***   If qin= is not specified, all 3 previous parameters       
                   must be specified. There must be at least 1 number        
                   in the cdp= list. There must be the same number of        
                   tims= parameters as numbers in the cdp= list.             
@@ -54,7 +56,8 @@
                   the value of vel=                                         
  vel=330          constant velocity for linear or hyperbolic mute           
  tzero=0          time shift (ms.) of linear or hyperbolic mute at the      
-                  offkey value of 0. Note: MILLISECONDS.                    
+                  offkey value of 0. Note: If any tims value is greater     
+                  than 100, tzero must be MILLISECONDS. Otherwise seconds.  
 
  extrapi=0        do not extrapolate at ends in igi direction.              
                   (Mute times beyond ends are held constant).               
@@ -113,7 +116,7 @@
  using the input 3D grid definition - so those cdp numbers need to          
  correspond to the input 3D grid definition.                                
 
- For trace CDPs Rnot listed in cdp= parameter or qin= file, bilinear        
+ For trace CDPs not listed in cdp= parameter or qin= file, bilinear         
  interpolation is done if the trace CDP location is surrounded by 4 mute    
  functions specified in the cdp= list. If the trace CDP is not surrounded   
  by 4 input mute functions, the result depends on the extrapi and extrapc   

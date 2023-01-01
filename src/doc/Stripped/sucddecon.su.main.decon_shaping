@@ -34,14 +34,27 @@
  necessarily have the same number of samples, but the filter trace length
  length be always equal or shorter than the data traces. 		
 
- Caveat: 								
- You may need to apply frequency filtering to get acceptable output	
-   sucddecon  ...| sufilter f=f1,f2,f3,f4 				
- where f1,f2,f3,f4 are an acceptable frequency range, and you may need 
- to mute artifacts that appear at the beginning of the output, as well.
+ The time delay 'delrt' of the sufile subtracted from the delrt of each
+ input trace. This is designed to make this program closer to an inverse
+ of suconv, which adds the time delay of the sufile to each trace.	
 
- Trace header fields accessed: ns					
- Trace header fields modified: none					
+ Caveats: 								
+ Owing to zero padding by the Fourier transform, the number of samples 
+ on the output traces will likely be greater than on input traces.	
+ The user may wish to use						
+      sucddecon .... |  suwind itmin=0 itmax=NSminus1			
+ where NSminus1 is the numerical value of the number of samples on the 
+ input trace minus 1.							
+
+ The user may need to apply frequency filtering to get acceptable output
+   sucddecon  ...| sufilter f=f1,f2,f3,f4 				
+ where f1,f2,f3,f4 are an acceptable frequency range.			
+
+ The user may need to mute artifacts that appear in previously muted   
+ parts of the input data, as well.					
+
+ Trace header fields accessed: ns, delrt				
+ Trace header fields modified: none, delrt				
 
 
  Credits:

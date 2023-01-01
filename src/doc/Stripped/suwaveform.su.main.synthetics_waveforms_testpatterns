@@ -71,6 +71,9 @@
  Gaussian and derivatives of Gaussians:				
  Use "sudgwaveform" to generate these				
 
+ Technical references:							
+ Aldridge, D. F., 1990, The Berlage wavelet: Geophysics, 55,1508-1511.	
+
  Caveat:								
 	This program does not check for aliasing.			
 

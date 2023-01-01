@@ -87,6 +87,10 @@
 	CWP: Shuki Ronen, Jack Cohen, Chris Liner
 	Warnemuende: Toralf Foerster
 	CENPET: Werner M. Heigl (modified to include well log data)
+ Modified: Andre Latour
+      Added information about key ranges to verbose option.
+      This is useful in 3D Velans or other situations where the input   
+      traces do not have contiguous cdp (or other) key numbers.   
 
  Trace header fields accessed: ns, dt, delrt, keyword
  Trace header fields modified: ns, delrt, ntr

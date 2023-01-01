@@ -93,6 +93,8 @@ su/main/headers/sutoolcsv.c - Tools for Comma Separated Values and
                                 traces to cdps (cells)
                 sutoolcsv.c - Tools for Comma Separated Values and 
                                fixed text files. 
+		sunomstreamers.c - Nominal Geometry and 2D CDPS for 
+                                Towed-Streamer Marine. 
 su/main/transforms/sust.c
 	SUST -  Outputs a time-frequency representation of seismic data via
            	the Stockwell transform (S- transform)
@@ -157,6 +159,9 @@ demos/Geom3D/ - demos for Andre Latour's csv codes
 	Subinqcsv
 	Sugeomcsv
 	Sunmocsv
+	Sunomstreamers
+
+
 
 demos/Utilities/
 	Subraid
