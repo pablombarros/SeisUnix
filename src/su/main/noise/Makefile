@@ -11,6 +11,7 @@ PROGS =			\
 	$B/suaddnoise	\
 	$B/suharlan	\
 	$B/sugroll	\
+	$B/susembase    \
 	$B/sujitter
 
 
