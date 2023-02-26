@@ -112,7 +112,7 @@ char *sdoc[] = {
 "       =dadstack  Detect-Amplitude-Differences. You should expect to have   ",
 "                  to do considerable testing of the other dad parameters    ",
 "                  for this option. Precise setting of the dad parameters    ",
-"                  may result in the output traces being shrper at rapid     ",
+"                  may result in the output traces being sharper at rapid    ",
 "                  amplitude changes (such as locations where horizons start ",
 "                  or terminate. These dad options search for rapid changes  ",
 "                  in amplitude ACROSS LOCATIONS at each sample time and     ",
@@ -254,7 +254,7 @@ int main(int argc, char **argv) {
   cwp_String groupkey=NULL;
   int groupkase=-1;
   int usegroup=0;
-  double thisgroup=0.0;
+  double thisgroup=-1.e30;
   int newgroup=0;
 
   segy **rolltrace=NULL; 
@@ -895,9 +895,9 @@ int main(int argc, char **argv) {
 /*                                                                            */
 /* Semblance herein is computed as:                                           */
 /*                                                                            */
-/*  Square of ((Sum of amplitudes in locminscan to locmaxscan range) /        */
+/*  (Square of (Sum of amplitudes in locminscan to locmaxscan range)) /       */
 /*             (Sum of squared amplitudes in that range))                     */
-/*             divided by the number in that ranage.                          */
+/*             divided by the number in that range.                           */
 /*                                                                            */
 /* Scans from smin to smin*sstep*(jsmax-1) are done for each sample time and  */
 /* the maximum semblance value computed as above is found. That maximum is    */
