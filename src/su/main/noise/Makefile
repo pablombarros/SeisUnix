@@ -12,6 +12,7 @@ PROGS =			\
 	$B/suharlan	\
 	$B/sugroll	\
 	$B/susembase    \
+	$B/susemgroup   \
 	$B/sujitter
 
 
