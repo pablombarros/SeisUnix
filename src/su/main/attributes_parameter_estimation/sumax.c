@@ -182,6 +182,9 @@ int      main(int argc, char **argv)
 
    gmin = gmax = tr.data[0];
    gabsmax = ABS(tr.data[0]);
+	/* pick up square of first sample for global rms calculation */
+   grmssumsq = tr.data[0] * tr.data[0];
+
 
    /* Get/Set variables for threshold mode */
    if (STREQ(mode, "thd")) {
@@ -210,6 +213,10 @@ int      main(int argc, char **argv)
       /* find local/global max/min values and their locations */
       min = max = tr.data[0];
       absmax = ABS(tr.data[0]);
+	/* pick up square of first sample for rms calculation */
+      rmssumsq = tr.data[0] * tr.data[0];
+      grmssumsq += rmssumsq;
+
      /* tr.data[0] = 0.0;	*/ /* Zero first data value */
      /* trhldmax = tr.data[0]; */
      trhldmax = 0.0 ;
@@ -240,9 +247,6 @@ int      main(int argc, char **argv)
 	    /* maximum found */
 	 }
 
-	/* pick up square of first sample for rms calculation */
-	 rmssumsq = tr.data[0]*tr.data[0];
-	 grmssumsq = tr.data[0]*tr.data[0];
 	 if (STREQ(mode, "rms")) {
 	    val = tr.data[it];
 	    rmssumsq += val * val;
