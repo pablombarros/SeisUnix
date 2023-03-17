@@ -2,7 +2,7 @@
 
 include $(CWPROOT)/src/Makefile.config
 
-LFLAGS= -L$L -lpar -lcwp -lm
+LFLAGS= -L$L -lpar -lcwp $SUXDRLFLAGS -lm
 TFLAGS = -g -I$I
 
 LIB = $L/libsu.a

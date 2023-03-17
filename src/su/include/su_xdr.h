@@ -6,25 +6,10 @@
 
 #include <stdio.h>
 
-/*
 #ifdef SUXDR
 #include <rpc/types.h>
 #include <rpc/xdr.h>
 #endif
-*/
-
-#ifdef SUXDR
-#ifndef SUTIRPC
-#include <rpc/types.h>
-#include <rpc/xdr.h>
-#else
-#include <tirpc/rpc/types.h>
-#include <tirpc/rpc/xdr.h>
-#endif
-#endif
-
-
-
 
 
 #include "su.h"

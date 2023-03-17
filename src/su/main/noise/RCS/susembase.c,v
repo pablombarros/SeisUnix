@@ -1,7 +1,31 @@
-/* Copyright (c) Colorado School of Mines, 2022.*/
+head	1.1;
+access;
+symbols;
+locks
+	john:1.1; strict;
+comment	@ * @;
+
+
+1.1
+date	2023.03.02.23.05.59;	author john;	state Exp;
+branches;
+next	;
+
+
+desc
+@semblance based noise suppression
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@/* Copyright (c) Colorado School of Mines, 2022.*/
 /* All rights reserved.                       */
 
-/* SUSEMBASE: $Revision: 1.1 $ ; $Date: 2023/03/02 23:05:59 $      */
+/* SUSEMBASE: $Revision: 1.00 $ ; $Date: 2023/02/12 00:01:00 $      */
 
 #include <stdio.h>
 #include <string.h>
@@ -1096,3 +1120,4 @@ void wsmooth (float *val, float *wgt, int len, int minsd, int maxsd, float *sval
 
   return;
 }
+@

@@ -17,8 +17,24 @@ files from the main part of libgcc. These are now in a developers' package
 on many systems called libtirpc.a. The TRPC materials are used for the XDR
 part of the installation. There seem to be two stages of this change. The
 first stage left the RPC include files in the old location. Releases 
-GCC 2.32 seems to have the locations of the
-include files in new location. New users can set 
+GCC 2.32 and later have removed the rpc files and replaced them with 
+a version called tirpc
+
+In response I have added a paragraph in select Makefile.config near
+lines 40-50.
+
+...
+# else if you had to install libtirpc and the rpc include files are under
+# /usr/include/tirpc/rpc or if you get an error about <types.h> not found,
+# then  uncomment the next two lines
+
+#XDRFLAG = -DSUXDR -I/usr/include/tirpc/rpc -I/usr/include/tirpc
+#XDRLFLAGS = -ltirpc
+.......
+
+It has been a bit of a moving target but seems to be stabilizing now.
+
+New users can set 
 XDRFLAG =  -DSUXDR
 to
 XDRFLAG =
@@ -101,9 +117,11 @@ su/main/transforms/sust.c
             Thanks to Adnand Bitri (note that the Stockwell here is
               is R. G. Stockwell, not me)
 
-su/main/noise/sugroll.c
-	SUGROLL - Ground roll supression using Karhunen-Loeve transform
+su/main/noise/
+        sugroll.c  - Ground roll supression using Karhunen-Loeve transform
 	    Thanks to Adnand Bitri
+        susembase.c - Semblance Based Structure-Oriented Interpolate and Smooth
+	    Thanks to Andre Latour
 
 su/main/stretching_moveout_resamp/
 		sudlmo.c  - Dynamic Linear Move Out Correction for 
