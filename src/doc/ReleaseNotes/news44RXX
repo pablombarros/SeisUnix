@@ -12,6 +12,7 @@ Please email: john.19071969@gmail.com
 if you have questions, or if you want to supply bug fixes or new SU code.
 
 
+Update 23 March 2023:
 Ongoing issues: The GNU people have separated the tirpc library and include
 files from the main part of libgcc. These are now in a developers' package
 on many systems called libtirpc.a. The TRPC materials are used for the XDR
@@ -20,27 +21,36 @@ first stage left the RPC include files in the old location. Releases
 GCC 2.32 and later have removed the rpc files and replaced them with 
 a version called tirpc
 
-In response I have added a paragraph in select Makefile.config near
+In response to this issue I have added a paragraph in select 
+Makefile.config near
 lines 40-50.
+.......
+# if the include files  are under  /usr/include/rpc use this for XDR
+# whether or not you had to install libtrpc.a
+# make sure
+XDRFLAG =  -DSUXDR
+XDRLFLAGS =
+XDRIFLAGS =
 
-...
 # else if you had to install libtirpc and the rpc include files are under
 # /usr/include/tirpc/rpc or if you get an error about <types.h> not found,
-# then  uncomment the next two lines
+#  and you want to use XDR, then make sure the next three lines are uncommented
+XDRFLAG = -DSUXDR -DSUTIRPC
+XDRIFLAGS = -I/usr/include/tirpc/rpc -I/usr/include/tirpc
+XDRLFLAGS = -ltirpc
 
-#XDRFLAG = -DSUXDR -I/usr/include/tirpc/rpc -I/usr/include/tirpc
-#XDRLFLAGS = -ltirpc
+# else if you do not want to use XDR, uncomment the next three lines
+#XDRFLAG =
+#XDRLFLAGS =
+#XDRIFLAGS =
 .......
 
 It has been a bit of a moving target but seems to be stabilizing now.
 
-New users can set 
-XDRFLAG =  -DSUXDR
-to
-XDRFLAG =
 and the package should install just fine. If you have been using SU awhile
 and have files in SU format, then there will be a byte swapping issue between
-data made with XDR versus data made without XDR. 
+data made with XDR versus data made without XDR. You can use "suswapbytes" 
+and "suoldtonew" to convert from XDR to native binay format and vice versa.
 
 Update: Nov 2021 The following items in
 src/configs/

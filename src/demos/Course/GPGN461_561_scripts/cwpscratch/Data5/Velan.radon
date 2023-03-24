@@ -27,7 +27,6 @@ mix=0			# number of adjacent cdp panels on either side
 nv=500			# number of velocities in scan
 dv=10			# velocity sampling interval in scan	
 fv=1450.0		# first velocity in scan
-nout=1500		# ns in data		
 
 ## Set interpolation type for velocity function plots
 interpolation=mono	# choices are linear, spline, akima, mono

@@ -35,24 +35,29 @@ LINEHDRFLAG =
 
 # if the include files  are under  /usr/include/rpc use this for XDR
 # whether or not you had to install libtrpc.a
+# make sure
 XDRFLAG =  -DSUXDR
 XDRLFLAGS =
+XDRIFLAGS =
 
 # else if you had to install libtirpc and the rpc include files are under
 # /usr/include/tirpc/rpc or if you get an error about <types.h> not found,
-# then  uncomment the next two lines
-
-#XDRFLAG = -DSUXDR -I/usr/include/tirpc/rpc -I/usr/include/tirpc
+#  and you want to use XDR, then make sure the next three lines are uncommented
+#XDRFLAG = -DSUXDR -DSUTIRPC
+#XDRIFLAGS = -I/usr/include/tirpc/rpc -I/usr/include/tirpc
 #XDRLFLAGS = -ltirpc
 
-# else if you do not want to use XDR, uncomment the next line
+# else if you do not want to use XDR, uncomment the next three lines 
 #XDRFLAG =
+#XDRLFLAGS =
+#XDRIFLAGS =
+
 
 # Most systems are LITTLE_ENDIAN these days
 ENDIANFLAG = -DCWP_LITTLE_ENDIAN
 LARGE_FILE_FLAG = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 
-CWP_FLAGS = $(LARGE_FILE_FLAG) $(ENDIANFLAG) $(XDRFLAG) $(LINEHDRFLAG)
+CWP_FLAGS = $(LARGE_FILE_FLAG) $(ENDIANFLAG) $(XDRFLAG) $(XDRIFLAGS) $(LINEHDRFLAG)
 
 #-----------------------------------------------------------------------
 # system stuff
@@ -69,7 +74,7 @@ RANFLAGS =
 ICHMODLINE = chmod 644 $@
 MCHMODLINE = chmod 755 $@
 
-POSTLFLAGS = 
+POSTLFLAGS = $(XDRLFLAGS) 
 
 #-----------------------------------------------------------------------
 # use both X11 path conventions
