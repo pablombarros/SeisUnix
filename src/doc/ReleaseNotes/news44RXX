@@ -1,15 +1,20 @@
-Summer 2018 - Thanks to Dominque Rousset of the University of Pau,
-Seismic Unix distributions and other information may be found at
+SU News 45 - 10 April 2023
 
-https://wiki.seismic-unix.org
-Installation tip. If you get error messages regarding the XDR materials
-you may need to install either librpc or libtirpc from your Linux distribution.
-Compile time flags are now provided for either case.
+by John Stockwell
+
+This is the first official release (not an incremental) since 2018.
 
 John Stockwell retired from the Colorado School of Mines effective
 1 Jan 2018. He continues to work with Seismic Unix. 
 Please email: john.19071969@gmail.com
 if you have questions, or if you want to supply bug fixes or new SU code.
+
+Summer 2018 - Thanks to Dominque Rousset of the University of Pau,
+Seismic Unix distributions and other information may be found at
+https://wiki.seismic-unix.org
+
+Numerous new codes have been added, thanks to Andre Latour. These deal
+with 3D data. A number of new codes have also been contributed by Adnand Bitri.
 
 
 Update 23 March 2023:
@@ -19,11 +24,12 @@ on many systems called libtirpc.a. The TRPC materials are used for the XDR
 part of the installation. There seem to be two stages of this change. The
 first stage left the RPC include files in the old location. Releases 
 GCC 2.32 and later have removed the rpc files and replaced them with 
-a version called tirpc
+a version called tirpc.
 
 In response to this issue I have added a paragraph in select 
-Makefile.config near
+$CWPROOT/src/configs/Makefile.config_Linu_... near
 lines 40-50.
+(begin quote)"
 .......
 # if the include files  are under  /usr/include/rpc use this for XDR
 # whether or not you had to install libtrpc.a
@@ -43,20 +49,22 @@ XDRLFLAGS = -ltirpc
 #XDRFLAG =
 #XDRLFLAGS =
 #XDRIFLAGS =
+
 .......
+"(end quote)
 
-It has been a bit of a moving target but seems to be stabilizing now.
+The tirpc issue has been a bit of a moving target but seems to be
+stabilizing now. Eventually all systems that use the gcc compiler will
+make this change. 
 
-and the package should install just fine. If you have been using SU awhile
-and have files in SU format, then there will be a byte swapping issue between
-data made with XDR versus data made without XDR. You can use "suswapbytes" 
-and "suoldtonew" to convert from XDR to native binay format and vice versa.
+What's new in SU:
 
-Update: Nov 2021 The following items in
+Update: Nov 2021 and again in March 2023 The following items in
 src/configs/
 	Makefile.config_Linux_x86_64
 	Makefile.config_Linux_i686
 	Makefile.config_Linux_Ubuntu_20.04
+	Makefile.config_Linux_Ubuntu_22.04
 	Makefile.config_Linux_Ubuntu
 	Makefile.config_Linux_Fedora_32
 	Makefile.config_Linux_ARCH
@@ -68,16 +76,18 @@ discussed above, so you can use XDR without a problem.
 
 Fixes:
 A number of // C++ style comments have now been changed to /*... */ style
-comments. This used to be just a warning, but now actually breaks the code
-under GCC 2.32. This and a number of other compiler warnings have been silenced.
+comments. This used to just give a warning, but now actually breaks the code
+under GCC 2.32 and higher releases of the gcc compilter. This and a 
+number of other compiler warnings have been silenced.
 
 Many thanks to Dominique Rousset for working on this.
 
+An old issue:
 The last tmpnam calls were removed from suedit.c and suxedit.c
 
-What is new in the SU package:
 
-Restructuring: 
+I have restructured the mains so that programs are grouped by topic. This should make it easier for users to find specific source codes.
+
 par/main 
 
 is now:
@@ -97,6 +107,38 @@ par/main/statistics
 par/main/velocity_model_building
 par/main/velocity_perturbation
 par/main/wavelet_transform
+
+and
+
+su/main
+
+su/main/amplitudes
+su/main/attributes_parameter_estimation
+su/main/convolution_correlation
+su/main/dip_moveout
+su/main/data_compression
+su/main/data_conversion
+su/main/datuming
+su/main/decon_shaping
+su/main/filters
+su/main/headers
+su/main/interp_extrap
+su/main/gocad
+su/main/migration_inversion
+su/main/multicomponent
+su/main/noise
+su/main/operations
+su/main/picking
+su/main/stacking
+su/main/statics
+su/main/synthetics_waveforms_testpatterns
+su/main/transforms
+su/main/velocity_analysis
+su/main/well_logs
+su/main/windowing_sorting_muting
+su/main/stretching_moveout_resamp
+su/main/supromax
+su/main/tapering
 
 New:
 par/main/ray_theory/rayt2dtopo - a version of RAYT2D with topography
@@ -190,14 +232,17 @@ demos/Geom3D/ - demos for Andre Latour's csv codes
 	Sunomstreamers
 
 
-
 demos/Utilities/
 	Subraid
 	Sucleave
 	
 
 Fixed:
-su/main/amplitudes/sugain.c - fixed a but in the AGC function seen on GPR data but not apparent on seismic data
+su/main/amplitudes/surange.c - fixed sign error in output ranges 
+	        Thanks to Marc Schaming of Institut Terre et Environnement 
+                de Strasbourg Ecole et Observatoire des Sciences de la Terre
+su/main/amplitudes/sugain.c - fixed a bug in the AGC function seen on GPR 
+                data but not apparent on seismic data
 		Thanks to Dominique Rousset of the University of Pau
 
 su/lib/getSPSfile.c - replaced // comments with  /* comments */ owing to
@@ -222,11 +267,6 @@ Sfio/
 	a gzipped tarfile of the 15 Sept 2021 version of Sfio. Try that
         one or take the Sfio directory from an older release
 
-
-demos/Ordinary_differential_equations  - has been added to go with the new
-	ordinary_differential equation items in par/main
-
-demos/Geom3D - demos for Andre Latour's 3D geometry tools
 
 
 
