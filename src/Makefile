@@ -55,7 +55,7 @@ donothing: # To protect against an idle "make" to "see what happens"
 	@echo " "
 	@echo "See the README_ files in ./Portability for more information."
 
-install: checkroot LICENSE_445R00_ACCEPTED MAILHOME_45R00 makedirs cwpstuff plot sustuff tristuff tetrastuff compstuff reflstuff
+install: checkroot LICENSE_45R00_ACCEPTED MAILHOME_45R00 makedirs cwpstuff plot sustuff tristuff tetrastuff compstuff reflstuff
 
 xtinstall: xtcwp_
 xminstall: xmcwp_
