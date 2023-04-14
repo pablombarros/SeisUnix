@@ -13,7 +13,8 @@ PROGS =			\
 	$B/sudivstack	\
 	$B/supws	\
 	$B/surecip	\
-	$B/sustack
+	$B/sustack	\
+	$B/sustackup
 
 
 INSTALL	:	$(PROGS)

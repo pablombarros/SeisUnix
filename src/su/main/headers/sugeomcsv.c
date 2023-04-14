@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2021.*/
 /* All rights reserved.                       */
 
-/* SUGEOMCSV: $Revision: 1.1 $ ; $Date: 2021/10/03 23:46:12 $        */
+/* SUGEOMCSV: $Revision: 1.2 $ ; $Date: 2023/04/11 16:00:01 $        */
 
 #include <stdio.h>
 #include <string.h>
@@ -2370,6 +2370,10 @@ int main(int argc, char **argv) {
          if(dmade>RecInfo[nmade].dfield[mapx[1]]) {
            nmade++;
            if(nmade==numR) break;
+           for(n=0;n<num_to_sort_by;n++) { 
+             double dvalue = RecInfo[nmade].dfield[klocn[n]];
+             tohead(&tr, kcase[n], dvalue);
+           }
            dmade = RecInfo[nmade].dfield[mapx[0]];
          }
          tohead(&tr, mapx[6], dmade);
