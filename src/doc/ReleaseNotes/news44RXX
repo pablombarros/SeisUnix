@@ -1,4 +1,4 @@
-SU News 45 - 10 April 2023
+SU News 45 - 30 April 2023
 
 by John Stockwell
 
@@ -13,9 +13,7 @@ Summer 2018 - Thanks to Dominque Rousset of the University of Pau,
 Seismic Unix distributions and other information may be found at
 https://wiki.seismic-unix.org
 
-Numerous new codes have been added, thanks to Andre Latour. These deal
-with 3D data. A number of new codes have also been contributed by Adnand Bitri.
-
+Largest contributers to this release:  Andre Latour and Adnand Bitri.
 
 Update 23 March 2023:
 Ongoing issues: The GNU people have separated the tirpc library and include
@@ -140,14 +138,25 @@ su/main/stretching_moveout_resamp
 su/main/supromax
 su/main/tapering
 
+New Codes
+
+
 New:
 par/main/ray_theory/rayt2dtopo - a version of RAYT2D with topography
                                   Thanks to Trino Salinas
+New:
+su/main/statics/surescsv - Surface Consistent Residual Statics determination. 
+  Derives surface-consistent residual statics for sources and receivers.
+ The method here is based on stack-power maximization as described by: 
+ Ronen, J. and Claerbout, J., 1985, Geophysics, vol. 50, 2759-2767.
+				 Thanks to Andre Latour.
 
 New:
 su/main/filters/sudeghost.c - Deghosting and ghost modeling based on 
 				Masoomzahdeh, et al. (2014)
+				  John Stockwell
 
+New:
 		Tools for 3D geometry by Andre Latour:
 su/main/headers/sutoolcsv.c - Tools for Comma Separated Values and 
                                 fixed text files. 
@@ -163,6 +172,10 @@ su/main/headers/sutoolcsv.c - Tools for Comma Separated Values and
                                fixed text files. 
 		sunomstreamers.c - Nominal Geometry and 2D CDPS for 
                                 Towed-Streamer Marine. 
+su/main/stacking/sustackup.c - Input Any Trace Order and Stack To 
+                                Any Key Combination
+
+New:
 su/main/transforms/sust.c
 	SUST -  Outputs a time-frequency representation of seismic data via
            	the Stockwell transform (S- transform)
@@ -197,7 +210,7 @@ su/main/windowing_sorting_muting
 
 su/shell/ramac2su.sh - converts RAMAC GPR files to su format with a 
         nominal geometry
-	Thanks to: Hervé Perrou,d  12/2000and Dominique Rousset,  2019 
+	Thanks to: Hervé Perroud  2000 and Dominique Rousset,  2019 
               of the Universith of Pau
 
 configs/Makefile.config_Linux_Ubuntu_20.04
@@ -207,6 +220,8 @@ configs/Makefile.config_Linux_Ubuntu_20.04
         Makefile.config_Linux_ARCH
         Makefile.config_MacOSX_Catalina
         Makefile.config_Mac_OSX_Big_SUR
+
+New:
 par/main/ordinary_differential_equations
 	 logisticfit.c - extract growth and carrying capacity for logistic
 			 model
@@ -214,6 +229,8 @@ par/main/ordinary_differential_equations
 	 sirepidemic.c - SIR epidemic model
 	 sirdepidemic.c - SIRD epidemic model
 	 voltlotka.c - classic Lotka Volterra predator-prey model
+
+New demos:
 demos/Ordinary_differential_equations
 	 Epidemiology
 	 Logistic_Equation
@@ -221,6 +238,7 @@ demos/Ordinary_differential_equations
 
 demos/Sudeghost - Demos for sudeghost.c
 
+New demos: (Andre Latour has a You Tube channel with greater explanation)
 demos/Geom3D/ - demos for Andre Latour's csv codes
 	Subincsv
 	Subinxxcsv
@@ -230,7 +248,6 @@ demos/Geom3D/ - demos for Andre Latour's csv codes
 	Sugeomcsv
 	Sunmocsv
 	Sunomstreamers
-
 
 demos/Utilities/
 	Subraid
@@ -267,6 +284,8 @@ Sfio/
 	a gzipped tarfile of the 15 Sept 2021 version of Sfio. Try that
         one or take the Sfio directory from an older release
 
+As always, many thanks to SU users everywhere for your interest in SU
+and for your questions, comments, suggestions, and code fixes..
 
 
 
