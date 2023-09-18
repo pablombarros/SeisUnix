@@ -418,7 +418,9 @@ int main(int argc, char **argv) {
     for (j=0; j<iztuple; ++j) { 
       if(strcmp(pname[j],sstat)==0) osloc = j;
     }
-    if(osloc<0) err("sin file error: Q-file must have %s (among non-tuple names).",sstat);
+    if(osloc<0) err("sin file error: Q-file must have sstat parameter value %s (among non-tuple names).",sstat);
+
+    if(npoints<1) err("sin file error: no records starting with Q found in file."); 
 
     stree_npoints = npoints;
     stree_nodes = ealloc1(stree_npoints,sizeof(node));
@@ -538,14 +540,16 @@ int main(int argc, char **argv) {
       for (j=0; j<iztuple; ++j) {
         if(strcmp(pname[j],rkey[i])==0) rlocn[i] = j;
       }
-      if(rlocn[i] < 0) err("rin file error: rkeyloc %s not found in non-tuple part of sin Q-file.",rkey[i]);
+      if(rlocn[i] < 0) err("rin file error: rkeyloc %s not found in non-tuple part of rin Q-file.",rkey[i]);
     }
 
     orloc = -1;
     for (j=0; j<iztuple; ++j) { 
       if(strcmp(pname[j],rstat)==0) orloc = j;
     }
-    if(orloc<0) err("error: rin file must have %s (among non-tuple names).",rstat);
+    if(orloc<0) err("error: rin Q-file must have rstat parameter value %s (among non-tuple names).",rstat);
+
+    if(npoints<1) err("rin file error: no records starting with Q found in file."); 
 
     rtree_npoints = npoints;
     rtree_nodes = ealloc1(rtree_npoints,sizeof(node));
@@ -671,7 +675,9 @@ int main(int argc, char **argv) {
     for (j=0; j<iztuple; ++j) { 
       if(strcmp(pname[j],cstat)==0) ocloc = j;
     }
-    if(ocloc<0) err("error: cin file must have %s (among non-tuple names).",cstat);
+    if(ocloc<0) err("error: cin Q-file must have cstat parameter value %s (among non-tuple names).",cstat);
+
+    if(npoints<1) err("cin file error: no records starting with Q found in file."); 
 
     ctree_npoints = npoints;
     ctree_nodes = ealloc1(ctree_npoints,sizeof(node));
