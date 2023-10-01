@@ -112,6 +112,8 @@ prune:
 	-rm -f $(TMPDIR)/su/lib/xdrhdrsub.c
 	-rm -f $(TMPDIR)/su/lib/xdrbhdrsub.c
 
+	-rm -f $(TMPDIR)/cwp_su_version
+
 # Change mod so that the codes are writable for the user
 	cd $(TMPDIR) ; chmod -R ug+rw * 
 
