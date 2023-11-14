@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2022.*/
 /* All rights reserved.                       */
 
-/* SUPROFCSV: $Revision: 1.01 $ ; $Date: 2022/06/06 00:00:01 $		*/
+/* SUPROFCSV: $Revision: 1.02 $ ; $Date: 2023/11/14 00:00:01 $		*/
  
 #include "su.h"
 #include "segy.h" 
@@ -112,6 +112,7 @@ char *sdoc[] = {
 "            align the cdp locations to the centre of clumps of midpoints    ",
 "            (or align them to midpoints with small source-receiver offsets).",
 "              For more information, consult src/demos/Geom3D/Suprofcsv      ",
+"                                    or my YouTube video about profiles      ",
 " shiftrec=  List of Q-record numbers to apply small shifts along profile.   ",
 "            The first record starting with Q in the qin file is record 1.   ",
 "            If the Q-file was previously output by this program,            ",
@@ -127,11 +128,34 @@ char *sdoc[] = {
 "            The shifts specified for the lowest and highest records are     ",
 "            held constant outward to their ends of the profile.             ",
 "									     ",
+"									     ",
+"  ***  Note that the following two parameters also exist in subincsv.       ",
+"									     ",
+" point_crz=1.0  cdp number of point zero.                                   ",
+"                Note: NOT cdp of first output point unless point_cru=0.0    ",
+"									     ",
+" point_cru=0.0  cdps per one point unit.     Must be 0.0 if keyp=asis.      ",
+"            The first output cdp is set to point_crz plus first output      ",
+"            value of your specified keyp name multiplied by point_cru.      ",
+"              (first cdp) = (first keyp) * point_cru + point_crz            ",
+"       ***  Subsequent output cdps just increment by 1.                     ",
+"            Subsequent cdps are NOT computed using output keyp values and   ",
+"            will deviate from cdp numbers computed from output keyp values  ",
+"            unless you use the setup described next.                        ",
+"            If you have specified these parameters in subincsv then you     ",
+"            can output similar cdp numbers here - using some specific setup.",
+"             - keyp here should be rpkey name in subincsv (typically gaps). ",
+"             - keyx here should be the same as keyp (typically gaps).       ",
+"             - keyy here should be none.                                    ",
+"             - chordi here should be 1/point_cru (typically 0.5)            ",
+"            You can still average and smooth other values using this setup. ",
+"            (But for this setup the keyp values are linear and so they will ",
+"            be the same values because averaging/smoothing are symmetrical).",
+"									     ",
+"									     ",
 " qout=      Output file for q-records. Must be specified.                   ",
 "									     ",
 "      Note: A sequential cdp number is always generated in the qout file.   ",
-"       ***  It is rare to have cdps or points in the input qin file match up",
-"       ***  with cdps or points in the output qout file.                    ",
 "      Note: The name cdp can be used from the input qin file for parameters ",
 "            keyp or keyx or keyy, but its name will be null in qout file    ",
 "            because another cdp number is created by this program.          ",
@@ -184,6 +208,9 @@ NULL};
 /* This program started from subinqcsv which also inputs and outputs q-files.*/ 
 /* That program calls routines to perform bilinear-OR-linear interpolation,  */ 
 /* which are some of the routines used herein, but restricted to linear only.*/ 
+/* Modified: Nov  2023: Andre Latour                                         */ 
+/*   Added point_crz and point_cru parameters and code. These allow changing */ 
+/*   the first output cdp number (useful for some floating datum situations).*/ 
 /**************** end self doc *******************************************/
 
 segy tr;
@@ -247,6 +274,9 @@ int main(int argc, char **argv) {
   double chordfmax = 0.;
   double chordf = 0.;
   double dextra = 0.0;
+  double pcrz = 1.0;
+  double pcru = 0.0;
+  int    jcrf = 0;
 
   int nshift = 0;
   int *shiftrec=NULL;
@@ -323,10 +353,9 @@ int main(int argc, char **argv) {
   if(!getpardouble("chordf",&chordf)) chordf = chordi;
   if(chordf < 0.0) err("**** Error: chordf= must be greater than or equal to 0.0 ");
 
-
-
-
-
+  if(!getpardouble("point_crz",&pcrz)) pcrz = 1.0;
+  if(!getpardouble("point_cru",&pcru)) pcru = 0.0;
+  if(strcmp(keyp,"asis") == 0 && pcru!=0.0) err("**** Error: point_cru is not 0.0 but keyp=asis ");
 
   getparstring("qin", &Pname);
 
@@ -575,6 +604,7 @@ int main(int argc, char **argv) {
       }
     }
   }
+
 
 /*--------------------------------------------------------------*/
 /* perform initial chording?  */
@@ -858,9 +888,12 @@ int main(int argc, char **argv) {
 /* averaging, smoothing, and final chording. But sometimes only shifting is   */
 /* being done, and it is nicer to get same number of points output as input.  */
 
+  if(locp>-1) jcrf = lrint(dalls[1][locp] * pcru + pcrz) - 1;
+  else jcrf = lrint(pcrz) - 1; 
+
   for (jcdp=1; jcdp<msize-1; jcdp++) { 
     fprintf(fpQ,"Q");                                                       
-    fprintf(fpQ,formxylong,(double)jcdp);
+    fprintf(fpQ,formxylong,(double)(jcdp+jcrf));
     for(i=0; i<klast; i++) fprintf(fpQ,formxylong,dalls[jcdp][i]);
     fprintf(fpQ,"\n");
   }
