@@ -36,11 +36,14 @@ LINEHDRFLAG =
 # if the include files  are under  /usr/include/rpc use this for XDR
 # whether or not you had to install libtrpc.a
 XDRFLAG =  -DSUXDR
+XDRLFLAGS =
 
 # else if you had to install libtirpc and the rpc include files are under
-# /usr/include/tirpc/rpc use this one 
-#XDRFLAG =  -DSUXDR -DSUTIRPC
+# /usr/include/tirpc/rpc or if you get an error about <types.h> not found,
+# then  uncomment the next two lines
 
+#XDRFLAG = -DSUXDR -I/usr/include/tirpc/rpc -I/usr/include/tirpc
+#XDRLFLAGS = -ltirpc
 
 # else if you do not want to use XDR, uncomment the next line
 #XDRFLAG =

@@ -36,11 +36,13 @@ LINEHDRFLAG =
 
 # if the include files  are under  /usr/include/rpc use this for XDR
 # whether or not you had to install libtrpc.a
-XDRFLAG =  -DSUXDR
+# XDRFLAG =  -DSUXDR
 
 # else if you had to install libtirpc and the rpc include files are under
 # /usr/include/tirpc/rpc use this one 
-#XDRFLAG =  -DSUXDR -DSUTIRPC
+XDRFLAG =  -DSUXDR -DSUTIRPC
+XDRIFLAGS = -I/usr/include/tirpc/rpc -I/usr/include/tirpc
+XDRLFLAGS = -ltirpc
 
 # else if you don't want to use XDR, uncomment the next line
 #XDRFLAG = 
@@ -48,7 +50,7 @@ XDRFLAG =  -DSUXDR
 ENDIANFLAG = -DCWP_LITTLE_ENDIAN
 LARGE_FILE_FLAG = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 
-CWP_FLAGS = $(LARGE_FILE_FLAG) $(ENDIANFLAG) $(XDRFLAG) $(LINEHDRFLAG)
+CWP_FLAGS = $(LARGE_FILE_FLAG) $(ENDIANFLAG) $(XDRFLAG) $(XDRIFLAGS) $(XDRLFLAGS) $(LINEHDRFLAG)
 
 #-----------------------------------------------------------------------
 # system stuff

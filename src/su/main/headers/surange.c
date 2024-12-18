@@ -119,7 +119,7 @@ main(int argc, char **argv)
  				puthval(&trmin, i, &val);
  				puthval(&trmax, i, &val);
  				puthval(&trfirst, i, &val);
-                                if(i == 20) { coscal = val.h; if(coscal == 0) coscal = 1; dcoscal = (coscal > 0) ? 1.0*coscal : 1.0/coscal; }
+                                if(i == 20) { coscal = val.h; if(coscal == 0) coscal = 1; dcoscal = (coscal > 0) ? 1.0*coscal : -1.0/coscal; }
                                 if(i == 21) sx = eastShot[0] = westShot[0] = northShot[0] = southShot[0] = val.i*dcoscal;
                                 if(i == 22) sy = eastShot[1] = westShot[1] = northShot[1] = southShot[1] = val.i*dcoscal;
                                 if(i == 23) gx = eastRec[0] = westRec[0] = northRec[0] = southRec[0] = val.i*dcoscal;
@@ -156,7 +156,7 @@ main(int argc, char **argv)
 				if (valcmp(type, val, valmax) > 0)
 					puthval(&trmax, i, &val);
  				puthval(&trlast, i, &val);
-                                if(i == 20) { coscal = val.h; if(coscal == 0) coscal = 1; dcoscal = (coscal > 0) ? 1.0*coscal : 1.0/coscal; }
+                                if(i == 20) { coscal = val.h; if(coscal == 0) coscal = 1; dcoscal = (coscal > 0) ? 1.0*coscal : -1.0/coscal; }
                                 if(i == 21)  sx = val.i*dcoscal;
                                 if(i == 22)  sy = val.i*dcoscal;
                                 if(i == 23)  gx = val.i*dcoscal;

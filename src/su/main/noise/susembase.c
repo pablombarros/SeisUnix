@@ -1,7 +1,7 @@
 /* Copyright (c) Colorado School of Mines, 2022.*/
 /* All rights reserved.                       */
 
-/* SUSEMBASE: $Revision: 1.00 $ ; $Date: 2023/02/12 00:01:00 $      */
+/* SUSEMBASE: $Revision: 1.1 $ ; $Date: 2023/03/02 23:05:59 $      */
 
 #include <stdio.h>
 #include <string.h>

@@ -11,8 +11,13 @@ LFLAGS= $(PRELFLAGS) -L$L -lsu -lpar -lcwp -lm $(POSTLFLAGS)
 
 PROGS =			\
 	$B/suaddstatics	\
+	$B/sufarldcsv	\
+	$B/sugetqcsv	\
 	$B/surandstat	\
+	$B/sunszonecsv  \
+	$B/surescsv 	\
 	$B/suresstat	\
+	$B/sushiftcsv   \
 	$B/sustatic	\
 	$B/sustaticB	\
 	$B/sustaticrrs

@@ -2,7 +2,7 @@
 
 include $(CWPROOT)/src/Makefile.config
 
-LFLAGS= -L$L -lpar -lcwp -lm
+LFLAGS= -L$L -lpar -lcwp $(XDRLFLAGS) -lm
 TFLAGS = -g -I$I
 
 LIB = $L/libsu.a
@@ -46,7 +46,7 @@ list	:
 tests: tgettr tputtr tarray
 
 tgettr:	fgettr.c
-	$(CC) $(TFLAGS) -DTEST -DGETTR fgettr.c $(LIB) $(LFLAGS) -o tgettr
+	$(CC) $(TFLAGS) -DTEST -DGETTR fgettr.c $(LIB) $(LFLAGS)  -o tgettr
 	@echo tgettr ready--running benchmark
 	suplane offset=-100 | sugethw offset
 	@echo convert offset to absolute value

@@ -15,10 +15,12 @@ PROGS =			\
 	$B/sugetgthr	\
 	$B/sugprfb	\
 	$B/sukill	\
+	$B/sumatrix 	\
 	$B/sumixgathers	\
 	$B/sumute	\
 	$B/sumutecsv   	\
 	$B/supad	\
+	$B/supadmissing \
 	$B/suputgthr	\
 	$B/susort	\
 	$B/susorty	\
